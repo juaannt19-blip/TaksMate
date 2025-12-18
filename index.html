@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaksMate - Pembagian Tugas Tim</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            min-height: 100vh;
+        }
+
+        .app-name {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            color: #2e7d32;
+        }
+
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.3s;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #c8e6c9;
+            border-top: 4px solid #2e7d32;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Auth Pages */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(46, 125, 50, 0.1);
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+            animation: fadeInUp 0.5s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-card h2 {
+            color: #2e7d32;
+            margin-bottom: 30px;
+        }
+
+        .btn-primary {
+            background: #2e7d32;
+            border: none;
+            padding: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #1b5e20;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            padding: 20px 0;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 2px solid #e8f5e9;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-menu li {
+            margin: 5px 0;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .sidebar-menu i {
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e8f5e9;
+        }
+
+        .page-header h3 {
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        /* Tables */
+        .table {
+            font-family: 'Times New Roman', serif;
+        }
+
+        .table thead {
+            background: #2e7d32;
+            color: white;
+        }
+
+        /* Buttons */
+        .btn-success {
+            background: #2e7d32;
+            border: none;
+        }
+
+        .btn-success:hover {
+            background: #1b5e20;
+        }
+
+        .btn-danger {
+            background: #c62828;
+            border: none;
+        }
+
+        /* Chat Section */
+        .chat-container {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            background: #f5f5f5;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .message.public {
+            background: #e8f5e9;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .message.private {
+            background: #fff3e0;
+            border-left: 4px solid #f57c00;
+        }
+
+        .message-header {
+            font-weight: 600;
+            color: #2e7d32;
+            margin-bottom: 5px;
+        }
+
+        .message-time {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        /* Badge */
+        .skill-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 5px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block !important;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1001;
+                background: #2e7d32;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 5px;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+
+        /* Task Assignment Card */
+        .assignment-card {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left: 5px solid #2e7d32;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .assignment-card h5 {
+            color: #2e7d32;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Auth Container (Login/Register) -->
+    <div id="authContainer" style="display: none;">
+        <!-- Login Form -->
+        <div id="loginForm" class="auth-container">
+            <div class="auth-card">
+                <div class="text-center mb-4">
+                    <i class="fas fa-users-cog fa-3x text-success mb-3"></i>
+                    <h2 class="app-name">TaksMate</h2>
+                    <p class="text-muted">Kelola Tim dengan Lebih Efisien</p>
+                </div>
+                <form onsubmit="handleLogin(event)">
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
+                        <input type="email" class="form-control" id="loginEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-lock me-2"></i>Password</label>
+                        <input type="password" class="form-control" id="loginPassword" required>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">
+                            Ingat Saya
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>Masuk
+                    </button>
+                    <div class="text-center">
+                        <a href="#" onclick="showForgotPassword()" class="text-decoration-none">Lupa Password?</a>
+                        <div class="mt-3">
+                            Belum punya akun? <a href="#" onclick="showRegister()" class="text-decoration-none fw-bold">Daftar</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Register Form -->
+        <div id="registerForm" class="auth-container" style="display: none;">
+            <div class="auth-card">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-plus fa-3x text-success mb-3"></i>
+                    <h2 class="app-name">Daftar Akun</h2>
+                </div>
+                <form onsubmit="handleRegister(event)">
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-user me-2"></i>Nama Lengkap</label>
+                        <input type="text" class="form-control" id="regName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
+                        <input type="email" class="form-control" id="regEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-lock me-2"></i>Password</label>
+                        <input type="password" class="form-control" id="regPassword" minlength="6" required>
+                        <small class="text-muted">Minimal 6 karakter</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-lock me-2"></i>Konfirmasi Password</label>
+                        <input type="password" class="form-control" id="regConfirmPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <i class="fas fa-user-plus me-2"></i>Daftar
+                    </button>
+                    <div class="text-center">
+                        Sudah punya akun? <a href="#" onclick="showLogin()" class="text-decoration-none fw-bold">Masuk</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Forgot Password Form -->
+        <div id="forgotPasswordForm" class="auth-container" style="display: none;">
+            <div class="auth-card">
+                <div class="text-center mb-4">
+                    <i class="fas fa-key fa-3x text-success mb-3"></i>
+                    <h2 class="app-name">Lupa Password</h2>
+                    <p class="text-muted">Masukkan email untuk reset password</p>
+                </div>
+                <form onsubmit="handleForgotPassword(event)">
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
+                        <input type="email" class="form-control" id="forgotEmail" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <i class="fas fa-paper-plane me-2"></i>Kirim Link Reset
+                    </button>
+                    <div class="text-center">
+                        <a href="#" onclick="showLogin()" class="text-decoration-none">Kembali ke Login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="appContainer" style="display: none;">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h4 class="app-name mb-1">TaksMate</h4>
+                <small class="text-muted" id="userWelcome">Selamat datang!</small>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" onclick="showPage('dashboard')"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="#" onclick="showPage('tasks')"><i class="fas fa-tasks"></i> Daftar Tugas</a></li>
+                <li><a href="#" onclick="showPage('members')"><i class="fas fa-users"></i> Anggota Tim</a></li>
+                <li><a href="#" onclick="showPage('assignments')"><i class="fas fa-clipboard-check"></i> Pembagian Tugas</a></li>
+                <li><a href="#" onclick="showPage('chat')"><i class="fas fa-comments"></i> Chat Tim</a></li>
+                <li><a href="#" onclick="showPage('profile')"><i class="fas fa-user"></i> Profil Saya</a></li>
+                <li><a href="#" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Keluar</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard -->
+            <div id="dashboardPage" class="page">
+                <div class="content-card">
+                    <div class="page-header">
+                        <h3><i class="fas fa-home me-2"></i>Dashboard</h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card text-center border-0 shadow-sm">
+                                <div class="card-body">
+                                    <i class="fas fa-tasks fa-3x text-success mb-3"></i>
+                                    <h4 id="totalTasks">0</h4>
+                                    <p class="text-muted">Total Tugas</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card text-center border-0 shadow-sm">
+                                <div class="card-body">
+                                    <i class="fas fa-users fa-3x text-success mb-3"></i>
+                                    <h4 id="totalMembers">0</h4>
+                                    <p class="text-muted">Anggota Tim</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card text-center border-0 shadow-sm">
+                                <div class="card-body">
+                                    <i class="fas fa-comments fa-3x text-success mb-3"></i>
+                                    <h4 id="totalMessages">0</h4>
+                                    <p class="text-muted">Pesan</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks Page -->
+            <div id="tasksPage" class="page" style="display: none;">
+                <div class="content-card">
+                    <div class="page-header">
+                        <h3><i class="fas fa-tasks me-2"></i>Daftar Tugas</h3>
+                    </div>
+                    <form onsubmit="addTask(event)" class="mb-4">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="taskInput" placeholder="Masukkan nama tugas..." required>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="fas fa-plus me-2"></i>Tambah
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Tugas</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tasksList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Members Page -->
+            <div id="membersPage" class="page" style="display: none;">
+                <div class="content-card">
+                    <div class="page-header">
+                        <h3><i class="fas fa-users me-2"></i>Anggota Tim</h3>
+                    </div>
+                    <form onsubmit="addMember(event)" class="mb-4">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" id="memberName" placeholder="Nama" required>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" id="memberStrength" placeholder="Kelebihan">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" id="memberWeakness" placeholder="Kekurangan">
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="fas fa-user-plus me-2"></i>Tambah
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="memberSoftSkills" placeholder="Soft Skills (pisahkan dengan koma)">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="memberHardSkills" placeholder="Hard Skills (pisahkan dengan koma)">
+                            </div>
+                        </div>
+                    </form>
+                    <div id="membersList"></div>
+                </div>
+            </div>
+
+            <!-- Assignments Page -->
+            <div id="assignmentsPage" class="page" style="display: none;">
+                <div class="content-card">
+                    <div class="page-header">
+                        <h3><i class="fas fa-clipboard-check me-2"></i>Pembagian Tugas</h3>
+                    </div>
+                    <button class="btn btn-success mb-3" onclick="generateAssignments()">
+                        <i class="fas fa-magic me-2"></i>Generate Pembagian Tugas
+                    </button>
+                    <div id="assignmentsList"></div>
+                </div>
+            </div>
+
+            <!-- Chat Page -->
+            <div id="chatPage" class="page" style="display: none;">
+                <div class="content-card">
+                    <div class="page-header">
+                        <h3><i class="fas fa-comments me-2"></i>Chat Tim</h3>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <select class="form-select" id="messageType" onchange="updateRecipientSelect()">
+                                <option value="public">Pesan Umum</option>
+                                <option value="private">Pesan Pribadi</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <select class="form-select" id="messageRecipient" style="display: none;">
+                                <option value="">Pilih Penerima</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chat-container mb-3" id="chatContainer"></div>
+                    <form onsubmit="sendMessage(event)">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="messageInput" placeholder="Ketik pesan..." required>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-paper-plane"></i> Kirim
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profilePage" class="page" style="display: none;">
+                <div class="content-card">
+                    <div class="page-header">
+                        <h3><i class="fas fa-user me-2"></i>Profil Saya</h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form onsubmit="updateProfile(event)">
+                                <div class="mb-3">
+                                    <label class="form-label">Nama Lengkap</label>
+                                    <input type="text" class="form-control" id="profileName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="profileEmail" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Password Baru (Kosongkan jika tidak ingin mengubah)</label>
+                                    <input type="password" class="form-control" id="profilePassword" minlength="6">
+                                </div>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save me-2"></i>Simpan Perubahan
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('tasksmate_users')) || [];
+        let tasks = JSON.parse(localStorage.getItem('tasksmate_tasks')) || [];
+        let members = JSON.parse(localStorage.getItem('tasksmate_members')) || [];
+        let messages = JSON.parse(localStorage.getItem('tasksmate_messages')) || [];
+        let assignments = JSON.parse(localStorage.getItem('tasksmate_assignments')) || [];
+
+        // Simple hash function
+        function hashPassword(password) {
+            let hash = 0;
+            for (let i = 0; i < password.length; i++) {
+                const char = password.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return hash.toString();
+        }
+
+        // Check session on load
+        window.onload = function() {
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').classList.add('hidden');
+                checkSession();
+            }, 1000);
+        }
+
+        function checkSession() {
+            const session = localStorage.getItem('tasksmate_session');
+            if (session) {
+                currentUser = JSON.parse(session);
+                showApp();
+            } else {
+                showAuth();
+            }
+        }
+
+        function showAuth() {
+            document.getElementById('authContainer').style.display = 'block';
+            document.getElementById('appContainer').style.display = 'none';
+            showLogin();
+        }
+
+        function showApp() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'block';
+            document.getElementById('userWelcome').textContent = `Halo, ${currentUser.name}!`;
+            loadProfileData();
+            updateDashboard();
+            loadTasks();
+            loadMembers();
+            loadMessages();
+            updateRecipientSelect();
+        }
+
+        function showLogin() {
+            document.getElementById('loginForm').style.display = 'flex';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('forgotPasswordForm').style.display = 'none';
+        }
+
+        function showRegister() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'flex';
+            document.getElementById('forgotPasswordForm').style.display = 'none';
+        }
+
+        function showForgotPassword() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('forgotPasswordForm').style.display = 'flex';
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert('Password tidak cocok!');
+                return;
+            }
+
+            if (users.find(u => u.email === email)) {
+                alert('Email sudah terdaftar!');
+                return;
+            }
+
+            const user = {
+                id: Date.now(),
+                name: name,
+                email: email,
+                password: hashPassword(password)
+            };
+
+            users.push(user);
+            localStorage.setItem('tasksmate_users', JSON.stringify(users));
+            alert('Registrasi berhasil! Silakan login.');
+            showLogin();
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const remember = document.getElementById('rememberMe').checked;
+
+            const user = users.find(u => u.email === email && u.password === hashPassword(password));
+
+            if (user) {
+                currentUser = user;
+                if (remember) {
+                    localStorage.setItem('tasksmate_session', JSON.stringify(user));
+                }
+                showApp();
+            } else {
+                alert('Email atau password salah!');
+            }
+        }
+
+        function handleForgotPassword(e) {
+            e.preventDefault();
+            const email = document.getElementById('forgotEmail').value;
+            const user = users.find(u => u.email === email);
+
+            if (user) {
+                alert('Link reset password telah dikirim ke email Anda! (Simulasi)');
+                showLogin();
+            } else {
+                alert('Email tidak ditemukan!');
+            }
+        }
+
+        function handleLogout() {
+            if (confirm('Yakin ingin keluar?')) {
+                localStorage.removeItem('tasksmate_session');
+                currentUser = null;
+                showAuth();
+            }
+        }
+
+        function loadProfileData() {
+            document.getElementById('profileName').value = currentUser.name;
+            document.getElementById('profileEmail').value = currentUser.email;
+        }
+
+        function updateProfile(e) {
+            e.preventDefault();
+            const name = document.getElementById('profileName').value;
+            const email = document.getElementById('profileEmail').value;
+            const password = document.getElementById('profilePassword').value;
+
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex].name = name;
+                users[userIndex].email = email;
+                if (password) {
+                    users[userIndex].password = hashPassword(password);
+                }
+                currentUser = users[userIndex];
+                localStorage.setItem('tasksmate_users', JSON.stringify(users));
+                localStorage.setItem('tasksmate_session', JSON.stringify(currentUser));
+                document.getElementById('userWelcome').textContent = `Halo, ${currentUser.name}!`;
+                alert('Profil berhasil diperbarui!');
+            }
+        }
+
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            
+            if (page === 'dashboard') {
+                document.getElementById('dashboardPage').style.display = 'block';
+                updateDashboard();
+            } else if (page === 'tasks') {
+                document.getElementById('tasksPage').style.display = 'block';
+                loadTasks();
+            } else if (page === 'members') {
+                document.getElementById('membersPage').style.display = 'block';
+                loadMembers();
+            } else if (page === 'assignments') {
+                document.getElementById('assignmentsPage').style.display = 'block';
+                loadAssignments();
+            } else if (page === 'chat') {
+                document.getElementById('chatPage').style.display = 'block';
+                loadMessages();
+            } else if (page === 'profile') {
+                document.getElementById('profilePage').style.display = 'block';
+                loadProfileData();
+            }
+            
+            event.target.classList.add('active');
+        }
+
+        function updateDashboard() {
+            document.getElementById('totalTasks').textContent = tasks.length;
+            document.getElementById('totalMembers').textContent = members.length;
+            document.getElementById('totalMessages').textContent = messages.length;
+        }
+
+        function addTask(e) {
+            e.preventDefault();
+            const taskName = document.getElementById('taskInput').value;
+            tasks.push({
+                id: Date.now(),
+                name: taskName,
+                createdBy: currentUser.name
+            });
+            localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+            document.getElementById('taskInput').value = '';
+            loadTasks();
+            updateDashboard();
+            alert('Tugas berhasil ditambahkan!');
+        }
+
+        function loadTasks() {
+            const tbody = document.getElementById('tasksList');
+            tbody.innerHTML = '';
+            tasks.forEach((task, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${task.name}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})">
+                                <i class="fas fa-trash"></i> Hapus
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function deleteTask(id) {
+            if (confirm('Yakin ingin menghapus tugas ini?')) {
+                tasks = tasks.filter(t => t.id !== id);
+                localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+                loadTasks();
+                updateDashboard();
+            }
+        }
+
+        function addMember(e) {
+            e.preventDefault();
+            const name = document.getElementById('memberName').value;
+            const strength = document.getElementById('memberStrength').value;
+            const weakness = document.getElementById('memberWeakness').value;
+            const softSkills = document.getElementById('memberSoftSkills').value.split(',').map(s => s.trim()).filter(s => s);
+            const hardSkills = document.getElementById('memberHardSkills').value.split(',').map(s => s.trim()).filter(s => s);
+
+            members.push({
+                id: Date.now(),
+                name: name,
+                strength: strength,
+                weakness: weakness,
+                softSkills: softSkills,
+                hardSkills: hardSkills,
+                addedBy: currentUser.name
+            });
+
+            localStorage.setItem('tasksmate_members', JSON.stringify(members));
+            document.getElementById('memberName').value = '';
+            document.getElementById('memberStrength').value = '';
+            document.getElementById('memberWeakness').value = '';
+            document.getElementById('memberSoftSkills').value = '';
+            document.getElementById('memberHardSkills').value = '';
+            loadMembers();
+            updateDashboard();
+            updateRecipientSelect();
+            alert('Anggota berhasil ditambahkan!');
+        }
+
+        function loadMembers() {
+            const container = document.getElementById('membersList');
+            container.innerHTML = '';
+            members.forEach(member => {
+                container.innerHTML += `
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title text-success">
+                                <i class="fas fa-user-circle me-2"></i>${member.name}
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Kelebihan:</strong> ${member.strength || '-'}</p>
+                                    <p><strong>Kekurangan:</strong> ${member.weakness || '-'}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Soft Skills:</strong></p>
+                                    ${member.softSkills.map(s => `<span class="skill-badge">${s}</span>`).join('')}
+                                    <p class="mt-2"><strong>Hard Skills:</strong></p>
+                                    ${member.hardSkills.map(s => `<span class="skill-badge">${s}</span>`).join('')}
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-danger mt-2" onclick="deleteMember(${member.id})">
+                                <i class="fas fa-trash"></i> Hapus
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function deleteMember(id) {
+            if (confirm('Yakin ingin menghapus anggota ini?')) {
+                members = members.filter(m => m.id !== id);
+                localStorage.setItem('tasksmate_members', JSON.stringify(members));
+                loadMembers();
+                updateDashboard();
+                updateRecipientSelect();
+            }
+        }
+
+        function generateAssignments() {
+            if (tasks.length === 0 || members.length === 0) {
+                alert('Pastikan sudah ada tugas dan anggota tim!');
+                return;
+            }
+
+            assignments = [];
+            const memberCount = members.length;
+            
+            tasks.forEach((task, index) => {
+                const memberIndex = index % memberCount;
+                const assignedMember = members[memberIndex];
+                
+                let reason = `${assignedMember.name} ditugaskan untuk "${task.name}" karena memiliki `;
+                if (assignedMember.softSkills.length > 0) {
+                    reason += `soft skills: ${assignedMember.softSkills.join(', ')}`;
+                }
+                if (assignedMember.hardSkills.length > 0) {
+                    reason += ` dan hard skills: ${assignedMember.hardSkills.join(', ')}`;
+                }
+                if (assignedMember.strength) {
+                    reason += `. Kelebihan: ${assignedMember.strength}`;
+                }
+
+                assignments.push({
+                    id: Date.now() + index,
+                    taskName: task.name,
+                    memberName: assignedMember.name,
+                    reason: reason
+                });
+            });
+
+            localStorage.setItem('tasksmate_assignments', JSON.stringify(assignments));
+            loadAssignments();
+            alert('Pembagian tugas berhasil dibuat!');
+        }
+
+        function loadAssignments() {
+            const container = document.getElementById('assignmentsList');
+            if (assignments.length === 0) {
+                container.innerHTML = '<p class="text-muted">Belum ada pembagian tugas. Klik tombol "Generate Pembagian Tugas" untuk membuat.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            assignments.forEach(assignment => {
+                container.innerHTML += `
+                    <div class="assignment-card">
+                        <h5><i class="fas fa-user-check me-2"></i>${assignment.memberName}</h5>
+                        <h6 class="text-dark">Tugas: ${assignment.taskName}</h6>
+                        <p class="mb-0"><strong>Alasan:</strong> ${assignment.reason}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function updateRecipientSelect() {
+            const select = document.getElementById('messageRecipient');
+            select.innerHTML = '<option value="">Pilih Penerima</option>';
+            members.forEach(member => {
+                select.innerHTML += `<option value="${member.name}">${member.name}</option>`;
+            });
+        }
+
+        function sendMessage(e) {
+            e.preventDefault();
+            const messageText = document.getElementById('messageInput').value;
+            const messageType = document.getElementById('messageType').value;
+            const recipient = document.getElementById('messageRecipient').value;
+
+            if (messageType === 'private' && !recipient) {
+                alert('Pilih penerima pesan!');
+                return;
+            }
+
+            messages.push({
+                id: Date.now(),
+                sender: currentUser.name,
+                text: messageText,
+                type: messageType,
+                recipient: recipient || 'Semua',
+                timestamp: new Date().toLocaleString('id-ID')
+            });
+
+            localStorage.setItem('tasksmate_messages', JSON.stringify(messages));
+            document.getElementById('messageInput').value = '';
+            loadMessages();
+            updateDashboard();
+        }
+
+        function loadMessages() {
+            const container = document.getElementById('chatContainer');
+            container.innerHTML = '';
+            messages.forEach(msg => {
+                container.innerHTML += `
+                    <div class="message ${msg.type}">
+                        <div class="message-header">
+                            <i class="fas fa-user-circle me-2"></i>${msg.sender} 
+                            ${msg.type === 'private' ? `<i class="fas fa-arrow-right mx-2"></i> ${msg.recipient}` : ''}
+                            <span class="message-time float-end">${msg.timestamp}</span>
+                        </div>
+                        <div>${msg.text}</div>
+                    </div>
+                `;
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
