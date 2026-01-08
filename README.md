@@ -9,4 +9,5 @@ TaksMate
 # ketua
 Juanita Candra Erawati
 
-
+# anggota
+Burhanudin Yusuf Farhan
