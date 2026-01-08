@@ -11,3 +11,6 @@ Juanita Candra Erawati
 
 # anggota
 Burhanudin Yusuf Farhan
+
+# anggota 2
+Teity Oriesa
