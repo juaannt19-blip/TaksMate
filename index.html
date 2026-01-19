@@ -323,6 +323,87 @@
             color: #2e7d32;
             font-weight: 600;
         }
+
+        /* Archive Styles */
+        .archive-item {
+            background: #f8f9fa;
+            border-left: 4px solid #6c757d;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .archive-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .archive-item.overdue {
+            border-left-color: #dc3545;
+        }
+
+        .archive-item.completed {
+            border-left-color: #28a745;
+        }
+
+        .archive-badge {
+            font-size: 0.8em;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+
+        .empty-archive {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .archive-stats {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-in-progress {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        /* Priority Badges */
+        .priority-low {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .priority-medium {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .priority-high {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
     </style>
 </head>
 <body>
@@ -446,6 +527,7 @@
                 <li><a href="#" onclick="showPage('tasks')"><i class="fas fa-tasks"></i> Daftar Tugas</a></li>
                 <li><a href="#" onclick="showPage('members')"><i class="fas fa-users"></i> Anggota Tim</a></li>
                 <li><a href="#" onclick="showPage('assignments')"><i class="fas fa-clipboard-check"></i> Pembagian Tugas</a></li>
+                <li><a href="#" onclick="showPage('archive')"><i class="fas fa-archive"></i> Arsip Tugas</a></li>
                 <li><a href="#" onclick="showPage('chat')"><i class="fas fa-comments"></i> Chat Tim</a></li>
                 <li><a href="#" onclick="showPage('profile')"><i class="fas fa-user"></i> Profil Saya</a></li>
                 <li><a href="#" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Keluar</a></li>
@@ -461,16 +543,34 @@
                         <h3><i class="fas fa-home me-2"></i>Dashboard</h3>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                             <div class="card text-center border-0 shadow-sm">
                                 <div class="card-body">
                                     <i class="fas fa-tasks fa-3x text-success mb-3"></i>
                                     <h4 id="totalTasks">0</h4>
-                                    <p class="text-muted">Total Tugas</p>
+                                    <p class="text-muted">Tugas Aktif</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
+                            <div class="card text-center border-0 shadow-sm">
+                                <div class="card-body">
+                                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                                    <h4 id="overdueTasks">0</h4>
+                                    <p class="text-muted">Tugas Terlewat</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card text-center border-0 shadow-sm">
+                                <div class="card-body">
+                                    <i class="fas fa-archive fa-3x text-info mb-3"></i>
+                                    <h4 id="archivedCount">0</h4>
+                                    <p class="text-muted">Di Arsip</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
                             <div class="card text-center border-0 shadow-sm">
                                 <div class="card-body">
                                     <i class="fas fa-users fa-3x text-success mb-3"></i>
@@ -479,12 +579,41 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
                             <div class="card text-center border-0 shadow-sm">
                                 <div class="card-body">
                                     <i class="fas fa-comments fa-3x text-success mb-3"></i>
                                     <h4 id="totalMessages">0</h4>
                                     <p class="text-muted">Pesan</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card text-center border-0 shadow-sm">
+                                <div class="card-body">
+                                    <i class="fas fa-clipboard-check fa-3x text-success mb-3"></i>
+                                    <h4 id="totalAssignments">0</h4>
+                                    <p class="text-muted">Penugasan</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card text-center border-0 shadow-sm">
+                                <div class="card-body">
+                                    <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                                    <h4 id="completedTasks">0</h4>
+                                    <p class="text-muted">Tugas Selesai</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card text-center border-0 shadow-sm">
+                                <div class="card-body">
+                                    <i class="fas fa-calendar-times fa-3x text-danger mb-3"></i>
+                                    <h4 id="urgentTasks">0</h4>
+                                    <p class="text-muted">Deadline Dekat</p>
                                 </div>
                             </div>
                         </div>
@@ -499,14 +628,38 @@
                         <h3><i class="fas fa-tasks me-2"></i>Daftar Tugas</h3>
                     </div>
                     <form onsubmit="addTask(event)" class="mb-4">
-                        <div class="row">
-                            <div class="col-md-10">
-                                <input type="text" class="form-control" id="taskInput" placeholder="Masukkan nama tugas..." required>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="taskInput" placeholder="Nama tugas..." required>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="date" class="form-control" id="taskDeadline" required>
                             </div>
                             <div class="col-md-2">
                                 <button type="submit" class="btn btn-success w-100">
                                     <i class="fas fa-plus me-2"></i>Tambah
                                 </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <select class="form-select" id="taskPriority">
+                                    <option value="low">Prioritas Rendah</option>
+                                    <option value="medium" selected>Prioritas Sedang</option>
+                                    <option value="high">Prioritas Tinggi</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <select class="form-select" id="taskCategory">
+                                    <option value="">Pilih Kategori</option>
+                                    <option value="design">Desain</option>
+                                    <option value="development">Pengembangan</option>
+                                    <option value="marketing">Pemasaran</option>
+                                    <option value="research">Riset</option>
+                                    <option value="meeting">Rapat</option>
+                                    <option value="documentation">Dokumentasi</option>
+                                    <option value="testing">Testing</option>
+                                </select>
                             </div>
                         </div>
                     </form>
@@ -516,6 +669,10 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nama Tugas</th>
+                                    <th>Prioritas</th>
+                                    <th>Deadline</th>
+                                    <th>Status</th>
+                                    <th>Dibuat Oleh</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -571,6 +728,96 @@
                         <i class="fas fa-magic me-2"></i>Generate Pembagian Tugas
                     </button>
                     <div id="assignmentsList"></div>
+                </div>
+            </div>
+
+            <!-- Archive Page -->
+            <div id="archivePage" class="page" style="display: none;">
+                <div class="content-card">
+                    <div class="page-header">
+                        <h3><i class="fas fa-archive me-2"></i>Arsip Tugas</h3>
+                        <p class="text-muted mb-0">Tugas yang sudah terlewat atau selesai</p>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <select class="form-select" id="archiveFilter" onchange="filterArchivedTasks()">
+                                <option value="all">Semua Tugas</option>
+                                <option value="overdue">Terlewat</option>
+                                <option value="completed">Selesai</option>
+                                <option value="manual">Diarsip Manual</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id="archiveSearch" placeholder="Cari tugas..." onkeyup="searchArchivedTasks()">
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-danger w-100" onclick="clearArchive()">
+                                <i class="fas fa-trash me-2"></i>Kosongkan Arsip
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Arsip berisi <span id="archiveCount">0</span> tugas. Tugas diarsip otomatis ketika terlewat atau bisa diarsip manual.
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Tugas</th>
+                                    <th>Kategori</th>
+                                    <th>Status</th>
+                                    <th>Deadline</th>
+                                    <th>Alasan Arsip</th>
+                                    <th>Tanggal Arsip</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="archivedTasksList"></tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h5><i class="fas fa-chart-bar me-2"></i>Statistik Arsip</h5>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h3 id="overdueCount">0</h3>
+                                        <p class="text-muted">Terlewat</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h3 id="completedCount">0</h3>
+                                        <p class="text-muted">Selesai</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h3 id="thisMonthCount">0</h3>
+                                        <p class="text-muted">Arsip Bulan Ini</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h3 id="oldestArchive">-</h3>
+                                        <p class="text-muted">Arsip Tertua</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -646,6 +893,7 @@
         let members = JSON.parse(localStorage.getItem('tasksmate_members')) || [];
         let messages = JSON.parse(localStorage.getItem('tasksmate_messages')) || [];
         let assignments = JSON.parse(localStorage.getItem('tasksmate_assignments')) || [];
+        let archivedTasks = JSON.parse(localStorage.getItem('tasksmate_archived_tasks')) || [];
 
         // Simple hash function
         function hashPassword(password) {
@@ -671,6 +919,8 @@
             if (session) {
                 currentUser = JSON.parse(session);
                 showApp();
+                // Cek tugas terlewat saat aplikasi dimuat
+                checkOverdueTasks();
             } else {
                 showAuth();
             }
@@ -815,42 +1065,98 @@
             if (page === 'dashboard') {
                 document.getElementById('dashboardPage').style.display = 'block';
                 updateDashboard();
+                document.querySelector('.sidebar-menu a[onclick*="dashboard"]').classList.add('active');
             } else if (page === 'tasks') {
                 document.getElementById('tasksPage').style.display = 'block';
                 loadTasks();
+                // Set default date untuk input deadline (hari ini + 7 hari)
+                const nextWeek = new Date();
+                nextWeek.setDate(nextWeek.getDate() + 7);
+                document.getElementById('taskDeadline').value = nextWeek.toISOString().split('T')[0];
+                document.querySelector('.sidebar-menu a[onclick*="tasks"]').classList.add('active');
             } else if (page === 'members') {
                 document.getElementById('membersPage').style.display = 'block';
                 loadMembers();
+                document.querySelector('.sidebar-menu a[onclick*="members"]').classList.add('active');
             } else if (page === 'assignments') {
                 document.getElementById('assignmentsPage').style.display = 'block';
                 loadAssignments();
+                document.querySelector('.sidebar-menu a[onclick*="assignments"]').classList.add('active');
+            } else if (page === 'archive') {
+                document.getElementById('archivePage').style.display = 'block';
+                loadArchivedTasks();
+                updateArchiveStats();
+                document.querySelector('.sidebar-menu a[onclick*="archive"]').classList.add('active');
             } else if (page === 'chat') {
                 document.getElementById('chatPage').style.display = 'block';
                 loadMessages();
+                document.querySelector('.sidebar-menu a[onclick*="chat"]').classList.add('active');
             } else if (page === 'profile') {
                 document.getElementById('profilePage').style.display = 'block';
                 loadProfileData();
+                document.querySelector('.sidebar-menu a[onclick*="profile"]').classList.add('active');
             }
-            
-            event.target.classList.add('active');
         }
 
         function updateDashboard() {
-            document.getElementById('totalTasks').textContent = tasks.length;
+            const activeTasks = tasks.filter(t => !t.isArchived);
+            const overdueTasks = activeTasks.filter(t => {
+                const today = new Date();
+                const deadline = new Date(t.deadline);
+                return deadline < today;
+            });
+            
+            const completedTasks = activeTasks.filter(t => t.status === 'completed').length;
+            const urgentTasks = activeTasks.filter(t => {
+                const today = new Date();
+                const deadline = new Date(t.deadline);
+                const daysLeft = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+                return daysLeft <= 3 && daysLeft >= 0;
+            }).length;
+            
+            document.getElementById('totalTasks').textContent = activeTasks.length;
+            document.getElementById('overdueTasks').textContent = overdueTasks.length;
+            document.getElementById('archivedCount').textContent = archivedTasks.length;
             document.getElementById('totalMembers').textContent = members.length;
             document.getElementById('totalMessages').textContent = messages.length;
+            document.getElementById('totalAssignments').textContent = assignments.length;
+            document.getElementById('completedTasks').textContent = completedTasks;
+            document.getElementById('urgentTasks').textContent = urgentTasks;
+            
+            // Cek tugas terlewat setiap kali dashboard dimuat
+            checkOverdueTasks();
         }
 
         function addTask(e) {
             e.preventDefault();
             const taskName = document.getElementById('taskInput').value;
+            const taskDeadline = document.getElementById('taskDeadline').value;
+            const taskPriority = document.getElementById('taskPriority').value;
+            const taskCategory = document.getElementById('taskCategory').value;
+            
+            // Validasi deadline
+            const today = new Date().toISOString().split('T')[0];
+            if (taskDeadline < today) {
+                if (!confirm('Deadline sudah lewat. Tetap tambahkan tugas?')) {
+                    return;
+                }
+            }
+            
             tasks.push({
                 id: Date.now(),
                 name: taskName,
-                createdBy: currentUser.name
+                deadline: taskDeadline,
+                priority: taskPriority,
+                category: taskCategory || 'uncategorized',
+                status: 'pending',
+                createdBy: currentUser.name,
+                createdAt: new Date().toISOString(),
+                isOverdue: false
             });
+            
             localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
             document.getElementById('taskInput').value = '';
+            document.getElementById('taskDeadline').value = '';
             loadTasks();
             updateDashboard();
             alert('Tugas berhasil ditambahkan!');
@@ -859,19 +1165,137 @@
         function loadTasks() {
             const tbody = document.getElementById('tasksList');
             tbody.innerHTML = '';
-            tasks.forEach((task, index) => {
+            
+            // Filter hanya tugas aktif (belum diarsip)
+            const activeTasks = tasks.filter(task => !task.isArchived);
+            
+            if (activeTasks.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">
+                            <i class="fas fa-tasks fa-2x mb-2"></i><br>
+                            Belum ada tugas. Tambahkan tugas baru!
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            activeTasks.forEach((task, index) => {
+                // Tentukan warna prioritas
+                let priorityColor = 'info';
+                let priorityText = 'Rendah';
+                let priorityClass = 'priority-low';
+                if (task.priority === 'medium') {
+                    priorityColor = 'warning';
+                    priorityText = 'Sedang';
+                    priorityClass = 'priority-medium';
+                } else if (task.priority === 'high') {
+                    priorityColor = 'danger';
+                    priorityText = 'Tinggi';
+                    priorityClass = 'priority-high';
+                }
+                
+                // Tentukan status deadline
+                const today = new Date();
+                const deadline = new Date(task.deadline);
+                const daysLeft = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+                let deadlineStatus = '';
+                let deadlineClass = '';
+                
+                if (daysLeft < 0) {
+                    deadlineStatus = `<span class="badge bg-danger">Terlewat ${Math.abs(daysLeft)} hari</span>`;
+                    deadlineClass = 'text-danger fw-bold';
+                } else if (daysLeft === 0) {
+                    deadlineStatus = '<span class="badge bg-warning text-dark">Hari ini</span>';
+                    deadlineClass = 'text-warning fw-bold';
+                } else if (daysLeft <= 3) {
+                    deadlineStatus = `<span class="badge bg-warning text-dark">${daysLeft} hari lagi</span>`;
+                    deadlineClass = 'text-warning';
+                } else {
+                    deadlineStatus = `<span class="badge bg-success">${daysLeft} hari lagi</span>`;
+                    deadlineClass = 'text-success';
+                }
+                
+                // Tentukan status class
+                let statusClass = 'status-pending';
+                let statusText = 'Pending';
+                if (task.status === 'in-progress') {
+                    statusClass = 'status-in-progress';
+                    statusText = 'In Progress';
+                } else if (task.status === 'completed') {
+                    statusClass = 'status-completed';
+                    statusText = 'Selesai';
+                }
+                
                 tbody.innerHTML += `
                     <tr>
                         <td>${index + 1}</td>
-                        <td>${task.name}</td>
                         <td>
-                            <button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})">
-                                <i class="fas fa-trash"></i> Hapus
-                            </button>
+                            <strong>${task.name}</strong>
+                            ${task.category ? `<br><small class="text-muted">${task.category}</small>` : ''}
+                        </td>
+                        <td><span class="status-badge ${priorityClass}">${priorityText}</span></td>
+                        <td class="${deadlineClass}">
+                            ${new Date(task.deadline).toLocaleDateString('id-ID')}
+                            <br>${deadlineStatus}
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm" onchange="updateTaskStatus(${task.id}, this.value)">
+                                <option value="pending" ${task.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                <option value="in-progress" ${task.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                                <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>Selesai</option>
+                            </select>
+                        </td>
+                        <td>${task.createdBy}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-info" onclick="editTask(${task.id})" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-warning" onclick="archiveTask(${task.id})" title="Arsipkan">
+                                    <i class="fas fa-archive"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})" title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `;
             });
+        }
+
+        function updateTaskStatus(taskId, status) {
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex !== -1) {
+                tasks[taskIndex].status = status;
+                localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+                loadTasks();
+                updateDashboard();
+                
+                // Jika status selesai, tawarkan untuk mengarsip
+                if (status === 'completed') {
+                    setTimeout(() => {
+                        if (confirm('Tugas telah selesai. Ingin mengarsipkan tugas ini?')) {
+                            archiveTask(taskId, 'completed');
+                        }
+                    }, 500);
+                }
+            }
+        }
+
+        function editTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+            
+            const newName = prompt('Edit nama tugas:', task.name);
+            if (newName && newName.trim() !== '') {
+                task.name = newName.trim();
+                localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+                loadTasks();
+                alert('Tugas berhasil diperbarui!');
+            }
         }
 
         function deleteTask(id) {
@@ -880,6 +1304,235 @@
                 localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
                 loadTasks();
                 updateDashboard();
+            }
+        }
+
+        // Fungsi untuk mengecek dan mengarsip tugas terlewat otomatis
+        function checkOverdueTasks() {
+            const today = new Date().toISOString().split('T')[0];
+            let hasChanges = false;
+            
+            tasks.forEach(task => {
+                if (task.deadline < today && !task.isArchived) {
+                    task.isOverdue = true;
+                    // Otomatis arsip setelah 3 hari terlewat
+                    const deadlineDate = new Date(task.deadline);
+                    const todayDate = new Date();
+                    const daysOverdue = Math.floor((todayDate - deadlineDate) / (1000 * 60 * 60 * 24));
+                    
+                    if (daysOverdue >= 3) {
+                        archiveTask(task.id, 'auto');
+                        hasChanges = true;
+                    }
+                }
+            });
+            
+            if (hasChanges) {
+                localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+                loadTasks();
+            }
+        }
+
+        // Fungsi untuk mengarsip tugas
+        function archiveTask(taskId, reason = 'manual') {
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex === -1) return;
+            
+            const task = tasks[taskIndex];
+            const today = new Date();
+            
+            // Tambahkan ke arsip
+            archivedTasks.push({
+                ...task,
+                archivedDate: today.toISOString(),
+                archiveReason: reason === 'auto' ? 'Terlewat otomatis' : 
+                              reason === 'completed' ? 'Tugas selesai' : 'Diarsip manual',
+                archivedBy: currentUser.name
+            });
+            
+            // Hapus dari daftar aktif
+            tasks.splice(taskIndex, 1);
+            
+            localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+            localStorage.setItem('tasksmate_archived_tasks', JSON.stringify(archivedTasks));
+            
+            loadTasks();
+            updateDashboard();
+            alert('Tugas berhasil diarsip!');
+        }
+
+        // Fungsi untuk memuat tugas yang diarsip
+        function loadArchivedTasks(filter = 'all') {
+            const tbody = document.getElementById('archivedTasksList');
+            tbody.innerHTML = '';
+            
+            let filteredTasks = archivedTasks;
+            
+            if (filter === 'overdue') {
+                filteredTasks = archivedTasks.filter(task => task.isOverdue);
+            } else if (filter === 'completed') {
+                filteredTasks = archivedTasks.filter(task => task.status === 'completed');
+            } else if (filter === 'manual') {
+                filteredTasks = archivedTasks.filter(task => task.archiveReason === 'Diarsip manual');
+            }
+            
+            if (filteredTasks.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">
+                            <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                            Tidak ada tugas di arsip.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            filteredTasks.forEach((task, index) => {
+                const archiveDate = new Date(task.archivedDate);
+                const deadlineDate = new Date(task.deadline);
+                
+                // Tentukan status class
+                let statusClass = 'status-pending';
+                let statusText = 'Pending';
+                if (task.status === 'in-progress') {
+                    statusClass = 'status-in-progress';
+                    statusText = 'In Progress';
+                } else if (task.status === 'completed') {
+                    statusClass = 'status-completed';
+                    statusText = 'Selesai';
+                }
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>
+                            <strong>${task.name}</strong>
+                            <br><small class="text-muted">Oleh: ${task.createdBy}</small>
+                        </td>
+                        <td>${task.category || '-'}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td class="${task.isOverdue ? 'text-danger' : 'text-dark'}">
+                            ${deadlineDate.toLocaleDateString('id-ID')}
+                            ${task.isOverdue ? '<br><small class="badge bg-danger">Terlewat</small>' : ''}
+                        </td>
+                        <td>${task.archiveReason}</td>
+                        <td>${archiveDate.toLocaleDateString('id-ID')}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-success" onclick="restoreFromArchive(${task.id})" title="Kembalikan">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteFromArchive(${task.id})" title="Hapus Permanen">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Fungsi untuk mengembalikan tugas dari arsip
+        function restoreFromArchive(taskId) {
+            if (!confirm('Kembalikan tugas ini ke daftar aktif?')) return;
+            
+            const taskIndex = archivedTasks.findIndex(t => t.id === taskId);
+            if (taskIndex === -1) return;
+            
+            const task = archivedTasks[taskIndex];
+            
+            // Hapus properti arsip
+            const { archivedDate, archiveReason, archivedBy, ...restoredTask } = task;
+            
+            // Tambahkan kembali ke tugas aktif
+            tasks.push(restoredTask);
+            
+            // Hapus dari arsip
+            archivedTasks.splice(taskIndex, 1);
+            
+            localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+            localStorage.setItem('tasksmate_archived_tasks', JSON.stringify(archivedTasks));
+            
+            loadArchivedTasks();
+            updateDashboard();
+            alert('Tugas berhasil dikembalikan!');
+        }
+
+        // Fungsi untuk menghapus permanen dari arsip
+        function deleteFromArchive(taskId) {
+            if (!confirm('Hapus permanen tugas ini dari arsip?')) return;
+            
+            archivedTasks = archivedTasks.filter(t => t.id !== taskId);
+            localStorage.setItem('tasksmate_archived_tasks', JSON.stringify(archivedTasks));
+            
+            loadArchivedTasks();
+            updateArchiveStats();
+            alert('Tugas berhasil dihapus permanen!');
+        }
+
+        // Fungsi untuk filter arsip
+        function filterArchivedTasks() {
+            const filter = document.getElementById('archiveFilter').value;
+            loadArchivedTasks(filter);
+        }
+
+        // Fungsi untuk pencarian di arsip
+        function searchArchivedTasks() {
+            const searchTerm = document.getElementById('archiveSearch').value.toLowerCase();
+            const tbody = document.getElementById('archivedTasksList');
+            const rows = tbody.getElementsByTagName('tr');
+            
+            for (let row of rows) {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            }
+        }
+
+        // Fungsi untuk statistik arsip
+        function updateArchiveStats() {
+            document.getElementById('archiveCount').textContent = archivedTasks.length;
+            
+            // Hitung tugas terlewat
+            const overdueCount = archivedTasks.filter(t => t.isOverdue).length;
+            document.getElementById('overdueCount').textContent = overdueCount;
+            
+            // Hitung tugas selesai
+            const completedCount = archivedTasks.filter(t => t.status === 'completed').length;
+            document.getElementById('completedCount').textContent = completedCount;
+            
+            // Hitung arsip bulan ini
+            const thisMonth = new Date().getMonth();
+            const thisYear = new Date().getFullYear();
+            const thisMonthCount = archivedTasks.filter(t => {
+                const archiveDate = new Date(t.archivedDate);
+                return archiveDate.getMonth() === thisMonth && archiveDate.getFullYear() === thisYear;
+            }).length;
+            document.getElementById('thisMonthCount').textContent = thisMonthCount;
+            
+            // Temukan arsip tertua
+            if (archivedTasks.length > 0) {
+                const oldest = archivedTasks.reduce((oldest, current) => {
+                    return new Date(current.archivedDate) < new Date(oldest.archivedDate) ? current : oldest;
+                });
+                const oldestDate = new Date(oldest.archivedDate);
+                document.getElementById('oldestArchive').textContent = oldestDate.toLocaleDateString('id-ID');
+            }
+        }
+
+        // Fungsi untuk mengosongkan arsip
+        function clearArchive() {
+            if (archivedTasks.length === 0) {
+                alert('Arsip sudah kosong!');
+                return;
+            }
+            
+            if (confirm('Yakin ingin mengosongkan semua arsip? Tindakan ini tidak dapat dibatalkan!')) {
+                archivedTasks = [];
+                localStorage.setItem('tasksmate_archived_tasks', JSON.stringify(archivedTasks));
+                loadArchivedTasks();
+                updateArchiveStats();
+                alert('Arsip berhasil dikosongkan!');
             }
         }
 
@@ -930,9 +1583,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <p><strong>Soft Skills:</strong></p>
-                                    ${member.softSkills.map(s => `<span class="skill-badge">${s}</span>`).join('')}
+                                    ${member.softSkills.map(s => `<span class="skill-badge">${s}</span>`).join('') || '-'}
                                     <p class="mt-2"><strong>Hard Skills:</strong></p>
-                                    ${member.hardSkills.map(s => `<span class="skill-badge">${s}</span>`).join('')}
+                                    ${member.hardSkills.map(s => `<span class="skill-badge">${s}</span>`).join('') || '-'}
                                 </div>
                             </div>
                             <button class="btn btn-sm btn-danger mt-2" onclick="deleteMember(${member.id})">
@@ -962,8 +1615,9 @@
 
             assignments = [];
             const memberCount = members.length;
+            const activeTasks = tasks.filter(t => !t.isArchived);
             
-            tasks.forEach((task, index) => {
+            activeTasks.forEach((task, index) => {
                 const memberIndex = index % memberCount;
                 const assignedMember = members[memberIndex];
                 
@@ -972,7 +1626,8 @@
                     reason += `soft skills: ${assignedMember.softSkills.join(', ')}`;
                 }
                 if (assignedMember.hardSkills.length > 0) {
-                    reason += ` dan hard skills: ${assignedMember.hardSkills.join(', ')}`;
+                    if (assignedMember.softSkills.length > 0) reason += ' dan ';
+                    reason += `hard skills: ${assignedMember.hardSkills.join(', ')}`;
                 }
                 if (assignedMember.strength) {
                     reason += `. Kelebihan: ${assignedMember.strength}`;
@@ -982,7 +1637,9 @@
                     id: Date.now() + index,
                     taskName: task.name,
                     memberName: assignedMember.name,
-                    reason: reason
+                    reason: reason,
+                    taskId: task.id,
+                    memberId: assignedMember.id
                 });
             });
 
@@ -1011,11 +1668,18 @@
         }
 
         function updateRecipientSelect() {
-            const select = document.getElementById('messageRecipient');
-            select.innerHTML = '<option value="">Pilih Penerima</option>';
-            members.forEach(member => {
-                select.innerHTML += `<option value="${member.name}">${member.name}</option>`;
-            });
+            const messageType = document.getElementById('messageType');
+            const recipientSelect = document.getElementById('messageRecipient');
+            
+            if (messageType.value === 'private') {
+                recipientSelect.style.display = 'block';
+                recipientSelect.innerHTML = '<option value="">Pilih Penerima</option>';
+                members.forEach(member => {
+                    recipientSelect.innerHTML += `<option value="${member.name}">${member.name}</option>`;
+                });
+            } else {
+                recipientSelect.style.display = 'none';
+            }
         }
 
         function sendMessage(e) {
@@ -1047,7 +1711,25 @@
         function loadMessages() {
             const container = document.getElementById('chatContainer');
             container.innerHTML = '';
-            messages.forEach(msg => {
+            
+            // Filter pesan yang relevan untuk user saat ini
+            const relevantMessages = messages.filter(msg => 
+                msg.type === 'public' || 
+                msg.sender === currentUser.name || 
+                msg.recipient === currentUser.name
+            );
+            
+            if (relevantMessages.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-comments fa-3x mb-3"></i>
+                        <p>Belum ada pesan. Mulai percakapan!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            relevantMessages.forEach(msg => {
                 container.innerHTML += `
                     <div class="message ${msg.type}">
                         <div class="message-header">
@@ -1065,6 +1747,9 @@
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
+
+        // Jalankan fungsi checkOverdueTasks secara berkala
+        setInterval(checkOverdueTasks, 300000); // Setiap 5 menit
     </script>
 </body>
 </html>
