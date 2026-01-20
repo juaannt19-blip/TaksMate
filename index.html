@@ -7,8 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
-        
         * {
             margin: 0;
             padding: 0;
@@ -26,6 +24,8 @@
             font-weight: 700;
             color: #2e7d32;
         }
+
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
 
         /* Loading Animation */
         .loading-overlay {
@@ -404,6 +404,183 @@
             background-color: #f8d7da;
             color: #721c24;
         }
+
+        /* Activity History Styles */
+        .activity-timeline {
+            position: relative;
+            padding-left: 30px;
+            margin-top: 20px;
+        }
+        
+        .activity-timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+        }
+        
+        .activity-item {
+            position: relative;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border-left: 4px solid #2e7d32;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            animation: slideInRight 0.3s;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .activity-item::before {
+            content: '';
+            position: absolute;
+            left: -23px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #2e7d32;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px #2e7d32;
+        }
+        
+        .activity-item.system {
+            border-left-color: #2196f3;
+        }
+        
+        .activity-item.system::before {
+            background: #2196f3;
+            box-shadow: 0 0 0 2px #2196f3;
+        }
+        
+        .activity-item.warning {
+            border-left-color: #ff9800;
+        }
+        
+        .activity-item.warning::before {
+            background: #ff9800;
+            box-shadow: 0 0 0 2px #ff9800;
+        }
+        
+        .activity-item.danger {
+            border-left-color: #f44336;
+        }
+        
+        .activity-item.danger::before {
+            background: #f44336;
+            box-shadow: 0 0 0 2px #f44336;
+        }
+        
+        .activity-item.success {
+            border-left-color: #4caf50;
+        }
+        
+        .activity-item.success::before {
+            background: #4caf50;
+            box-shadow: 0 0 0 2px #4caf50;
+        }
+        
+        .activity-icon {
+            font-size: 1.2em;
+            margin-right: 10px;
+            width: 30px;
+            text-align: center;
+        }
+        
+        .activity-time {
+            font-size: 0.85em;
+            color: #666;
+            margin-left: 10px;
+        }
+        
+        .activity-user {
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        
+        .activity-content {
+            margin-top: 5px;
+            color: #333;
+        }
+        
+        .activity-details {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            padding-left: 20px;
+        }
+        
+        .activity-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .activity-filter {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .activity-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card i {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card h4 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        
+        .stat-card p {
+            margin: 5px 0 0;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        /* Responsive adjustments for activity page */
+        @media (max-width: 768px) {
+            .activity-timeline {
+                padding-left: 20px;
+            }
+            
+            .activity-timeline::before {
+                left: 10px;
+            }
+            
+            .activity-item::before {
+                left: -18px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -529,6 +706,7 @@
                 <li><a href="#" onclick="showPage('assignments')"><i class="fas fa-clipboard-check"></i> Pembagian Tugas</a></li>
                 <li><a href="#" onclick="showPage('archive')"><i class="fas fa-archive"></i> Arsip Tugas</a></li>
                 <li><a href="#" onclick="showPage('chat')"><i class="fas fa-comments"></i> Chat Tim</a></li>
+                <li><a href="#" onclick="showPage('activity')"><i class="fas fa-history"></i> Riwayat Aktivitas</a></li>
                 <li><a href="#" onclick="showPage('profile')"><i class="fas fa-user"></i> Profil Saya</a></li>
                 <li><a href="#" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Keluar</a></li>
             </ul>
@@ -611,9 +789,9 @@
                         <div class="col-md-3 mb-3">
                             <div class="card text-center border-0 shadow-sm">
                                 <div class="card-body">
-                                    <i class="fas fa-calendar-times fa-3x text-danger mb-3"></i>
-                                    <h4 id="urgentTasks">0</h4>
-                                    <p class="text-muted">Deadline Dekat</p>
+                                    <i class="fas fa-history fa-3x text-info mb-3"></i>
+                                    <h4 id="todayActivities">0</h4>
+                                    <p class="text-muted">Aktivitas Hari Ini</p>
                                 </div>
                             </div>
                         </div>
@@ -852,6 +1030,104 @@
                 </div>
             </div>
 
+            <!-- Activity History Page -->
+            <div id="activityPage" class="page" style="display: none;">
+                <div class="content-card">
+                    <div class="page-header">
+                        <h3><i class="fas fa-history me-2"></i>Riwayat Aktivitas</h3>
+                        <p class="text-muted mb-0">Log semua aktivitas dalam tim</p>
+                    </div>
+                    
+                    <!-- Stats Cards -->
+                    <div class="activity-stats">
+                        <div class="stat-card">
+                            <i class="fas fa-clock text-info"></i>
+                            <h4 id="activityToday">0</h4>
+                            <p>Hari Ini</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-tasks text-success"></i>
+                            <h4 id="activityTasks">0</h4>
+                            <p>Aktivitas Tugas</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-users text-warning"></i>
+                            <h4 id="activityMembers">0</h4>
+                            <p>Aktivitas Anggota</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-user text-primary"></i>
+                            <h4 id="activityMy">0</h4>
+                            <p>Aktivitas Saya</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter Section -->
+                    <div class="activity-filter">
+                        <div class="row">
+                            <div class="col-md-3 mb-2">
+                                <select class="form-select" id="activityTypeFilter" onchange="filterActivities()">
+                                    <option value="all">Semua Jenis</option>
+                                    <option value="task">Tugas</option>
+                                    <option value="member">Anggota</option>
+                                    <option value="assignment">Penugasan</option>
+                                    <option value="chat">Chat</option>
+                                    <option value="system">System</option>
+                                    <option value="archive">Arsip</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <select class="form-select" id="activityUserFilter" onchange="filterActivities()">
+                                    <option value="all">Semua User</option>
+                                    <option value="me">Hanya Saya</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <select class="form-select" id="activityTimeFilter" onchange="filterActivities()">
+                                    <option value="all">Semua Waktu</option>
+                                    <option value="today">Hari Ini</option>
+                                    <option value="week">Minggu Ini</option>
+                                    <option value="month">Bulan Ini</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <button class="btn btn-success w-100" onclick="exportActivities()">
+                                    <i class="fas fa-download me-2"></i>Export
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="activitySearch" 
+                                       placeholder="Cari aktivitas..." onkeyup="searchActivities()">
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button class="btn btn-danger" onclick="clearActivities()">
+                                    <i class="fas fa-trash me-2"></i>Hapus Riwayat
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity Timeline -->
+                    <div id="activitiesList" class="activity-timeline"></div>
+                    
+                    <!-- Empty State -->
+                    <div id="emptyActivities" class="text-center py-5" style="display: none;">
+                        <i class="fas fa-history fa-3x mb-3 text-muted"></i>
+                        <h5>Belum ada aktivitas</h5>
+                        <p class="text-muted">Aktivitas akan tercatat di sini</p>
+                    </div>
+                    
+                    <!-- Load More Button -->
+                    <div class="text-center mt-4" id="loadMoreContainer" style="display: none;">
+                        <button class="btn btn-outline-success" onclick="loadMoreActivities()">
+                            <i class="fas fa-arrow-down me-2"></i>Muat Lebih Banyak
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Profile Page -->
             <div id="profilePage" class="page" style="display: none;">
                 <div class="content-card">
@@ -894,6 +1170,58 @@
         let messages = JSON.parse(localStorage.getItem('tasksmate_messages')) || [];
         let assignments = JSON.parse(localStorage.getItem('tasksmate_assignments')) || [];
         let archivedTasks = JSON.parse(localStorage.getItem('tasksmate_archived_tasks')) || [];
+        let activities = JSON.parse(localStorage.getItem('tasksmate_activities')) || [];
+        
+        // Activity types
+        const ACTIVITY_TYPES = {
+            TASK_CREATED: 'task_created',
+            TASK_UPDATED: 'task_updated',
+            TASK_DELETED: 'task_deleted',
+            TASK_STATUS_CHANGED: 'task_status_changed',
+            TASK_ARCHIVED: 'task_archived',
+            MEMBER_ADDED: 'member_added',
+            MEMBER_DELETED: 'member_deleted',
+            ASSIGNMENT_GENERATED: 'assignment_generated',
+            CHAT_MESSAGE: 'chat_message',
+            SYSTEM: 'system',
+            LOGIN: 'login',
+            LOGOUT: 'logout',
+            PROFILE_UPDATED: 'profile_updated'
+        };
+        
+        // Activity icons
+        const ACTIVITY_ICONS = {
+            task_created: 'fas fa-plus-circle',
+            task_updated: 'fas fa-edit',
+            task_deleted: 'fas fa-trash',
+            task_status_changed: 'fas fa-exchange-alt',
+            task_archived: 'fas fa-archive',
+            member_added: 'fas fa-user-plus',
+            member_deleted: 'fas fa-user-minus',
+            assignment_generated: 'fas fa-magic',
+            chat_message: 'fas fa-comment',
+            system: 'fas fa-cog',
+            login: 'fas fa-sign-in-alt',
+            logout: 'fas fa-sign-out-alt',
+            profile_updated: 'fas fa-user-edit'
+        };
+        
+        // Activity colors
+        const ACTIVITY_COLORS = {
+            task_created: 'success',
+            task_updated: 'info',
+            task_deleted: 'danger',
+            task_status_changed: 'warning',
+            task_archived: 'warning',
+            member_added: 'success',
+            member_deleted: 'danger',
+            assignment_generated: 'success',
+            chat_message: 'info',
+            system: 'system',
+            login: 'success',
+            logout: 'warning',
+            profile_updated: 'info'
+        };
 
         // Simple hash function
         function hashPassword(password) {
@@ -904,6 +1232,27 @@
                 hash = hash & hash;
             }
             return hash.toString();
+        }
+
+        // Log activity function
+        function logActivity(type, details, data = null) {
+            const activity = {
+                id: Date.now(),
+                type: type,
+                user: currentUser ? currentUser.name : 'System',
+                userId: currentUser ? currentUser.id : null,
+                details: details,
+                data: data,
+                timestamp: new Date().toISOString(),
+                ipAddress: '127.0.0.1',
+                browser: navigator.userAgent.substring(0, 50)
+            };
+            
+            activities.unshift(activity);
+            localStorage.setItem('tasksmate_activities', JSON.stringify(activities));
+            
+            // Update dashboard if visible
+            updateDashboard();
         }
 
         // Check session on load
@@ -919,7 +1268,8 @@
             if (session) {
                 currentUser = JSON.parse(session);
                 showApp();
-                // Cek tugas terlewat saat aplikasi dimuat
+                // Log login activity
+                logActivity(ACTIVITY_TYPES.LOGIN, 'User logged in to the system');
                 checkOverdueTasks();
             } else {
                 showAuth();
@@ -1005,6 +1355,7 @@
                 if (remember) {
                     localStorage.setItem('tasksmate_session', JSON.stringify(user));
                 }
+                logActivity(ACTIVITY_TYPES.LOGIN, 'Successful login to the system');
                 showApp();
             } else {
                 alert('Email atau password salah!');
@@ -1026,6 +1377,7 @@
 
         function handleLogout() {
             if (confirm('Yakin ingin keluar?')) {
+                logActivity(ACTIVITY_TYPES.LOGOUT, 'User logged out from the system');
                 localStorage.removeItem('tasksmate_session');
                 currentUser = null;
                 showAuth();
@@ -1053,6 +1405,9 @@
                 currentUser = users[userIndex];
                 localStorage.setItem('tasksmate_users', JSON.stringify(users));
                 localStorage.setItem('tasksmate_session', JSON.stringify(currentUser));
+                
+                logActivity(ACTIVITY_TYPES.PROFILE_UPDATED, 'Updated profile information');
+                
                 document.getElementById('userWelcome').textContent = `Halo, ${currentUser.name}!`;
                 alert('Profil berhasil diperbarui!');
             }
@@ -1069,7 +1424,6 @@
             } else if (page === 'tasks') {
                 document.getElementById('tasksPage').style.display = 'block';
                 loadTasks();
-                // Set default date untuk input deadline (hari ini + 7 hari)
                 const nextWeek = new Date();
                 nextWeek.setDate(nextWeek.getDate() + 7);
                 document.getElementById('taskDeadline').value = nextWeek.toISOString().split('T')[0];
@@ -1091,6 +1445,11 @@
                 document.getElementById('chatPage').style.display = 'block';
                 loadMessages();
                 document.querySelector('.sidebar-menu a[onclick*="chat"]').classList.add('active');
+            } else if (page === 'activity') {
+                document.getElementById('activityPage').style.display = 'block';
+                loadActivities();
+                updateActivityStats();
+                document.querySelector('.sidebar-menu a[onclick*="activity"]').classList.add('active');
             } else if (page === 'profile') {
                 document.getElementById('profilePage').style.display = 'block';
                 loadProfileData();
@@ -1107,12 +1466,6 @@
             });
             
             const completedTasks = activeTasks.filter(t => t.status === 'completed').length;
-            const urgentTasks = activeTasks.filter(t => {
-                const today = new Date();
-                const deadline = new Date(t.deadline);
-                const daysLeft = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
-                return daysLeft <= 3 && daysLeft >= 0;
-            }).length;
             
             document.getElementById('totalTasks').textContent = activeTasks.length;
             document.getElementById('overdueTasks').textContent = overdueTasks.length;
@@ -1121,9 +1474,14 @@
             document.getElementById('totalMessages').textContent = messages.length;
             document.getElementById('totalAssignments').textContent = assignments.length;
             document.getElementById('completedTasks').textContent = completedTasks;
-            document.getElementById('urgentTasks').textContent = urgentTasks;
             
-            // Cek tugas terlewat setiap kali dashboard dimuat
+            // Update activity count for dashboard
+            const today = new Date().toDateString();
+            const todayActivities = activities.filter(act => 
+                new Date(act.timestamp).toDateString() === today
+            ).length;
+            document.getElementById('todayActivities').textContent = todayActivities;
+            
             checkOverdueTasks();
         }
 
@@ -1134,7 +1492,6 @@
             const taskPriority = document.getElementById('taskPriority').value;
             const taskCategory = document.getElementById('taskCategory').value;
             
-            // Validasi deadline
             const today = new Date().toISOString().split('T')[0];
             if (taskDeadline < today) {
                 if (!confirm('Deadline sudah lewat. Tetap tambahkan tugas?')) {
@@ -1142,7 +1499,7 @@
                 }
             }
             
-            tasks.push({
+            const newTask = {
                 id: Date.now(),
                 name: taskName,
                 deadline: taskDeadline,
@@ -1152,9 +1509,16 @@
                 createdBy: currentUser.name,
                 createdAt: new Date().toISOString(),
                 isOverdue: false
-            });
+            };
             
+            tasks.push(newTask);
             localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+            
+            logActivity(ACTIVITY_TYPES.TASK_CREATED, 
+                `Membuat tugas baru: "${taskName}"`, 
+                { taskId: newTask.id, taskName, deadline: taskDeadline }
+            );
+            
             document.getElementById('taskInput').value = '';
             document.getElementById('taskDeadline').value = '';
             loadTasks();
@@ -1166,7 +1530,6 @@
             const tbody = document.getElementById('tasksList');
             tbody.innerHTML = '';
             
-            // Filter hanya tugas aktif (belum diarsip)
             const activeTasks = tasks.filter(task => !task.isArchived);
             
             if (activeTasks.length === 0) {
@@ -1182,21 +1545,16 @@
             }
             
             activeTasks.forEach((task, index) => {
-                // Tentukan warna prioritas
-                let priorityColor = 'info';
-                let priorityText = 'Rendah';
                 let priorityClass = 'priority-low';
+                let priorityText = 'Rendah';
                 if (task.priority === 'medium') {
-                    priorityColor = 'warning';
-                    priorityText = 'Sedang';
                     priorityClass = 'priority-medium';
+                    priorityText = 'Sedang';
                 } else if (task.priority === 'high') {
-                    priorityColor = 'danger';
-                    priorityText = 'Tinggi';
                     priorityClass = 'priority-high';
+                    priorityText = 'Tinggi';
                 }
                 
-                // Tentukan status deadline
                 const today = new Date();
                 const deadline = new Date(task.deadline);
                 const daysLeft = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
@@ -1217,7 +1575,6 @@
                     deadlineClass = 'text-success';
                 }
                 
-                // Tentukan status class
                 let statusClass = 'status-pending';
                 let statusText = 'Pending';
                 if (task.status === 'in-progress') {
@@ -1269,12 +1626,18 @@
         function updateTaskStatus(taskId, status) {
             const taskIndex = tasks.findIndex(t => t.id === taskId);
             if (taskIndex !== -1) {
+                const oldStatus = tasks[taskIndex].status;
                 tasks[taskIndex].status = status;
                 localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+                
+                logActivity(ACTIVITY_TYPES.TASK_STATUS_CHANGED, 
+                    `Mengubah status tugas "${tasks[taskIndex].name}" dari "${oldStatus}" menjadi "${status}"`, 
+                    { taskId, taskName: tasks[taskIndex].name, oldStatus, newStatus: status }
+                );
+                
                 loadTasks();
                 updateDashboard();
                 
-                // Jika status selesai, tawarkan untuk mengarsip
                 if (status === 'completed') {
                     setTimeout(() => {
                         if (confirm('Tugas telah selesai. Ingin mengarsipkan tugas ini?')) {
@@ -1293,6 +1656,12 @@
             if (newName && newName.trim() !== '') {
                 task.name = newName.trim();
                 localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+                
+                logActivity(ACTIVITY_TYPES.TASK_UPDATED, 
+                    `Mengedit tugas: "${task.name}"`, 
+                    { taskId, taskName: task.name }
+                );
+                
                 loadTasks();
                 alert('Tugas berhasil diperbarui!');
             }
@@ -1300,14 +1669,22 @@
 
         function deleteTask(id) {
             if (confirm('Yakin ingin menghapus tugas ini?')) {
+                const task = tasks.find(t => t.id === id);
                 tasks = tasks.filter(t => t.id !== id);
                 localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+                
+                if (task) {
+                    logActivity(ACTIVITY_TYPES.TASK_DELETED, 
+                        `Menghapus tugas: "${task.name}"`, 
+                        { taskId: id, taskName: task.name }
+                    );
+                }
+                
                 loadTasks();
                 updateDashboard();
             }
         }
 
-        // Fungsi untuk mengecek dan mengarsip tugas terlewat otomatis
         function checkOverdueTasks() {
             const today = new Date().toISOString().split('T')[0];
             let hasChanges = false;
@@ -1315,7 +1692,6 @@
             tasks.forEach(task => {
                 if (task.deadline < today && !task.isArchived) {
                     task.isOverdue = true;
-                    // Otomatis arsip setelah 3 hari terlewat
                     const deadlineDate = new Date(task.deadline);
                     const todayDate = new Date();
                     const daysOverdue = Math.floor((todayDate - deadlineDate) / (1000 * 60 * 60 * 24));
@@ -1333,7 +1709,6 @@
             }
         }
 
-        // Fungsi untuk mengarsip tugas
         function archiveTask(taskId, reason = 'manual') {
             const taskIndex = tasks.findIndex(t => t.id === taskId);
             if (taskIndex === -1) return;
@@ -1341,7 +1716,6 @@
             const task = tasks[taskIndex];
             const today = new Date();
             
-            // Tambahkan ke arsip
             archivedTasks.push({
                 ...task,
                 archivedDate: today.toISOString(),
@@ -1350,18 +1724,21 @@
                 archivedBy: currentUser.name
             });
             
-            // Hapus dari daftar aktif
             tasks.splice(taskIndex, 1);
             
             localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
             localStorage.setItem('tasksmate_archived_tasks', JSON.stringify(archivedTasks));
+            
+            logActivity(ACTIVITY_TYPES.TASK_ARCHIVED, 
+                `Mengarsipkan tugas: "${task.name}" (Alasan: ${reason})`, 
+                { taskId, taskName: task.name, reason }
+            );
             
             loadTasks();
             updateDashboard();
             alert('Tugas berhasil diarsip!');
         }
 
-        // Fungsi untuk memuat tugas yang diarsip
         function loadArchivedTasks(filter = 'all') {
             const tbody = document.getElementById('archivedTasksList');
             tbody.innerHTML = '';
@@ -1392,7 +1769,6 @@
                 const archiveDate = new Date(task.archivedDate);
                 const deadlineDate = new Date(task.deadline);
                 
-                // Tentukan status class
                 let statusClass = 'status-pending';
                 let statusText = 'Pending';
                 if (task.status === 'in-progress') {
@@ -1433,7 +1809,6 @@
             });
         }
 
-        // Fungsi untuk mengembalikan tugas dari arsip
         function restoreFromArchive(taskId) {
             if (!confirm('Kembalikan tugas ini ke daftar aktif?')) return;
             
@@ -1442,42 +1817,48 @@
             
             const task = archivedTasks[taskIndex];
             
-            // Hapus properti arsip
             const { archivedDate, archiveReason, archivedBy, ...restoredTask } = task;
             
-            // Tambahkan kembali ke tugas aktif
             tasks.push(restoredTask);
-            
-            // Hapus dari arsip
             archivedTasks.splice(taskIndex, 1);
             
             localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
             localStorage.setItem('tasksmate_archived_tasks', JSON.stringify(archivedTasks));
+            
+            logActivity(ACTIVITY_TYPES.TASK_UPDATED, 
+                `Mengembalikan tugas dari arsip: "${task.name}"`, 
+                { taskId, taskName: task.name }
+            );
             
             loadArchivedTasks();
             updateDashboard();
             alert('Tugas berhasil dikembalikan!');
         }
 
-        // Fungsi untuk menghapus permanen dari arsip
         function deleteFromArchive(taskId) {
             if (!confirm('Hapus permanen tugas ini dari arsip?')) return;
             
+            const task = archivedTasks.find(t => t.id === taskId);
             archivedTasks = archivedTasks.filter(t => t.id !== taskId);
             localStorage.setItem('tasksmate_archived_tasks', JSON.stringify(archivedTasks));
+            
+            if (task) {
+                logActivity(ACTIVITY_TYPES.TASK_DELETED, 
+                    `Menghapus permanen tugas dari arsip: "${task.name}"`, 
+                    { taskId, taskName: task.name }
+                );
+            }
             
             loadArchivedTasks();
             updateArchiveStats();
             alert('Tugas berhasil dihapus permanen!');
         }
 
-        // Fungsi untuk filter arsip
         function filterArchivedTasks() {
             const filter = document.getElementById('archiveFilter').value;
             loadArchivedTasks(filter);
         }
 
-        // Fungsi untuk pencarian di arsip
         function searchArchivedTasks() {
             const searchTerm = document.getElementById('archiveSearch').value.toLowerCase();
             const tbody = document.getElementById('archivedTasksList');
@@ -1489,19 +1870,15 @@
             }
         }
 
-        // Fungsi untuk statistik arsip
         function updateArchiveStats() {
             document.getElementById('archiveCount').textContent = archivedTasks.length;
             
-            // Hitung tugas terlewat
             const overdueCount = archivedTasks.filter(t => t.isOverdue).length;
             document.getElementById('overdueCount').textContent = overdueCount;
             
-            // Hitung tugas selesai
             const completedCount = archivedTasks.filter(t => t.status === 'completed').length;
             document.getElementById('completedCount').textContent = completedCount;
             
-            // Hitung arsip bulan ini
             const thisMonth = new Date().getMonth();
             const thisYear = new Date().getFullYear();
             const thisMonthCount = archivedTasks.filter(t => {
@@ -1510,17 +1887,17 @@
             }).length;
             document.getElementById('thisMonthCount').textContent = thisMonthCount;
             
-            // Temukan arsip tertua
             if (archivedTasks.length > 0) {
                 const oldest = archivedTasks.reduce((oldest, current) => {
                     return new Date(current.archivedDate) < new Date(oldest.archivedDate) ? current : oldest;
                 });
                 const oldestDate = new Date(oldest.archivedDate);
                 document.getElementById('oldestArchive').textContent = oldestDate.toLocaleDateString('id-ID');
+            } else {
+                document.getElementById('oldestArchive').textContent = '-';
             }
         }
 
-        // Fungsi untuk mengosongkan arsip
         function clearArchive() {
             if (archivedTasks.length === 0) {
                 alert('Arsip sudah kosong!');
@@ -1528,6 +1905,11 @@
             }
             
             if (confirm('Yakin ingin mengosongkan semua arsip? Tindakan ini tidak dapat dibatalkan!')) {
+                logActivity(ACTIVITY_TYPES.SYSTEM, 
+                    `Mengosongkan arsip: ${archivedTasks.length} tugas dihapus`, 
+                    { deletedCount: archivedTasks.length }
+                );
+                
                 archivedTasks = [];
                 localStorage.setItem('tasksmate_archived_tasks', JSON.stringify(archivedTasks));
                 loadArchivedTasks();
@@ -1544,7 +1926,7 @@
             const softSkills = document.getElementById('memberSoftSkills').value.split(',').map(s => s.trim()).filter(s => s);
             const hardSkills = document.getElementById('memberHardSkills').value.split(',').map(s => s.trim()).filter(s => s);
 
-            members.push({
+            const newMember = {
                 id: Date.now(),
                 name: name,
                 strength: strength,
@@ -1552,9 +1934,16 @@
                 softSkills: softSkills,
                 hardSkills: hardSkills,
                 addedBy: currentUser.name
-            });
+            };
 
+            members.push(newMember);
             localStorage.setItem('tasksmate_members', JSON.stringify(members));
+            
+            logActivity(ACTIVITY_TYPES.MEMBER_ADDED, 
+                `Menambahkan anggota tim baru: "${name}"`, 
+                { memberId: newMember.id, memberName: name }
+            );
+            
             document.getElementById('memberName').value = '';
             document.getElementById('memberStrength').value = '';
             document.getElementById('memberWeakness').value = '';
@@ -1569,12 +1958,25 @@
         function loadMembers() {
             const container = document.getElementById('membersList');
             container.innerHTML = '';
+            
+            if (members.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-users fa-3x mb-3"></i>
+                        <h5>Belum ada anggota tim</h5>
+                        <p>Tambahkan anggota tim terlebih dahulu</p>
+                    </div>
+                `;
+                return;
+            }
+            
             members.forEach(member => {
                 container.innerHTML += `
                     <div class="card mb-3">
                         <div class="card-body">
                             <h5 class="card-title text-success">
                                 <i class="fas fa-user-circle me-2"></i>${member.name}
+                                <small class="text-muted float-end">Ditambahkan oleh: ${member.addedBy}</small>
                             </h5>
                             <div class="row">
                                 <div class="col-md-6">
@@ -1583,9 +1985,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <p><strong>Soft Skills:</strong></p>
-                                    ${member.softSkills.map(s => `<span class="skill-badge">${s}</span>`).join('') || '-'}
+                                    ${member.softSkills.length > 0 ? member.softSkills.map(s => `<span class="skill-badge">${s}</span>`).join('') : '-'}
                                     <p class="mt-2"><strong>Hard Skills:</strong></p>
-                                    ${member.hardSkills.map(s => `<span class="skill-badge">${s}</span>`).join('') || '-'}
+                                    ${member.hardSkills.length > 0 ? member.hardSkills.map(s => `<span class="skill-badge">${s}</span>`).join('') : '-'}
                                 </div>
                             </div>
                             <button class="btn btn-sm btn-danger mt-2" onclick="deleteMember(${member.id})">
@@ -1599,8 +2001,17 @@
 
         function deleteMember(id) {
             if (confirm('Yakin ingin menghapus anggota ini?')) {
+                const member = members.find(m => m.id === id);
                 members = members.filter(m => m.id !== id);
                 localStorage.setItem('tasksmate_members', JSON.stringify(members));
+                
+                if (member) {
+                    logActivity(ACTIVITY_TYPES.MEMBER_DELETED, 
+                        `Menghapus anggota tim: "${member.name}"`, 
+                        { memberId: id, memberName: member.name }
+                    );
+                }
+                
                 loadMembers();
                 updateDashboard();
                 updateRecipientSelect();
@@ -1644,6 +2055,12 @@
             });
 
             localStorage.setItem('tasksmate_assignments', JSON.stringify(assignments));
+            
+            logActivity(ACTIVITY_TYPES.ASSIGNMENT_GENERATED, 
+                `Membuat pembagian tugas untuk ${activeTasks.length} tugas`, 
+                { taskCount: activeTasks.length, memberCount }
+            );
+            
             loadAssignments();
             alert('Pembagian tugas berhasil dibuat!');
         }
@@ -1703,6 +2120,12 @@
             });
 
             localStorage.setItem('tasksmate_messages', JSON.stringify(messages));
+            
+            logActivity(ACTIVITY_TYPES.CHAT_MESSAGE, 
+                `Mengirim pesan ${messageType}`, 
+                { messageType, recipient: recipient || 'all', messageLength: messageText.length }
+            );
+            
             document.getElementById('messageInput').value = '';
             loadMessages();
             updateDashboard();
@@ -1712,7 +2135,6 @@
             const container = document.getElementById('chatContainer');
             container.innerHTML = '';
             
-            // Filter pesan yang relevan untuk user saat ini
             const relevantMessages = messages.filter(msg => 
                 msg.type === 'public' || 
                 msg.sender === currentUser.name || 
@@ -1744,12 +2166,276 @@
             container.scrollTop = container.scrollHeight;
         }
 
+        // Activity History Functions
+        let displayedActivities = 20;
+        
+        function loadActivities() {
+            const container = document.getElementById('activitiesList');
+            const emptyState = document.getElementById('emptyActivities');
+            const loadMoreContainer = document.getElementById('loadMoreContainer');
+            
+            if (activities.length === 0) {
+                container.style.display = 'none';
+                emptyState.style.display = 'block';
+                loadMoreContainer.style.display = 'none';
+                return;
+            }
+            
+            container.style.display = 'block';
+            emptyState.style.display = 'none';
+            
+            const filteredActivities = filterActivityList();
+            const activitiesToShow = filteredActivities.slice(0, displayedActivities);
+            
+            if (filteredActivities.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-search fa-3x mb-3"></i>
+                        <h5>Tidak ada aktivitas yang sesuai filter</h5>
+                        <p>Coba ubah filter pencarian</p>
+                    </div>
+                `;
+                loadMoreContainer.style.display = 'none';
+                return;
+            }
+            
+            container.innerHTML = '';
+            activitiesToShow.forEach(activity => {
+                const activityDate = new Date(activity.timestamp);
+                const icon = ACTIVITY_ICONS[activity.type] || 'fas fa-info-circle';
+                const colorClass = ACTIVITY_COLORS[activity.type] || 'info';
+                
+                let details = '';
+                if (activity.data) {
+                    if (activity.type === ACTIVITY_TYPES.TASK_STATUS_CHANGED) {
+                        details = `Tugas: ${activity.data.taskName}<br>
+                                  Status: ${activity.data.oldStatus} → ${activity.data.newStatus}`;
+                    } else if (activity.data.taskName) {
+                        details = `Tugas: ${activity.data.taskName}`;
+                    } else if (activity.data.memberName) {
+                        details = `Anggota: ${activity.data.memberName}`;
+                    }
+                }
+                
+                container.innerHTML += `
+                    <div class="activity-item ${colorClass}">
+                        <div class="d-flex align-items-center">
+                            <div class="activity-icon">
+                                <i class="${icon}"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <span class="activity-user">${activity.user}</span>
+                                <span class="activity-time">
+                                    <i class="far fa-clock me-1"></i>
+                                    ${activityDate.toLocaleString('id-ID')}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="activity-content">
+                            ${activity.details}
+                        </div>
+                        ${details ? `<div class="activity-details">${details}</div>` : ''}
+                        <div class="activity-actions">
+                            <small class="text-muted">
+                                <i class="fas fa-laptop me-1"></i>${activity.browser}...
+                            </small>
+                            <small class="text-muted ms-auto">
+                                IP: ${activity.ipAddress}
+                            </small>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            if (filteredActivities.length > displayedActivities) {
+                loadMoreContainer.style.display = 'block';
+            } else {
+                loadMoreContainer.style.display = 'none';
+            }
+        }
+        
+        function filterActivityList() {
+            const typeFilter = document.getElementById('activityTypeFilter').value;
+            const userFilter = document.getElementById('activityUserFilter').value;
+            const timeFilter = document.getElementById('activityTimeFilter').value;
+            const searchTerm = document.getElementById('activitySearch').value.toLowerCase();
+            
+            let filtered = activities;
+            
+            // Filter by type
+            if (typeFilter !== 'all') {
+                filtered = filtered.filter(activity => {
+                    if (typeFilter === 'task') {
+                        return activity.type.includes('task');
+                    } else if (typeFilter === 'member') {
+                        return activity.type.includes('member');
+                    } else if (typeFilter === 'assignment') {
+                        return activity.type === ACTIVITY_TYPES.ASSIGNMENT_GENERATED;
+                    } else if (typeFilter === 'chat') {
+                        return activity.type === ACTIVITY_TYPES.CHAT_MESSAGE;
+                    } else if (typeFilter === 'system') {
+                        return activity.type === ACTIVITY_TYPES.SYSTEM;
+                    } else if (typeFilter === 'archive') {
+                        return activity.type === ACTIVITY_TYPES.TASK_ARCHIVED;
+                    }
+                    return activity.type === typeFilter;
+                });
+            }
+            
+            // Filter by user
+            if (userFilter === 'me' && currentUser) {
+                filtered = filtered.filter(activity => activity.userId === currentUser.id);
+            }
+            
+            // Filter by time
+            const now = new Date();
+            if (timeFilter === 'today') {
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                filtered = filtered.filter(activity => 
+                    new Date(activity.timestamp) >= today
+                );
+            } else if (timeFilter === 'week') {
+                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                filtered = filtered.filter(activity => 
+                    new Date(activity.timestamp) >= weekAgo
+                );
+            } else if (timeFilter === 'month') {
+                const monthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+                filtered = filtered.filter(activity => 
+                    new Date(activity.timestamp) >= monthAgo
+                );
+            }
+            
+            // Filter by search term
+            if (searchTerm) {
+                filtered = filtered.filter(activity => 
+                    activity.details.toLowerCase().includes(searchTerm) ||
+                    activity.user.toLowerCase().includes(searchTerm) ||
+                    (activity.data && JSON.stringify(activity.data).toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            return filtered;
+        }
+        
+        function filterActivities() {
+            displayedActivities = 20;
+            loadActivities();
+            updateActivityStats();
+        }
+        
+        function searchActivities() {
+            displayedActivities = 20;
+            loadActivities();
+        }
+        
+        function loadMoreActivities() {
+            displayedActivities += 20;
+            loadActivities();
+        }
+        
+        function updateActivityStats() {
+            const filteredActivities = filterActivityList();
+            const today = new Date().toDateString();
+            
+            // Today's activities
+            const todayActivities = activities.filter(act => 
+                new Date(act.timestamp).toDateString() === today
+            ).length;
+            document.getElementById('activityToday').textContent = todayActivities;
+            
+            // Task activities
+            const taskActivities = activities.filter(act => 
+                act.type.includes('task')
+            ).length;
+            document.getElementById('activityTasks').textContent = taskActivities;
+            
+            // Member activities
+            const memberActivities = activities.filter(act => 
+                act.type.includes('member')
+            ).length;
+            document.getElementById('activityMembers').textContent = memberActivities;
+            
+            // My activities
+            const myActivities = activities.filter(act => 
+                act.userId === currentUser.id
+            ).length;
+            document.getElementById('activityMy').textContent = myActivities;
+        }
+        
+        function exportActivities() {
+            const filteredActivities = filterActivityList();
+            
+            if (filteredActivities.length === 0) {
+                alert('Tidak ada data untuk diexport!');
+                return;
+            }
+            
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Timestamp,User,Activity Type,Details,Additional Data\n";
+            
+            filteredActivities.forEach(activity => {
+                const row = [
+                    new Date(activity.timestamp).toLocaleString('id-ID'),
+                    activity.user,
+                    activity.type,
+                    activity.details,
+                    activity.data ? JSON.stringify(activity.data) : ''
+                ].map(field => `"${field}"`).join(",");
+                
+                csvContent += row + "\n";
+            });
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `activity_log_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            logActivity(ACTIVITY_TYPES.SYSTEM, 
+                `Mengexport log aktivitas: ${filteredActivities.length} entri`, 
+                { entryCount: filteredActivities.length }
+            );
+            
+            alert(`Berhasil mengexport ${filteredActivities.length} aktivitas!`);
+        }
+        
+        function clearActivities() {
+            if (activities.length === 0) {
+                alert('Riwayat aktivitas sudah kosong!');
+                return;
+            }
+            
+            if (confirm('Yakin ingin menghapus semua riwayat aktivitas? Tindakan ini tidak dapat dibatalkan!')) {
+                logActivity(ACTIVITY_TYPES.SYSTEM, 
+                    'Menghapus semua riwayat aktivitas', 
+                    { clearedCount: activities.length }
+                );
+                
+                activities = [];
+                localStorage.setItem('tasksmate_activities', JSON.stringify(activities));
+                
+                loadActivities();
+                updateActivityStats();
+                alert('Riwayat aktivitas berhasil dihapus!');
+            }
+        }
+
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
 
-        // Jalankan fungsi checkOverdueTasks secara berkala
-        setInterval(checkOverdueTasks, 300000); // Setiap 5 menit
+        // Initialize system activity
+        setTimeout(() => {
+            if (currentUser) {
+                logActivity(ACTIVITY_TYPES.SYSTEM, 'Aplikasi dimuat dengan sukses');
+            }
+        }, 1000);
+
+        // Check overdue tasks periodically
+        setInterval(checkOverdueTasks, 300000);
     </script>
 </body>
 </html>
