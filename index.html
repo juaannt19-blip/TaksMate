@@ -667,6 +667,110 @@
             color: #666;
             font-size: 0.85em;
         }
+
+        /* =============== TASK ASSIGNMENT STYLES =============== */
+        .assign-members-container {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+            background: #f8f9fa;
+        }
+
+        .assign-member-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            margin-bottom: 5px;
+            background: white;
+            border-radius: 5px;
+            border-left: 3px solid #2e7d32;
+            transition: all 0.2s;
+        }
+
+        .assign-member-item:hover {
+            background: #e8f5e9;
+            transform: translateX(3px);
+        }
+
+        .assign-member-item.selected {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+
+        .assign-member-checkbox {
+            margin-right: 10px;
+        }
+
+        .assigned-badge {
+            background: #2e7d32;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            margin-left: auto;
+        }
+
+        .task-assignees {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .task-assignee-badge {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .task-assignee-badge i {
+            margin-right: 3px;
+        }
+
+        .assign-btn {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .assign-btn:hover {
+            background: #1b5e20;
+            transform: translateY(-2px);
+        }
+
+        .assign-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Modal untuk menetapkan anggota */
+        .assign-modal .modal-dialog {
+            max-width: 600px;
+        }
+
+        .assign-modal .modal-header {
+            background: #2e7d32;
+            color: white;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .assign-member-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
@@ -897,11 +1001,18 @@
                     </div>
                     <form onsubmit="addTask(event)" class="mb-4">
                         <div class="row mb-3">
-                            <div class="col-md-6">
+                            <div class="col-md-5">
                                 <input type="text" class="form-control" id="taskInput" placeholder="Nama tugas..." required>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <input type="date" class="form-control" id="taskDeadline" required>
+                            </div>
+                            <div class="col-md-2">
+                                <select class="form-select" id="taskPriority">
+                                    <option value="low">Prioritas Rendah</option>
+                                    <option value="medium" selected>Prioritas Sedang</option>
+                                    <option value="high">Prioritas Tinggi</option>
+                                </select>
                             </div>
                             <div class="col-md-2">
                                 <button type="submit" class="btn btn-success w-100">
@@ -909,14 +1020,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <select class="form-select" id="taskPriority">
-                                    <option value="low">Prioritas Rendah</option>
-                                    <option value="medium" selected>Prioritas Sedang</option>
-                                    <option value="high">Prioritas Tinggi</option>
-                                </select>
-                            </div>
+                        <div class="row mb-3">
                             <div class="col-md-6">
                                 <select class="form-select" id="taskCategory">
                                     <option value="">Pilih Kategori</option>
@@ -929,6 +1033,13 @@
                                     <option value="testing">Testing</option>
                                 </select>
                             </div>
+                            <div class="col-md-6">
+                                <select class="form-select" id="taskAssignedTo" multiple>
+                                    <option value="" disabled>Pilih Anggota (Bisa lebih dari satu)</option>
+                                    <!-- Anggota akan dimuat secara dinamis -->
+                                </select>
+                                <small class="text-muted">Tekan Ctrl/Cmd untuk memilih beberapa anggota</small>
+                            </div>
                         </div>
                     </form>
                     <div class="table-responsive">
@@ -939,6 +1050,7 @@
                                     <th>Nama Tugas</th>
                                     <th>Prioritas</th>
                                     <th>Deadline</th>
+                                    <th>Ditugaskan Kepada</th>
                                     <th>Status</th>
                                     <th>Dibuat Oleh</th>
                                     <th>Aksi</th>
@@ -992,9 +1104,21 @@
                     <div class="page-header">
                         <h3><i class="fas fa-clipboard-check me-2"></i>Pembagian Tugas</h3>
                     </div>
-                    <button class="btn btn-success mb-3" onclick="generateAssignments()">
-                        <i class="fas fa-magic me-2"></i>Generate Pembagian Tugas
-                    </button>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <select class="form-select" id="autoAssignType">
+                                <option value="manual">Pilih metode pembagian...</option>
+                                <option value="equal">Bagi ke Semua Anggota</option>
+                                <option value="skills">Berdasarkan Skills</option>
+                                <option value="random">Random Assignment</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-success w-100" onclick="generateAssignments()">
+                                <i class="fas fa-magic me-2"></i>Generate Pembagian Tugas
+                            </button>
+                        </div>
+                    </div>
                     <div id="assignmentsList"></div>
                 </div>
             </div>
@@ -1250,6 +1374,45 @@
         </div>
     </div>
 
+    <!-- Assign Task Modal -->
+    <div class="modal fade assign-modal" id="assignTaskModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-user-plus me-2"></i>Penugasan Tugas
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6 id="assignTaskName" class="mb-3"></h6>
+                    <p class="text-muted">Pilih anggota yang akan ditugaskan:</p>
+                    
+                    <div class="assign-member-list" id="assignMemberList">
+                        <!-- Daftar anggota akan dimuat di sini -->
+                    </div>
+                    
+                    <div class="mt-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="assignAllMembers">
+                            <label class="form-check-label" for="assignAllMembers">
+                                Pilih semua anggota
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Batal
+                    </button>
+                    <button type="button" class="btn btn-success" id="confirmAssignBtn">
+                        <i class="fas fa-user-check me-2"></i>Tetapkan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Admin Modal -->
     <div class="modal fade delete-modal" id="adminModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -1428,6 +1591,8 @@
             MEMBER_ADDED: 'member_added',
             MEMBER_DELETED: 'member_deleted',
             ASSIGNMENT_GENERATED: 'assignment_generated',
+            ASSIGNMENT_ADDED: 'assignment_added',
+            ASSIGNMENT_REMOVED: 'assignment_removed',
             CHAT_MESSAGE: 'chat_message',
             SYSTEM: 'system',
             LOGIN: 'login',
@@ -1445,6 +1610,8 @@
             member_added: 'fas fa-user-plus',
             member_deleted: 'fas fa-user-minus',
             assignment_generated: 'fas fa-magic',
+            assignment_added: 'fas fa-user-check',
+            assignment_removed: 'fas fa-user-times',
             chat_message: 'fas fa-comment',
             system: 'fas fa-cog',
             login: 'fas fa-sign-in-alt',
@@ -1462,6 +1629,8 @@
             member_added: 'success',
             member_deleted: 'danger',
             assignment_generated: 'success',
+            assignment_added: 'info',
+            assignment_removed: 'warning',
             chat_message: 'info',
             system: 'system',
             login: 'success',
@@ -1602,6 +1771,22 @@
             users.push(user);
             localStorage.setItem('tasksmate_users', JSON.stringify(users));
             
+            // Otomatis tambahkan ke members jika bukan admin
+            if (!isAdmin) {
+                const newMember = {
+                    id: user.id,
+                    name: name,
+                    strength: '',
+                    weakness: '',
+                    softSkills: [],
+                    hardSkills: [],
+                    addedBy: 'System'
+                };
+                
+                members.push(newMember);
+                localStorage.setItem('tasksmate_members', JSON.stringify(members));
+            }
+            
             logActivity(ACTIVITY_TYPES.MEMBER_ADDED, 
                 `User mendaftar: "${name}" ${isAdmin ? '(sebagai admin)' : ''}`, 
                 { userId: user.id, userName: name, isAdmin: isAdmin }
@@ -1718,6 +1903,7 @@
             } else if (page === 'tasks') {
                 document.getElementById('tasksPage').style.display = 'block';
                 loadTasks();
+                loadAssignMembersSelect();
                 const nextWeek = new Date();
                 nextWeek.setDate(nextWeek.getDate() + 7);
                 document.getElementById('taskDeadline').value = nextWeek.toISOString().split('T')[0];
@@ -1779,12 +1965,31 @@
             checkOverdueTasks();
         }
 
+        // Fungsi untuk memuat select anggota di form tambah tugas
+        function loadAssignMembersSelect() {
+            const select = document.getElementById('taskAssignedTo');
+            select.innerHTML = '<option value="" disabled>Pilih Anggota (Bisa lebih dari satu)</option>';
+            
+            if (members.length === 0) {
+                select.innerHTML += '<option value="" disabled>Tidak ada anggota tersedia</option>';
+                return;
+            }
+            
+            members.forEach(member => {
+                const option = document.createElement('option');
+                option.value = member.name;
+                option.textContent = member.name;
+                select.appendChild(option);
+            });
+        }
+
         function addTask(e) {
             e.preventDefault();
             const taskName = document.getElementById('taskInput').value;
             const taskDeadline = document.getElementById('taskDeadline').value;
             const taskPriority = document.getElementById('taskPriority').value;
             const taskCategory = document.getElementById('taskCategory').value;
+            const taskAssignedTo = Array.from(document.getElementById('taskAssignedTo').selectedOptions).map(option => option.value);
             
             const today = new Date().toISOString().split('T')[0];
             if (taskDeadline < today) {
@@ -1800,6 +2005,7 @@
                 priority: taskPriority,
                 category: taskCategory || 'uncategorized',
                 status: 'pending',
+                assignedTo: taskAssignedTo, // Array of member names
                 createdBy: currentUser.name,
                 createdAt: new Date().toISOString(),
                 isOverdue: false
@@ -1808,13 +2014,41 @@
             tasks.push(newTask);
             localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
             
+            // Create assignments for each assigned member
+            if (taskAssignedTo.length > 0) {
+                taskAssignedTo.forEach(memberName => {
+                    const member = members.find(m => m.name === memberName);
+                    if (member) {
+                        const assignment = {
+                            id: Date.now() + Math.random(),
+                            taskId: newTask.id,
+                            taskName: taskName,
+                            memberId: member.id,
+                            memberName: memberName,
+                            assignedBy: currentUser.name,
+                            assignedAt: new Date().toISOString(),
+                            status: 'pending'
+                        };
+                        
+                        assignments.push(assignment);
+                    }
+                });
+                localStorage.setItem('tasksmate_assignments', JSON.stringify(assignments));
+            }
+            
             logActivity(ACTIVITY_TYPES.TASK_CREATED, 
-                `Membuat tugas baru: "${taskName}"`, 
-                { taskId: newTask.id, taskName, deadline: taskDeadline }
+                `Membuat tugas baru: "${taskName}" (Ditugaskan ke: ${taskAssignedTo.join(', ') || 'Belum ditugaskan'})`, 
+                { 
+                    taskId: newTask.id, 
+                    taskName, 
+                    deadline: taskDeadline,
+                    assignedTo: taskAssignedTo
+                }
             );
             
             document.getElementById('taskInput').value = '';
             document.getElementById('taskDeadline').value = '';
+            document.getElementById('taskAssignedTo').selectedIndex = -1;
             loadTasks();
             updateDashboard();
             alert('Tugas berhasil ditambahkan!');
@@ -1829,7 +2063,7 @@
             if (activeTasks.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" class="text-center text-muted">
+                        <td colspan="8" class="text-center text-muted">
                             <i class="fas fa-tasks fa-2x mb-2"></i><br>
                             Belum ada tugas. Tambahkan tugas baru!
                         </td>
@@ -1879,6 +2113,17 @@
                     statusText = 'Selesai';
                 }
                 
+                // Tampilkan anggota yang ditugaskan
+                let assignedMembersHTML = '<div class="task-assignees">';
+                if (task.assignedTo && task.assignedTo.length > 0) {
+                    task.assignedTo.forEach(memberName => {
+                        assignedMembersHTML += `<span class="task-assignee-badge"><i class="fas fa-user"></i> ${memberName}</span>`;
+                    });
+                } else {
+                    assignedMembersHTML += '<span class="text-muted">Belum ditugaskan</span>';
+                }
+                assignedMembersHTML += '</div>';
+                
                 tbody.innerHTML += `
                     <tr>
                         <td>${index + 1}</td>
@@ -1890,6 +2135,9 @@
                         <td class="${deadlineClass}">
                             ${new Date(task.deadline).toLocaleDateString('id-ID')}
                             <br>${deadlineStatus}
+                        </td>
+                        <td>
+                            ${assignedMembersHTML}
                         </td>
                         <td>
                             <select class="form-select form-select-sm" onchange="updateTaskStatus(${task.id}, this.value)">
@@ -1904,7 +2152,10 @@
                                 <button class="btn btn-sm btn-info" onclick="editTask(${task.id})" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-warning" onclick="archiveTask(${task.id})" title="Arsipkan">
+                                <button class="btn btn-sm btn-warning" onclick="assignTaskToMembers(${task.id})" title="Tetapkan Anggota">
+                                    <i class="fas fa-user-plus"></i>
+                                </button>
+                                <button class="btn btn-sm btn-secondary" onclick="archiveTask(${task.id})" title="Arsipkan">
                                     <i class="fas fa-archive"></i>
                                 </button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})" title="Hapus">
@@ -1915,6 +2166,165 @@
                     </tr>
                 `;
             });
+        }
+
+        // Fungsi untuk menetapkan tugas ke beberapa anggota
+        let currentAssignTaskId = null;
+
+        function assignTaskToMembers(taskId) {
+            currentAssignTaskId = taskId;
+            const task = tasks.find(t => t.id === taskId);
+            
+            if (!task) {
+                alert('Tugas tidak ditemukan!');
+                return;
+            }
+            
+            document.getElementById('assignTaskName').textContent = `"${task.name}"`;
+            
+            const memberList = document.getElementById('assignMemberList');
+            memberList.innerHTML = '';
+            
+            if (members.length === 0) {
+                memberList.innerHTML = '<p class="text-muted text-center">Tidak ada anggota tersedia</p>';
+                return;
+            }
+            
+            members.forEach(member => {
+                const isAssigned = task.assignedTo && task.assignedTo.includes(member.name);
+                
+                const memberDiv = document.createElement('div');
+                memberDiv.className = `assign-member-item ${isAssigned ? 'selected' : ''}`;
+                memberDiv.innerHTML = `
+                    <input type="checkbox" class="assign-member-checkbox" 
+                           id="member_${member.id}" 
+                           ${isAssigned ? 'checked' : ''}
+                           value="${member.name}">
+                    <label for="member_${member.id}" class="flex-grow-1">
+                        <strong>${member.name}</strong>
+                        ${member.strength ? `<br><small class="text-muted">Kelebihan: ${member.strength}</small>` : ''}
+                    </label>
+                    ${isAssigned ? '<span class="assigned-badge">Sudah ditugaskan</span>' : ''}
+                `;
+                
+                memberList.appendChild(memberDiv);
+            });
+            
+            // Event listener untuk checkbox "Pilih semua"
+            document.getElementById('assignAllMembers').onchange = function() {
+                const checkboxes = document.querySelectorAll('.assign-member-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                    const memberItem = checkbox.closest('.assign-member-item');
+                    if (this.checked) {
+                        memberItem.classList.add('selected');
+                    } else {
+                        memberItem.classList.remove('selected');
+                    }
+                });
+            };
+            
+            // Event listener untuk checkbox anggota
+            const checkboxes = document.querySelectorAll('.assign-member-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.onchange = function() {
+                    const memberItem = this.closest('.assign-member-item');
+                    if (this.checked) {
+                        memberItem.classList.add('selected');
+                    } else {
+                        memberItem.classList.remove('selected');
+                    }
+                };
+            });
+            
+            // Event listener untuk tombol konfirmasi
+            document.getElementById('confirmAssignBtn').onclick = confirmAssignment;
+            
+            const modal = new bootstrap.Modal(document.getElementById('assignTaskModal'));
+            modal.show();
+        }
+
+        function confirmAssignment() {
+            if (!currentAssignTaskId) return;
+            
+            const task = tasks.find(t => t.id === currentAssignTaskId);
+            if (!task) return;
+            
+            const selectedMembers = [];
+            const checkboxes = document.querySelectorAll('.assign-member-checkbox:checked');
+            checkboxes.forEach(checkbox => {
+                selectedMembers.push(checkbox.value);
+            });
+            
+            // Simpan anggota sebelumnya untuk log
+            const previousAssignments = task.assignedTo || [];
+            
+            // Update task assignment
+            task.assignedTo = selectedMembers;
+            
+            // Update assignments
+            // Hapus assignments lama untuk tugas ini
+            assignments = assignments.filter(a => a.taskId !== task.id);
+            
+            // Buat assignments baru
+            selectedMembers.forEach(memberName => {
+                const member = members.find(m => m.name === memberName);
+                if (member) {
+                    const assignment = {
+                        id: Date.now() + Math.random(),
+                        taskId: task.id,
+                        taskName: task.name,
+                        memberId: member.id,
+                        memberName: memberName,
+                        assignedBy: currentUser.name,
+                        assignedAt: new Date().toISOString(),
+                        status: 'pending'
+                    };
+                    
+                    assignments.push(assignment);
+                    
+                    // Log assignment
+                    logActivity(ACTIVITY_TYPES.ASSIGNMENT_ADDED,
+                        `Menetapkan tugas "${task.name}" ke ${memberName}`,
+                        {
+                            taskId: task.id,
+                            taskName: task.name,
+                            memberName: memberName,
+                            memberId: member.id
+                        }
+                    );
+                }
+            });
+            
+            // Hapus assignments yang tidak ada lagi
+            const removedAssignments = previousAssignments.filter(name => !selectedMembers.includes(name));
+            removedAssignments.forEach(memberName => {
+                logActivity(ACTIVITY_TYPES.ASSIGNMENT_REMOVED,
+                    `Menghapus penugasan "${task.name}" dari ${memberName}`,
+                    {
+                        taskId: task.id,
+                        taskName: task.name,
+                        memberName: memberName
+                    }
+                );
+            });
+            
+            localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+            localStorage.setItem('tasksmate_assignments', JSON.stringify(assignments));
+            
+            const modal = bootstrap.Modal.getInstance(document.getElementById('assignTaskModal'));
+            modal.hide();
+            
+            loadTasks();
+            updateDashboard();
+            
+            if (selectedMembers.length > 0) {
+                alert(`Tugas berhasil ditetapkan ke ${selectedMembers.length} anggota!`);
+            } else {
+                alert('Penugasan tugas telah dihapus!');
+            }
+            
+            currentAssignTaskId = null;
         }
 
         function updateTaskStatus(taskId, status) {
@@ -1965,7 +2375,12 @@
             if (confirm('Yakin ingin menghapus tugas ini?')) {
                 const task = tasks.find(t => t.id === id);
                 tasks = tasks.filter(t => t.id !== id);
+                
+                // Hapus assignments terkait
+                assignments = assignments.filter(a => a.taskId !== id);
+                
                 localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+                localStorage.setItem('tasksmate_assignments', JSON.stringify(assignments));
                 
                 if (task) {
                     logActivity(ACTIVITY_TYPES.TASK_DELETED, 
@@ -2073,6 +2488,16 @@
                     statusText = 'Selesai';
                 }
                 
+                // Tampilkan anggota yang ditugaskan
+                let assignedMembersHTML = '';
+                if (task.assignedTo && task.assignedTo.length > 0) {
+                    assignedMembersHTML = task.assignedTo.map(name => 
+                        `<span class="task-assignee-badge"><i class="fas fa-user"></i> ${name}</span>`
+                    ).join('');
+                } else {
+                    assignedMembersHTML = '<span class="text-muted">Tidak ada</span>';
+                }
+                
                 tbody.innerHTML += `
                     <tr>
                         <td>${index + 1}</td>
@@ -2086,7 +2511,10 @@
                             ${deadlineDate.toLocaleDateString('id-ID')}
                             ${task.isOverdue ? '<br><small class="badge bg-danger">Terlewat</small>' : ''}
                         </td>
-                        <td>${task.archiveReason}</td>
+                        <td>
+                            <div>${task.archiveReason}</div>
+                            <small>Anggota: ${assignedMembersHTML}</small>
+                        </td>
                         <td>${archiveDate.toLocaleDateString('id-ID')}</td>
                         <td>
                             <div class="btn-group">
@@ -2244,6 +2672,7 @@
             document.getElementById('memberSoftSkills').value = '';
             document.getElementById('memberHardSkills').value = '';
             loadMembers();
+            loadAssignMembersSelect(); // Update select di form tugas
             updateDashboard();
             updateRecipientSelect();
             alert('Anggota berhasil ditambahkan!');
@@ -2336,12 +2765,27 @@
             members = members.filter(m => m.id !== id);
             localStorage.setItem('tasksmate_members', JSON.stringify(members));
             
+            // Hapus dari tugas yang ditugaskan
+            tasks.forEach(task => {
+                if (task.assignedTo && task.assignedTo.includes(member.name)) {
+                    task.assignedTo = task.assignedTo.filter(name => name !== member.name);
+                }
+            });
+            
+            // Hapus assignments terkait
+            assignments = assignments.filter(a => a.memberId !== id);
+            
+            localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+            localStorage.setItem('tasksmate_assignments', JSON.stringify(assignments));
+            
             logActivity(ACTIVITY_TYPES.MEMBER_DELETED, 
                 `Menghapus anggota tim: "${member.name}"`, 
                 { memberId: id, memberName: member.name }
             );
             
             loadMembers();
+            loadAssignMembersSelect();
+            loadTasks();
             updateDashboard();
             updateRecipientSelect();
             alert('Anggota berhasil dihapus!');
@@ -2353,61 +2797,218 @@
                 return;
             }
 
+            const assignType = document.getElementById('autoAssignType').value;
+            
+            if (assignType === 'manual' || assignType === '') {
+                alert('Pilih metode pembagian tugas terlebih dahulu!');
+                return;
+            }
+            
+            // Clear existing assignments
             assignments = [];
-            const memberCount = members.length;
+            
             const activeTasks = tasks.filter(t => !t.isArchived);
             
-            activeTasks.forEach((task, index) => {
-                const memberIndex = index % memberCount;
-                const assignedMember = members[memberIndex];
-                
-                let reason = `${assignedMember.name} ditugaskan untuk "${task.name}" karena memiliki `;
-                if (assignedMember.softSkills.length > 0) {
-                    reason += `soft skills: ${assignedMember.softSkills.join(', ')}`;
-                }
-                if (assignedMember.hardSkills.length > 0) {
-                    if (assignedMember.softSkills.length > 0) reason += ' dan ';
-                    reason += `hard skills: ${assignedMember.hardSkills.join(', ')}`;
-                }
-                if (assignedMember.strength) {
-                    reason += `. Kelebihan: ${assignedMember.strength}`;
-                }
-
-                assignments.push({
-                    id: Date.now() + index,
-                    taskName: task.name,
-                    memberName: assignedMember.name,
-                    reason: reason,
-                    taskId: task.id,
-                    memberId: assignedMember.id
+            if (assignType === 'equal') {
+                // Bagi tugas secara merata ke semua anggota
+                activeTasks.forEach(task => {
+                    task.assignedTo = members.map(m => m.name);
+                    
+                    members.forEach(member => {
+                        const assignment = {
+                            id: Date.now() + Math.random(),
+                            taskId: task.id,
+                            taskName: task.name,
+                            memberId: member.id,
+                            memberName: member.name,
+                            assignedBy: currentUser.name,
+                            assignedAt: new Date().toISOString(),
+                            status: 'pending',
+                            reason: `Ditugaskan secara merata ke semua anggota`
+                        };
+                        
+                        assignments.push(assignment);
+                    });
                 });
-            });
-
+                
+                alert(`✅ ${activeTasks.length} tugas telah dibagi ke semua ${members.length} anggota!`);
+                
+            } else if (assignType === 'skills') {
+                // Bagi tugas berdasarkan skills
+                activeTasks.forEach(task => {
+                    const matchedMembers = [];
+                    members.forEach(member => {
+                        // Cek kategori tugas dan skills anggota
+                        let shouldAssign = false;
+                        let reason = '';
+                        
+                        if (task.category === 'design' && member.hardSkills) {
+                            const designSkills = member.hardSkills.filter(s => 
+                                s.toLowerCase().includes('design') || 
+                                s.toLowerCase().includes('ui') || 
+                                s.toLowerCase().includes('ux') ||
+                                s.toLowerCase().includes('photoshop') ||
+                                s.toLowerCase().includes('figma')
+                            );
+                            if (designSkills.length > 0) {
+                                shouldAssign = true;
+                                reason = `Memiliki skills desain: ${designSkills.join(', ')}`;
+                            }
+                        } else if (task.category === 'development' && member.hardSkills) {
+                            const devSkills = member.hardSkills.filter(s => 
+                                s.toLowerCase().includes('programming') || 
+                                s.toLowerCase().includes('coding') || 
+                                s.toLowerCase().includes('javascript') ||
+                                s.toLowerCase().includes('python') ||
+                                s.toLowerCase().includes('java') ||
+                                s.toLowerCase().includes('web')
+                            );
+                            if (devSkills.length > 0) {
+                                shouldAssign = true;
+                                reason = `Memiliki skills pengembangan: ${devSkills.join(', ')}`;
+                            }
+                        } else if (task.category === 'marketing' && member.hardSkills) {
+                            const marketingSkills = member.hardSkills.filter(s => 
+                                s.toLowerCase().includes('marketing') || 
+                                s.toLowerCase().includes('social media') || 
+                                s.toLowerCase().includes('seo') ||
+                                s.toLowerCase().includes('content')
+                            );
+                            if (marketingSkills.length > 0) {
+                                shouldAssign = true;
+                                reason = `Memiliki skills pemasaran: ${marketingSkills.join(', ')}`;
+                            }
+                        } else if (task.category === 'research' && member.softSkills) {
+                            const researchSkills = member.softSkills.filter(s => 
+                                s.toLowerCase().includes('analytical') || 
+                                s.toLowerCase().includes('research') || 
+                                s.toLowerCase().includes('problem solving')
+                            );
+                            if (researchSkills.length > 0) {
+                                shouldAssign = true;
+                                reason = `Memiliki skills riset: ${researchSkills.join(', ')}`;
+                            }
+                        }
+                        
+                        // Jika tidak ada kategori spesifik atau tidak ada match, assign jika ada kelebihan yang relevan
+                        if (!shouldAssign && member.strength) {
+                            const strength = member.strength.toLowerCase();
+                            const taskName = task.name.toLowerCase();
+                            
+                            if (strength.includes(taskName.split(' ')[0]) || 
+                                taskName.includes(strength.split(' ')[0])) {
+                                shouldAssign = true;
+                                reason = `Memiliki kelebihan: ${member.strength}`;
+                            }
+                        }
+                        
+                        if (shouldAssign) {
+                            matchedMembers.push(member.name);
+                            
+                            const assignment = {
+                                id: Date.now() + Math.random(),
+                                taskId: task.id,
+                                taskName: task.name,
+                                memberId: member.id,
+                                memberName: member.name,
+                                assignedBy: currentUser.name,
+                                assignedAt: new Date().toISOString(),
+                                status: 'pending',
+                                reason: reason
+                            };
+                            
+                            assignments.push(assignment);
+                        }
+                    });
+                    
+                    task.assignedTo = matchedMembers;
+                });
+                
+                alert(`✅ Tugas telah dibagi berdasarkan skills anggota!`);
+                
+            } else if (assignType === 'random') {
+                // Random assignment
+                activeTasks.forEach(task => {
+                    const assignedMembers = [];
+                    const memberCount = Math.max(1, Math.floor(Math.random() * members.length) + 1);
+                    
+                    // Pilih anggota secara random
+                    const shuffledMembers = [...members].sort(() => Math.random() - 0.5);
+                    const selectedMembers = shuffledMembers.slice(0, memberCount);
+                    
+                    selectedMembers.forEach(member => {
+                        assignedMembers.push(member.name);
+                        
+                        const assignment = {
+                            id: Date.now() + Math.random(),
+                            taskId: task.id,
+                            taskName: task.name,
+                            memberId: member.id,
+                            memberName: member.name,
+                            assignedBy: currentUser.name,
+                            assignedAt: new Date().toISOString(),
+                            status: 'pending',
+                            reason: `Ditugaskan secara random`
+                        };
+                        
+                        assignments.push(assignment);
+                    });
+                    
+                    task.assignedTo = assignedMembers;
+                });
+                
+                alert(`✅ Tugas telah dibagi secara random ke anggota!`);
+            }
+            
+            localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
             localStorage.setItem('tasksmate_assignments', JSON.stringify(assignments));
             
             logActivity(ACTIVITY_TYPES.ASSIGNMENT_GENERATED, 
-                `Membuat pembagian tugas untuk ${activeTasks.length} tugas`, 
-                { taskCount: activeTasks.length, memberCount }
+                `Membuat pembagian tugas (metode: ${assignType}) untuk ${activeTasks.length} tugas`, 
+                { taskCount: activeTasks.length, memberCount: members.length, assignType }
             );
             
+            loadTasks();
             loadAssignments();
-            alert('Pembagian tugas berhasil dibuat!');
         }
 
         function loadAssignments() {
             const container = document.getElementById('assignmentsList');
             if (assignments.length === 0) {
-                container.innerHTML = '<p class="text-muted">Belum ada pembagian tugas. Klik tombol "Generate Pembagian Tugas" untuk membuat.</p>';
+                container.innerHTML = '<p class="text-muted">Belum ada pembagian tugas. Pilih metode dan klik "Generate Pembagian Tugas" untuk membuat.</p>';
                 return;
             }
 
-            container.innerHTML = '';
+            // Group assignments by task
+            const assignmentsByTask = {};
             assignments.forEach(assignment => {
+                if (!assignmentsByTask[assignment.taskId]) {
+                    assignmentsByTask[assignment.taskId] = {
+                        taskName: assignment.taskName,
+                        assignments: []
+                    };
+                }
+                assignmentsByTask[assignment.taskId].assignments.push(assignment);
+            });
+
+            container.innerHTML = '';
+            Object.values(assignmentsByTask).forEach(taskAssignment => {
                 container.innerHTML += `
                     <div class="assignment-card">
-                        <h5><i class="fas fa-user-check me-2"></i>${assignment.memberName}</h5>
-                        <h6 class="text-dark">Tugas: ${assignment.taskName}</h6>
-                        <p class="mb-0"><strong>Alasan:</strong> ${assignment.reason}</p>
+                        <h5><i class="fas fa-tasks me-2"></i>${taskAssignment.taskName}</h5>
+                        <p class="mb-2"><strong>Ditugaskan ke:</strong></p>
+                        ${taskAssignment.assignments.map(assignment => `
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-user-circle me-2 text-success"></i>
+                                <div class="flex-grow-1">
+                                    <strong>${assignment.memberName}</strong>
+                                    ${assignment.reason ? `<br><small class="text-muted">${assignment.reason}</small>` : ''}
+                                </div>
+                                <span class="badge bg-${assignment.status === 'completed' ? 'success' : 'warning'}">
+                                    ${assignment.status === 'completed' ? 'Selesai' : 'Pending'}
+                                </span>
+                            </div>
+                        `).join('')}
                     </div>
                 `;
             });
@@ -2495,7 +3096,7 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        // Activity History Functions
+        // Activity History Functions (tetap sama)
         let displayedActivities = 20;
         
         function loadActivities() {
@@ -2599,7 +3200,7 @@
                     } else if (typeFilter === 'member') {
                         return activity.type.includes('member');
                     } else if (typeFilter === 'assignment') {
-                        return activity.type === ACTIVITY_TYPES.ASSIGNMENT_GENERATED;
+                        return activity.type.includes('assignment');
                     } else if (typeFilter === 'chat') {
                         return activity.type === ACTIVITY_TYPES.CHAT_MESSAGE;
                     } else if (typeFilter === 'system') {
@@ -2728,7 +3329,7 @@
                 { entryCount: filteredActivities.length }
             );
             
-            alert(`Berhasil mengexport ${filteredActivities.length} aktivitas!`);
+            alert(`✅ Berhasil mengexport ${filteredActivities.length} aktivitas!`);
         }
         
         function clearActivities() {
@@ -2957,7 +3558,7 @@
             localStorage.setItem('tasksmate_users', JSON.stringify(users));
             
             // Hapus dari members list jika ada
-            const memberIndex = members.findIndex(m => m.email === deletedUser.email);
+            const memberIndex = members.findIndex(m => m.email === deletedUser.email || m.name === deletedUser.name);
             if (memberIndex !== -1) {
                 members.splice(memberIndex, 1);
                 localStorage.setItem('tasksmate_members', JSON.stringify(members));
@@ -3045,7 +3646,7 @@
             }
             
             // Cek apakah user ada di members list
-            const member = members.find(m => m.email === user.email);
+            const member = members.find(m => m.email === user.email || m.name === user.name);
             if (member) {
                 details += `<hr><strong>Data di Tim:</strong><br>`;
                 details += `<strong>Kelebihan:</strong> ${member.strength || '-'}<br>`;
