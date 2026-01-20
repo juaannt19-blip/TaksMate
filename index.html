@@ -27,7 +27,6 @@
 
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
 
-        /* Loading Animation */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -61,7 +60,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Auth Pages */
         .auth-container {
             min-height: 100vh;
             display: flex;
@@ -110,7 +108,6 @@
             box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
         }
 
-        /* Sidebar */
         .sidebar {
             position: fixed;
             left: 0;
@@ -161,7 +158,6 @@
             text-align: center;
         }
 
-        /* Main Content */
         .main-content {
             margin-left: 260px;
             padding: 30px;
@@ -193,7 +189,6 @@
             font-weight: 600;
         }
 
-        /* Tables */
         .table {
             font-family: 'Times New Roman', serif;
         }
@@ -203,7 +198,6 @@
             color: white;
         }
 
-        /* Buttons */
         .btn-success {
             background: #2e7d32;
             border: none;
@@ -218,7 +212,6 @@
             border: none;
         }
 
-        /* Chat Section */
         .chat-container {
             max-height: 500px;
             overflow-y: auto;
@@ -267,7 +260,6 @@
             color: #666;
         }
 
-        /* Badge */
         .skill-badge {
             display: inline-block;
             padding: 5px 10px;
@@ -278,7 +270,6 @@
             font-size: 0.9em;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -310,7 +301,6 @@
             display: none;
         }
 
-        /* Task Assignment Card */
         .assignment-card {
             background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
             border-left: 5px solid #2e7d32;
@@ -324,7 +314,6 @@
             font-weight: 600;
         }
 
-        /* Archive Styles */
         .archive-item {
             background: #f8f9fa;
             border-left: 4px solid #6c757d;
@@ -366,7 +355,6 @@
             margin-bottom: 20px;
         }
 
-        /* Status Badges */
         .status-badge {
             padding: 4px 12px;
             border-radius: 20px;
@@ -389,7 +377,6 @@
             color: #155724;
         }
 
-        /* Priority Badges */
         .priority-low {
             background-color: #d1ecf1;
             color: #0c5460;
@@ -405,7 +392,6 @@
             color: #721c24;
         }
 
-        /* Activity History Styles */
         .activity-timeline {
             position: relative;
             padding-left: 30px;
@@ -1035,4 +1021,2205 @@
                         </div>
                         <div class="col-md-4">
                             <button class="btn btn-danger w-100" onclick="clearArchive()">
-                                <i class="fas fa-trash me-2"></
+                                <i class="fas fa-trash me-2"></i>Kosongkan Arsip
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Arsip berisi <span id="archiveCount">0</span> tugas. Tugas diarsip otomatis ketika terlewat atau bisa diarsip manual.
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Tugas</th>
+                                    <th>Kategori</th>
+                                    <th>Status</th>
+                                    <th>Deadline</th>
+                                    <th>Alasan Arsip</th>
+                                    <th>Tanggal Arsip</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="archivedTasksList"></tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h5><i class="fas fa-chart-bar me-2"></i>Statistik Arsip</h5>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h3 id="overdueCount">0</h3>
+                                        <p class="text-muted">Terlewat</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h3 id="completedCount">0</h3>
+                                        <p class="text-muted">Selesai</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h3 id="thisMonthCount">0</h3>
+                                        <p class="text-muted">Arsip Bulan Ini</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h3 id="oldestArchive">-</h3>
+                                        <p class="text-muted">Arsip Tertua</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Page -->
+            <div id="chatPage" class="page" style="display: none;">
+                <div class="content-card">
+                    <div class="page-header">
+                        <h3><i class="fas fa-comments me-2"></i>Chat Tim</h3>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <select class="form-select" id="messageType" onchange="updateRecipientSelect()">
+                                <option value="public">Pesan Umum</option>
+                                <option value="private">Pesan Pribadi</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <select class="form-select" id="messageRecipient" style="display: none;">
+                                <option value="">Pilih Penerima</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chat-container mb-3" id="chatContainer"></div>
+                    <form onsubmit="sendMessage(event)">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="messageInput" placeholder="Ketik pesan..." required>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-paper-plane"></i> Kirim
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Activity History Page -->
+            <div id="activityPage" class="page" style="display: none;">
+                <div class="content-card">
+                    <div class="page-header">
+                        <h3><i class="fas fa-history me-2"></i>Riwayat Aktivitas</h3>
+                        <p class="text-muted mb-0">Log semua aktivitas dalam tim</p>
+                    </div>
+                    
+                    <!-- Stats Cards -->
+                    <div class="activity-stats">
+                        <div class="stat-card">
+                            <i class="fas fa-clock text-info"></i>
+                            <h4 id="activityToday">0</h4>
+                            <p>Hari Ini</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-tasks text-success"></i>
+                            <h4 id="activityTasks">0</h4>
+                            <p>Aktivitas Tugas</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-users text-warning"></i>
+                            <h4 id="activityMembers">0</h4>
+                            <p>Aktivitas Anggota</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-user text-primary"></i>
+                            <h4 id="activityMy">0</h4>
+                            <p>Aktivitas Saya</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter Section -->
+                    <div class="activity-filter">
+                        <div class="row">
+                            <div class="col-md-3 mb-2">
+                                <select class="form-select" id="activityTypeFilter" onchange="filterActivities()">
+                                    <option value="all">Semua Jenis</option>
+                                    <option value="task">Tugas</option>
+                                    <option value="member">Anggota</option>
+                                    <option value="assignment">Penugasan</option>
+                                    <option value="chat">Chat</option>
+                                    <option value="system">System</option>
+                                    <option value="archive">Arsip</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <select class="form-select" id="activityUserFilter" onchange="filterActivities()">
+                                    <option value="all">Semua User</option>
+                                    <option value="me">Hanya Saya</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <select class="form-select" id="activityTimeFilter" onchange="filterActivities()">
+                                    <option value="all">Semua Waktu</option>
+                                    <option value="today">Hari Ini</option>
+                                    <option value="week">Minggu Ini</option>
+                                    <option value="month">Bulan Ini</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <button class="btn btn-success w-100" onclick="exportActivities()">
+                                    <i class="fas fa-download me-2"></i>Export
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="activitySearch" 
+                                       placeholder="Cari aktivitas..." onkeyup="searchActivities()">
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button class="btn btn-danger" onclick="clearActivities()">
+                                    <i class="fas fa-trash me-2"></i>Hapus Riwayat
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity Timeline -->
+                    <div id="activitiesList" class="activity-timeline"></div>
+                    
+                    <!-- Empty State -->
+                    <div id="emptyActivities" class="text-center py-5" style="display: none;">
+                        <i class="fas fa-history fa-3x mb-3 text-muted"></i>
+                        <h5>Belum ada aktivitas</h5>
+                        <p class="text-muted">Aktivitas akan tercatat di sini</p>
+                    </div>
+                    
+                    <!-- Load More Button -->
+                    <div class="text-center mt-4" id="loadMoreContainer" style="display: none;">
+                        <button class="btn btn-outline-success" onclick="loadMoreActivities()">
+                            <i class="fas fa-arrow-down me-2"></i>Muat Lebih Banyak
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profilePage" class="page" style="display: none;">
+                <div class="content-card">
+                    <div class="page-header">
+                        <h3><i class="fas fa-user me-2"></i>Profil Saya</h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form onsubmit="updateProfile(event)">
+                                <div class="mb-3">
+                                    <label class="form-label">Nama Lengkap</label>
+                                    <input type="text" class="form-control" id="profileName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="profileEmail" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Password Baru (Kosongkan jika tidak ingin mengubah)</label>
+                                    <input type="password" class="form-control" id="profilePassword" minlength="6">
+                                </div>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save me-2"></i>Simpan Perubahan
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Modal -->
+    <div class="modal fade delete-modal" id="adminModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-user-shield me-2"></i>Admin Panel - Kelola Anggota
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Stats Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="stat-card-small">
+                                <i class="fas fa-users text-primary"></i>
+                                <h4 id="adminTotalUsers">0</h4>
+                                <p>Total Anggota</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card-small">
+                                <i class="fas fa-crown text-warning"></i>
+                                <h4 id="adminTotalAdmins">0</h4>
+                                <p>Admin</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card-small">
+                                <i class="fas fa-user-check text-success"></i>
+                                <h4 id="adminActiveUsers">0</h4>
+                                <p>Aktif</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card-small">
+                                <i class="fas fa-clock text-info"></i>
+                                <h4 id="adminInactiveUsers">0</h4>
+                                <p>Nonaktif</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Search and Filters -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id="adminSearch" 
+                                   placeholder="Cari anggota..." onkeyup="filterAdminUsers()">
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select" id="adminFilterRole" onchange="filterAdminUsers()">
+                                <option value="all">Semua Role</option>
+                                <option value="admin">Admin</option>
+                                <option value="member">Anggota</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select" id="adminFilterStatus" onchange="filterAdminUsers()">
+                                <option value="all">Semua Status</option>
+                                <option value="active">Aktif</option>
+                                <option value="inactive">Nonaktif</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Users Table -->
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-hover admin-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nama</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Bergabung</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminUsersTable">
+                                <!-- Data akan dimuat di sini -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Empty State -->
+                    <div id="adminEmptyState" class="text-center py-4" style="display: none;">
+                        <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
+                        <h5>Tidak ada anggota</h5>
+                        <p class="text-muted">Belum ada anggota yang terdaftar</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Tutup
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="exportAdminData()">
+                        <i class="fas fa-download me-2"></i>Export Data
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="clearAllMembers()">
+                        <i class="fas fa-trash-alt me-2"></i>Reset Semua
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Member Modal -->
+    <div class="modal fade delete-modal" id="deleteMemberModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Konfirmasi Penghapusan
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fas fa-user-slash fa-4x text-danger mb-4"></i>
+                    <h4 class="mb-3">Hapus Anggota?</h4>
+                    <p id="deleteMemberName" class="h5"></p>
+                    <p id="deleteMemberEmail" class="text-muted"></p>
+                    
+                    <div class="alert alert-warning mt-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Perhatian!</strong> Tindakan ini akan:
+                        <ul class="mb-0 mt-2">
+                            <li>Menghapus anggota dari tim</li>
+                            <li>Menghapus semua tugas yang ditugaskan</li>
+                            <li>Menghapus semua pesan dari anggota</li>
+                            <li>Membatalkan semua penugasan terkait</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="form-check mt-4 text-start">
+                        <input class="form-check-input" type="checkbox" id="confirmDeleteCheck">
+                        <label class="form-check-label" for="confirmDeleteCheck">
+                            Saya mengerti dan ingin melanjutkan
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Batal
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteMemberBtn" disabled>
+                        <i class="fas fa-trash me-2"></i>Ya, Hapus Permanen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('tasksmate_users')) || [];
+        let tasks = JSON.parse(localStorage.getItem('tasksmate_tasks')) || [];
+        let members = JSON.parse(localStorage.getItem('tasksmate_members')) || [];
+        let messages = JSON.parse(localStorage.getItem('tasksmate_messages')) || [];
+        let assignments = JSON.parse(localStorage.getItem('tasksmate_assignments')) || [];
+        let archivedTasks = JSON.parse(localStorage.getItem('tasksmate_archived_tasks')) || [];
+        let activities = JSON.parse(localStorage.getItem('tasksmate_activities')) || [];
+        
+        // Admin emails
+        let adminEmails = ['admin@tasksmate.com', 'rizqimaulana0406@gmail.com'];
+        
+        // Activity types
+        const ACTIVITY_TYPES = {
+            TASK_CREATED: 'task_created',
+            TASK_UPDATED: 'task_updated',
+            TASK_DELETED: 'task_deleted',
+            TASK_STATUS_CHANGED: 'task_status_changed',
+            TASK_ARCHIVED: 'task_archived',
+            MEMBER_ADDED: 'member_added',
+            MEMBER_DELETED: 'member_deleted',
+            ASSIGNMENT_GENERATED: 'assignment_generated',
+            CHAT_MESSAGE: 'chat_message',
+            SYSTEM: 'system',
+            LOGIN: 'login',
+            LOGOUT: 'logout',
+            PROFILE_UPDATED: 'profile_updated'
+        };
+        
+        // Activity icons
+        const ACTIVITY_ICONS = {
+            task_created: 'fas fa-plus-circle',
+            task_updated: 'fas fa-edit',
+            task_deleted: 'fas fa-trash',
+            task_status_changed: 'fas fa-exchange-alt',
+            task_archived: 'fas fa-archive',
+            member_added: 'fas fa-user-plus',
+            member_deleted: 'fas fa-user-minus',
+            assignment_generated: 'fas fa-magic',
+            chat_message: 'fas fa-comment',
+            system: 'fas fa-cog',
+            login: 'fas fa-sign-in-alt',
+            logout: 'fas fa-sign-out-alt',
+            profile_updated: 'fas fa-user-edit'
+        };
+        
+        // Activity colors
+        const ACTIVITY_COLORS = {
+            task_created: 'success',
+            task_updated: 'info',
+            task_deleted: 'danger',
+            task_status_changed: 'warning',
+            task_archived: 'warning',
+            member_added: 'success',
+            member_deleted: 'danger',
+            assignment_generated: 'success',
+            chat_message: 'info',
+            system: 'system',
+            login: 'success',
+            logout: 'warning',
+            profile_updated: 'info'
+        };
+
+        // Simple hash function
+        function hashPassword(password) {
+            let hash = 0;
+            for (let i = 0; i < password.length; i++) {
+                const char = password.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return hash.toString();
+        }
+
+        // Log activity function
+        function logActivity(type, details, data = null) {
+            const activity = {
+                id: Date.now(),
+                type: type,
+                user: currentUser ? currentUser.name : 'System',
+                userId: currentUser ? currentUser.id : null,
+                details: details,
+                data: data,
+                timestamp: new Date().toISOString(),
+                ipAddress: '127.0.0.1',
+                browser: navigator.userAgent.substring(0, 50)
+            };
+            
+            activities.unshift(activity);
+            localStorage.setItem('tasksmate_activities', JSON.stringify(activities));
+            
+            // Update dashboard if visible
+            updateDashboard();
+        }
+
+        // Check session on load
+        window.onload = function() {
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').classList.add('hidden');
+                checkSession();
+            }, 1000);
+        }
+
+        function checkSession() {
+            const session = localStorage.getItem('tasksmate_session');
+            if (session) {
+                currentUser = JSON.parse(session);
+                showApp();
+                // Log login activity
+                logActivity(ACTIVITY_TYPES.LOGIN, 'User logged in to the system');
+                checkOverdueTasks();
+            } else {
+                showAuth();
+            }
+        }
+
+        function showAuth() {
+            document.getElementById('authContainer').style.display = 'block';
+            document.getElementById('appContainer').style.display = 'none';
+            showLogin();
+        }
+
+        function showApp() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'block';
+            document.getElementById('userWelcome').textContent = `Halo, ${currentUser.name}!`;
+            
+            // Show admin menu if user is admin
+            const adminMenu = document.getElementById('adminMenuButton');
+            if (currentUser.isAdmin || adminEmails.includes(currentUser.email.toLowerCase())) {
+                adminMenu.style.display = 'block';
+            }
+            
+            loadProfileData();
+            updateDashboard();
+            loadTasks();
+            loadMembers();
+            loadMessages();
+            updateRecipientSelect();
+        }
+
+        function showLogin() {
+            document.getElementById('loginForm').style.display = 'flex';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('forgotPasswordForm').style.display = 'none';
+        }
+
+        function showRegister() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'flex';
+            document.getElementById('forgotPasswordForm').style.display = 'none';
+        }
+
+        function showForgotPassword() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('forgotPasswordForm').style.display = 'flex';
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert('Password tidak cocok!');
+                return;
+            }
+
+            if (users.find(u => u.email === email)) {
+                alert('Email sudah terdaftar!');
+                return;
+            }
+
+            const isAdmin = adminEmails.includes(email.toLowerCase());
+            const now = new Date().toISOString();
+
+            const user = {
+                id: Date.now(),
+                name: name,
+                email: email,
+                password: hashPassword(password),
+                isAdmin: isAdmin,
+                isActive: true,
+                lastLogin: now,
+                createdAt: now,
+                role: isAdmin ? 'admin' : 'member',
+                permissions: isAdmin ? ['admin', 'delete', 'edit', 'view'] : ['view'],
+                loginCount: 0
+            };
+
+            users.push(user);
+            localStorage.setItem('tasksmate_users', JSON.stringify(users));
+            
+            logActivity(ACTIVITY_TYPES.MEMBER_ADDED, 
+                `User mendaftar: "${name}" ${isAdmin ? '(sebagai admin)' : ''}`, 
+                { userId: user.id, userName: name, isAdmin: isAdmin }
+            );
+            
+            alert(isAdmin ? '🎉 Registrasi berhasil! Anda terdaftar sebagai Admin.' : '✅ Registrasi berhasil! Silakan login.');
+            showLogin();
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const remember = document.getElementById('rememberMe').checked;
+
+            const user = users.find(u => u.email === email && u.password === hashPassword(password));
+
+            if (user) {
+                // Update user last login
+                user.lastLogin = new Date().toISOString();
+                user.loginCount = (user.loginCount || 0) + 1;
+                user.isActive = true;
+                
+                // Update in users array
+                const userIndex = users.findIndex(u => u.id === user.id);
+                if (userIndex !== -1) {
+                    users[userIndex] = user;
+                    localStorage.setItem('tasksmate_users', JSON.stringify(users));
+                }
+                
+                currentUser = user;
+                if (remember) {
+                    localStorage.setItem('tasksmate_session', JSON.stringify(user));
+                } else {
+                    sessionStorage.setItem('tasksmate_session', JSON.stringify(user));
+                }
+                
+                logActivity(ACTIVITY_TYPES.LOGIN, 'Successful login to the system');
+                showApp();
+            } else {
+                alert('Email atau password salah!');
+            }
+        }
+
+        function handleForgotPassword(e) {
+            e.preventDefault();
+            const email = document.getElementById('forgotEmail').value;
+            const user = users.find(u => u.email === email);
+
+            if (user) {
+                alert('Link reset password telah dikirim ke email Anda! (Simulasi)');
+                showLogin();
+            } else {
+                alert('Email tidak ditemukan!');
+            }
+        }
+
+        function handleLogout() {
+            if (confirm('Yakin ingin keluar?')) {
+                // Set user as inactive
+                if (currentUser) {
+                    const userIndex = users.findIndex(u => u.id === currentUser.id);
+                    if (userIndex !== -1) {
+                        users[userIndex].isActive = false;
+                        localStorage.setItem('tasksmate_users', JSON.stringify(users));
+                    }
+                }
+                
+                logActivity(ACTIVITY_TYPES.LOGOUT, 'User logged out from the system');
+                localStorage.removeItem('tasksmate_session');
+                sessionStorage.removeItem('tasksmate_session');
+                currentUser = null;
+                showAuth();
+            }
+        }
+
+        function loadProfileData() {
+            document.getElementById('profileName').value = currentUser.name;
+            document.getElementById('profileEmail').value = currentUser.email;
+        }
+
+        function updateProfile(e) {
+            e.preventDefault();
+            const name = document.getElementById('profileName').value;
+            const email = document.getElementById('profileEmail').value;
+            const password = document.getElementById('profilePassword').value;
+
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex].name = name;
+                users[userIndex].email = email;
+                if (password) {
+                    users[userIndex].password = hashPassword(password);
+                }
+                currentUser = users[userIndex];
+                localStorage.setItem('tasksmate_users', JSON.stringify(users));
+                localStorage.setItem('tasksmate_session', JSON.stringify(currentUser));
+                
+                logActivity(ACTIVITY_TYPES.PROFILE_UPDATED, 'Updated profile information');
+                
+                document.getElementById('userWelcome').textContent = `Halo, ${currentUser.name}!`;
+                alert('Profil berhasil diperbarui!');
+            }
+        }
+
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            
+            if (page === 'dashboard') {
+                document.getElementById('dashboardPage').style.display = 'block';
+                updateDashboard();
+                document.querySelector('.sidebar-menu a[onclick*="dashboard"]').classList.add('active');
+            } else if (page === 'tasks') {
+                document.getElementById('tasksPage').style.display = 'block';
+                loadTasks();
+                const nextWeek = new Date();
+                nextWeek.setDate(nextWeek.getDate() + 7);
+                document.getElementById('taskDeadline').value = nextWeek.toISOString().split('T')[0];
+                document.querySelector('.sidebar-menu a[onclick*="tasks"]').classList.add('active');
+            } else if (page === 'members') {
+                document.getElementById('membersPage').style.display = 'block';
+                loadMembers();
+                document.querySelector('.sidebar-menu a[onclick*="members"]').classList.add('active');
+            } else if (page === 'assignments') {
+                document.getElementById('assignmentsPage').style.display = 'block';
+                loadAssignments();
+                document.querySelector('.sidebar-menu a[onclick*="assignments"]').classList.add('active');
+            } else if (page === 'archive') {
+                document.getElementById('archivePage').style.display = 'block';
+                loadArchivedTasks();
+                updateArchiveStats();
+                document.querySelector('.sidebar-menu a[onclick*="archive"]').classList.add('active');
+            } else if (page === 'chat') {
+                document.getElementById('chatPage').style.display = 'block';
+                loadMessages();
+                document.querySelector('.sidebar-menu a[onclick*="chat"]').classList.add('active');
+            } else if (page === 'activity') {
+                document.getElementById('activityPage').style.display = 'block';
+                loadActivities();
+                updateActivityStats();
+                document.querySelector('.sidebar-menu a[onclick*="activity"]').classList.add('active');
+            } else if (page === 'profile') {
+                document.getElementById('profilePage').style.display = 'block';
+                loadProfileData();
+                document.querySelector('.sidebar-menu a[onclick*="profile"]').classList.add('active');
+            }
+        }
+
+        function updateDashboard() {
+            const activeTasks = tasks.filter(t => !t.isArchived);
+            const overdueTasks = activeTasks.filter(t => {
+                const today = new Date();
+                const deadline = new Date(t.deadline);
+                return deadline < today;
+            });
+            
+            const completedTasks = activeTasks.filter(t => t.status === 'completed').length;
+            
+            document.getElementById('totalTasks').textContent = activeTasks.length;
+            document.getElementById('overdueTasks').textContent = overdueTasks.length;
+            document.getElementById('archivedCount').textContent = archivedTasks.length;
+            document.getElementById('totalMembers').textContent = members.length;
+            document.getElementById('totalMessages').textContent = messages.length;
+            document.getElementById('totalAssignments').textContent = assignments.length;
+            document.getElementById('completedTasks').textContent = completedTasks;
+            
+            // Update activity count for dashboard
+            const today = new Date().toDateString();
+            const todayActivities = activities.filter(act => 
+                new Date(act.timestamp).toDateString() === today
+            ).length;
+            document.getElementById('todayActivities').textContent = todayActivities;
+            
+            checkOverdueTasks();
+        }
+
+        function addTask(e) {
+            e.preventDefault();
+            const taskName = document.getElementById('taskInput').value;
+            const taskDeadline = document.getElementById('taskDeadline').value;
+            const taskPriority = document.getElementById('taskPriority').value;
+            const taskCategory = document.getElementById('taskCategory').value;
+            
+            const today = new Date().toISOString().split('T')[0];
+            if (taskDeadline < today) {
+                if (!confirm('Deadline sudah lewat. Tetap tambahkan tugas?')) {
+                    return;
+                }
+            }
+            
+            const newTask = {
+                id: Date.now(),
+                name: taskName,
+                deadline: taskDeadline,
+                priority: taskPriority,
+                category: taskCategory || 'uncategorized',
+                status: 'pending',
+                createdBy: currentUser.name,
+                createdAt: new Date().toISOString(),
+                isOverdue: false
+            };
+            
+            tasks.push(newTask);
+            localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+            
+            logActivity(ACTIVITY_TYPES.TASK_CREATED, 
+                `Membuat tugas baru: "${taskName}"`, 
+                { taskId: newTask.id, taskName, deadline: taskDeadline }
+            );
+            
+            document.getElementById('taskInput').value = '';
+            document.getElementById('taskDeadline').value = '';
+            loadTasks();
+            updateDashboard();
+            alert('Tugas berhasil ditambahkan!');
+        }
+
+        function loadTasks() {
+            const tbody = document.getElementById('tasksList');
+            tbody.innerHTML = '';
+            
+            const activeTasks = tasks.filter(task => !task.isArchived);
+            
+            if (activeTasks.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">
+                            <i class="fas fa-tasks fa-2x mb-2"></i><br>
+                            Belum ada tugas. Tambahkan tugas baru!
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            activeTasks.forEach((task, index) => {
+                let priorityClass = 'priority-low';
+                let priorityText = 'Rendah';
+                if (task.priority === 'medium') {
+                    priorityClass = 'priority-medium';
+                    priorityText = 'Sedang';
+                } else if (task.priority === 'high') {
+                    priorityClass = 'priority-high';
+                    priorityText = 'Tinggi';
+                }
+                
+                const today = new Date();
+                const deadline = new Date(task.deadline);
+                const daysLeft = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+                let deadlineStatus = '';
+                let deadlineClass = '';
+                
+                if (daysLeft < 0) {
+                    deadlineStatus = `<span class="badge bg-danger">Terlewat ${Math.abs(daysLeft)} hari</span>`;
+                    deadlineClass = 'text-danger fw-bold';
+                } else if (daysLeft === 0) {
+                    deadlineStatus = '<span class="badge bg-warning text-dark">Hari ini</span>';
+                    deadlineClass = 'text-warning fw-bold';
+                } else if (daysLeft <= 3) {
+                    deadlineStatus = `<span class="badge bg-warning text-dark">${daysLeft} hari lagi</span>`;
+                    deadlineClass = 'text-warning';
+                } else {
+                    deadlineStatus = `<span class="badge bg-success">${daysLeft} hari lagi</span>`;
+                    deadlineClass = 'text-success';
+                }
+                
+                let statusClass = 'status-pending';
+                let statusText = 'Pending';
+                if (task.status === 'in-progress') {
+                    statusClass = 'status-in-progress';
+                    statusText = 'In Progress';
+                } else if (task.status === 'completed') {
+                    statusClass = 'status-completed';
+                    statusText = 'Selesai';
+                }
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>
+                            <strong>${task.name}</strong>
+                            ${task.category ? `<br><small class="text-muted">${task.category}</small>` : ''}
+                        </td>
+                        <td><span class="status-badge ${priorityClass}">${priorityText}</span></td>
+                        <td class="${deadlineClass}">
+                            ${new Date(task.deadline).toLocaleDateString('id-ID')}
+                            <br>${deadlineStatus}
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm" onchange="updateTaskStatus(${task.id}, this.value)">
+                                <option value="pending" ${task.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                <option value="in-progress" ${task.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                                <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>Selesai</option>
+                            </select>
+                        </td>
+                        <td>${task.createdBy}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-info" onclick="editTask(${task.id})" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-warning" onclick="archiveTask(${task.id})" title="Arsipkan">
+                                    <i class="fas fa-archive"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})" title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function updateTaskStatus(taskId, status) {
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex !== -1) {
+                const oldStatus = tasks[taskIndex].status;
+                tasks[taskIndex].status = status;
+                localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+                
+                logActivity(ACTIVITY_TYPES.TASK_STATUS_CHANGED, 
+                    `Mengubah status tugas "${tasks[taskIndex].name}" dari "${oldStatus}" menjadi "${status}"`, 
+                    { taskId, taskName: tasks[taskIndex].name, oldStatus, newStatus: status }
+                );
+                
+                loadTasks();
+                updateDashboard();
+                
+                if (status === 'completed') {
+                    setTimeout(() => {
+                        if (confirm('Tugas telah selesai. Ingin mengarsipkan tugas ini?')) {
+                            archiveTask(taskId, 'completed');
+                        }
+                    }, 500);
+                }
+            }
+        }
+
+        function editTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+            
+            const newName = prompt('Edit nama tugas:', task.name);
+            if (newName && newName.trim() !== '') {
+                task.name = newName.trim();
+                localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+                
+                logActivity(ACTIVITY_TYPES.TASK_UPDATED, 
+                    `Mengedit tugas: "${task.name}"`, 
+                    { taskId, taskName: task.name }
+                );
+                
+                loadTasks();
+                alert('Tugas berhasil diperbarui!');
+            }
+        }
+
+        function deleteTask(id) {
+            if (confirm('Yakin ingin menghapus tugas ini?')) {
+                const task = tasks.find(t => t.id === id);
+                tasks = tasks.filter(t => t.id !== id);
+                localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+                
+                if (task) {
+                    logActivity(ACTIVITY_TYPES.TASK_DELETED, 
+                        `Menghapus tugas: "${task.name}"`, 
+                        { taskId: id, taskName: task.name }
+                    );
+                }
+                
+                loadTasks();
+                updateDashboard();
+            }
+        }
+
+        function checkOverdueTasks() {
+            const today = new Date().toISOString().split('T')[0];
+            let hasChanges = false;
+            
+            tasks.forEach(task => {
+                if (task.deadline < today && !task.isArchived) {
+                    task.isOverdue = true;
+                    const deadlineDate = new Date(task.deadline);
+                    const todayDate = new Date();
+                    const daysOverdue = Math.floor((todayDate - deadlineDate) / (1000 * 60 * 60 * 24));
+                    
+                    if (daysOverdue >= 3) {
+                        archiveTask(task.id, 'auto');
+                        hasChanges = true;
+                    }
+                }
+            });
+            
+            if (hasChanges) {
+                localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+                loadTasks();
+            }
+        }
+
+        function archiveTask(taskId, reason = 'manual') {
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex === -1) return;
+            
+            const task = tasks[taskIndex];
+            const today = new Date();
+            
+            archivedTasks.push({
+                ...task,
+                archivedDate: today.toISOString(),
+                archiveReason: reason === 'auto' ? 'Terlewat otomatis' : 
+                              reason === 'completed' ? 'Tugas selesai' : 'Diarsip manual',
+                archivedBy: currentUser.name
+            });
+            
+            tasks.splice(taskIndex, 1);
+            
+            localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+            localStorage.setItem('tasksmate_archived_tasks', JSON.stringify(archivedTasks));
+            
+            logActivity(ACTIVITY_TYPES.TASK_ARCHIVED, 
+                `Mengarsipkan tugas: "${task.name}" (Alasan: ${reason})`, 
+                { taskId, taskName: task.name, reason }
+            );
+            
+            loadTasks();
+            updateDashboard();
+            alert('Tugas berhasil diarsip!');
+        }
+
+        function loadArchivedTasks(filter = 'all') {
+            const tbody = document.getElementById('archivedTasksList');
+            tbody.innerHTML = '';
+            
+            let filteredTasks = archivedTasks;
+            
+            if (filter === 'overdue') {
+                filteredTasks = archivedTasks.filter(task => task.isOverdue);
+            } else if (filter === 'completed') {
+                filteredTasks = archivedTasks.filter(task => task.status === 'completed');
+            } else if (filter === 'manual') {
+                filteredTasks = archivedTasks.filter(task => task.archiveReason === 'Diarsip manual');
+            }
+            
+            if (filteredTasks.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">
+                            <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                            Tidak ada tugas di arsip.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            filteredTasks.forEach((task, index) => {
+                const archiveDate = new Date(task.archivedDate);
+                const deadlineDate = new Date(task.deadline);
+                
+                let statusClass = 'status-pending';
+                let statusText = 'Pending';
+                if (task.status === 'in-progress') {
+                    statusClass = 'status-in-progress';
+                    statusText = 'In Progress';
+                } else if (task.status === 'completed') {
+                    statusClass = 'status-completed';
+                    statusText = 'Selesai';
+                }
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>
+                            <strong>${task.name}</strong>
+                            <br><small class="text-muted">Oleh: ${task.createdBy}</small>
+                        </td>
+                        <td>${task.category || '-'}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td class="${task.isOverdue ? 'text-danger' : 'text-dark'}">
+                            ${deadlineDate.toLocaleDateString('id-ID')}
+                            ${task.isOverdue ? '<br><small class="badge bg-danger">Terlewat</small>' : ''}
+                        </td>
+                        <td>${task.archiveReason}</td>
+                        <td>${archiveDate.toLocaleDateString('id-ID')}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-success" onclick="restoreFromArchive(${task.id})" title="Kembalikan">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteFromArchive(${task.id})" title="Hapus Permanen">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function restoreFromArchive(taskId) {
+            if (!confirm('Kembalikan tugas ini ke daftar aktif?')) return;
+            
+            const taskIndex = archivedTasks.findIndex(t => t.id === taskId);
+            if (taskIndex === -1) return;
+            
+            const task = archivedTasks[taskIndex];
+            
+            const { archivedDate, archiveReason, archivedBy, ...restoredTask } = task;
+            
+            tasks.push(restoredTask);
+            archivedTasks.splice(taskIndex, 1);
+            
+            localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+            localStorage.setItem('tasksmate_archived_tasks', JSON.stringify(archivedTasks));
+            
+            logActivity(ACTIVITY_TYPES.TASK_UPDATED, 
+                `Mengembalikan tugas dari arsip: "${task.name}"`, 
+                { taskId, taskName: task.name }
+            );
+            
+            loadArchivedTasks();
+            updateDashboard();
+            alert('Tugas berhasil dikembalikan!');
+        }
+
+        function deleteFromArchive(taskId) {
+            if (!confirm('Hapus permanen tugas ini dari arsip?')) return;
+            
+            const task = archivedTasks.find(t => t.id === taskId);
+            archivedTasks = archivedTasks.filter(t => t.id !== taskId);
+            localStorage.setItem('tasksmate_archived_tasks', JSON.stringify(archivedTasks));
+            
+            if (task) {
+                logActivity(ACTIVITY_TYPES.TASK_DELETED, 
+                    `Menghapus permanen tugas dari arsip: "${task.name}"`, 
+                    { taskId, taskName: task.name }
+                );
+            }
+            
+            loadArchivedTasks();
+            updateArchiveStats();
+            alert('Tugas berhasil dihapus permanen!');
+        }
+
+        function filterArchivedTasks() {
+            const filter = document.getElementById('archiveFilter').value;
+            loadArchivedTasks(filter);
+        }
+
+        function searchArchivedTasks() {
+            const searchTerm = document.getElementById('archiveSearch').value.toLowerCase();
+            const tbody = document.getElementById('archivedTasksList');
+            const rows = tbody.getElementsByTagName('tr');
+            
+            for (let row of rows) {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            }
+        }
+
+        function updateArchiveStats() {
+            document.getElementById('archiveCount').textContent = archivedTasks.length;
+            
+            const overdueCount = archivedTasks.filter(t => t.isOverdue).length;
+            document.getElementById('overdueCount').textContent = overdueCount;
+            
+            const completedCount = archivedTasks.filter(t => t.status === 'completed').length;
+            document.getElementById('completedCount').textContent = completedCount;
+            
+            const thisMonth = new Date().getMonth();
+            const thisYear = new Date().getFullYear();
+            const thisMonthCount = archivedTasks.filter(t => {
+                const archiveDate = new Date(t.archivedDate);
+                return archiveDate.getMonth() === thisMonth && archiveDate.getFullYear() === thisYear;
+            }).length;
+            document.getElementById('thisMonthCount').textContent = thisMonthCount;
+            
+            if (archivedTasks.length > 0) {
+                const oldest = archivedTasks.reduce((oldest, current) => {
+                    return new Date(current.archivedDate) < new Date(oldest.archivedDate) ? current : oldest;
+                });
+                const oldestDate = new Date(oldest.archivedDate);
+                document.getElementById('oldestArchive').textContent = oldestDate.toLocaleDateString('id-ID');
+            } else {
+                document.getElementById('oldestArchive').textContent = '-';
+            }
+        }
+
+        function clearArchive() {
+            if (archivedTasks.length === 0) {
+                alert('Arsip sudah kosong!');
+                return;
+            }
+            
+            if (confirm('Yakin ingin mengosongkan semua arsip? Tindakan ini tidak dapat dibatalkan!')) {
+                logActivity(ACTIVITY_TYPES.SYSTEM, 
+                    `Mengosongkan arsip: ${archivedTasks.length} tugas dihapus`, 
+                    { deletedCount: archivedTasks.length }
+                );
+                
+                archivedTasks = [];
+                localStorage.setItem('tasksmate_archived_tasks', JSON.stringify(archivedTasks));
+                loadArchivedTasks();
+                updateArchiveStats();
+                alert('Arsip berhasil dikosongkan!');
+            }
+        }
+
+        function addMember(e) {
+            e.preventDefault();
+            const name = document.getElementById('memberName').value;
+            const strength = document.getElementById('memberStrength').value;
+            const weakness = document.getElementById('memberWeakness').value;
+            const softSkills = document.getElementById('memberSoftSkills').value.split(',').map(s => s.trim()).filter(s => s);
+            const hardSkills = document.getElementById('memberHardSkills').value.split(',').map(s => s.trim()).filter(s => s);
+
+            const newMember = {
+                id: Date.now(),
+                name: name,
+                strength: strength,
+                weakness: weakness,
+                softSkills: softSkills,
+                hardSkills: hardSkills,
+                addedBy: currentUser.name
+            };
+
+            members.push(newMember);
+            localStorage.setItem('tasksmate_members', JSON.stringify(members));
+            
+            logActivity(ACTIVITY_TYPES.MEMBER_ADDED, 
+                `Menambahkan anggota tim baru: "${name}"`, 
+                { memberId: newMember.id, memberName: name }
+            );
+            
+            document.getElementById('memberName').value = '';
+            document.getElementById('memberStrength').value = '';
+            document.getElementById('memberWeakness').value = '';
+            document.getElementById('memberSoftSkills').value = '';
+            document.getElementById('memberHardSkills').value = '';
+            loadMembers();
+            updateDashboard();
+            updateRecipientSelect();
+            alert('Anggota berhasil ditambahkan!');
+        }
+
+        function loadMembers() {
+            const container = document.getElementById('membersList');
+            container.innerHTML = '';
+            
+            // Filter hanya members yang masih aktif (ada di users list)
+            const activeMembers = members.filter(member => {
+                // Cari user dengan nama atau email yang sama
+                const user = users.find(u => 
+                    u.name === member.name || u.email === member.addedBy
+                );
+                return user && user.isActive !== false;
+            });
+            
+            if (activeMembers.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-users fa-3x mb-3"></i>
+                        <h5>Belum ada anggota tim</h5>
+                        <p>Tambahkan anggota tim terlebih dahulu</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            activeMembers.forEach(member => {
+                // Cek status user
+                const user = users.find(u => u.name === member.name);
+                const userStatus = user ? (user.isActive ? 'online' : 'offline') : 'offline';
+                const isUserActive = user && user.isActive;
+                
+                container.innerHTML += `
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title text-success">
+                                <span class="user-status ${userStatus}"></span>
+                                <i class="fas fa-user-circle me-2"></i>${member.name}
+                                ${user && user.isAdmin ? '<span class="badge bg-danger ms-2">Admin</span>' : ''}
+                                <small class="text-muted float-end">
+                                    Ditambahkan oleh: ${member.addedBy}
+                                    ${!isUserActive ? '<span class="badge bg-secondary ms-2">Nonaktif</span>' : ''}
+                                </small>
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Kelebihan:</strong> ${member.strength || '-'}</p>
+                                    <p><strong>Kekurangan:</strong> ${member.weakness || '-'}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Soft Skills:</strong></p>
+                                    ${member.softSkills && member.softSkills.length > 0 ? 
+                                        member.softSkills.map(s => `<span class="skill-badge">${s}</span>`).join('') : '-'}
+                                    <p class="mt-2"><strong>Hard Skills:</strong></p>
+                                    ${member.hardSkills && member.hardSkills.length > 0 ? 
+                                        member.hardSkills.map(s => `<span class="skill-badge">${s}</span>`).join('') : '-'}
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <button class="btn btn-sm btn-danger" onclick="deleteMember(${member.id})" 
+                                        ${!currentUser.isAdmin && !adminEmails.includes(currentUser.email.toLowerCase()) ? 'disabled' : ''}>
+                                    <i class="fas fa-trash"></i> Hapus
+                                </button>
+                                ${!currentUser.isAdmin && !adminEmails.includes(currentUser.email.toLowerCase()) ? 
+                                    '<small class="text-muted ms-2">(Hanya admin yang bisa menghapus)</small>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function deleteMember(id) {
+            if (!confirm('Yakin ingin menghapus anggota ini?')) {
+                return;
+            }
+
+            // Check if user is admin
+            if (!currentUser.isAdmin && !adminEmails.includes(currentUser.email.toLowerCase())) {
+                alert('❌ Hanya admin yang bisa menghapus anggota!');
+                return;
+            }
+
+            const member = members.find(m => m.id === id);
+            if (!member) return;
+
+            members = members.filter(m => m.id !== id);
+            localStorage.setItem('tasksmate_members', JSON.stringify(members));
+            
+            logActivity(ACTIVITY_TYPES.MEMBER_DELETED, 
+                `Menghapus anggota tim: "${member.name}"`, 
+                { memberId: id, memberName: member.name }
+            );
+            
+            loadMembers();
+            updateDashboard();
+            updateRecipientSelect();
+            alert('Anggota berhasil dihapus!');
+        }
+
+        function generateAssignments() {
+            if (tasks.length === 0 || members.length === 0) {
+                alert('Pastikan sudah ada tugas dan anggota tim!');
+                return;
+            }
+
+            assignments = [];
+            const memberCount = members.length;
+            const activeTasks = tasks.filter(t => !t.isArchived);
+            
+            activeTasks.forEach((task, index) => {
+                const memberIndex = index % memberCount;
+                const assignedMember = members[memberIndex];
+                
+                let reason = `${assignedMember.name} ditugaskan untuk "${task.name}" karena memiliki `;
+                if (assignedMember.softSkills.length > 0) {
+                    reason += `soft skills: ${assignedMember.softSkills.join(', ')}`;
+                }
+                if (assignedMember.hardSkills.length > 0) {
+                    if (assignedMember.softSkills.length > 0) reason += ' dan ';
+                    reason += `hard skills: ${assignedMember.hardSkills.join(', ')}`;
+                }
+                if (assignedMember.strength) {
+                    reason += `. Kelebihan: ${assignedMember.strength}`;
+                }
+
+                assignments.push({
+                    id: Date.now() + index,
+                    taskName: task.name,
+                    memberName: assignedMember.name,
+                    reason: reason,
+                    taskId: task.id,
+                    memberId: assignedMember.id
+                });
+            });
+
+            localStorage.setItem('tasksmate_assignments', JSON.stringify(assignments));
+            
+            logActivity(ACTIVITY_TYPES.ASSIGNMENT_GENERATED, 
+                `Membuat pembagian tugas untuk ${activeTasks.length} tugas`, 
+                { taskCount: activeTasks.length, memberCount }
+            );
+            
+            loadAssignments();
+            alert('Pembagian tugas berhasil dibuat!');
+        }
+
+        function loadAssignments() {
+            const container = document.getElementById('assignmentsList');
+            if (assignments.length === 0) {
+                container.innerHTML = '<p class="text-muted">Belum ada pembagian tugas. Klik tombol "Generate Pembagian Tugas" untuk membuat.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            assignments.forEach(assignment => {
+                container.innerHTML += `
+                    <div class="assignment-card">
+                        <h5><i class="fas fa-user-check me-2"></i>${assignment.memberName}</h5>
+                        <h6 class="text-dark">Tugas: ${assignment.taskName}</h6>
+                        <p class="mb-0"><strong>Alasan:</strong> ${assignment.reason}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function updateRecipientSelect() {
+            const messageType = document.getElementById('messageType');
+            const recipientSelect = document.getElementById('messageRecipient');
+            
+            if (messageType.value === 'private') {
+                recipientSelect.style.display = 'block';
+                recipientSelect.innerHTML = '<option value="">Pilih Penerima</option>';
+                members.forEach(member => {
+                    recipientSelect.innerHTML += `<option value="${member.name}">${member.name}</option>`;
+                });
+            } else {
+                recipientSelect.style.display = 'none';
+            }
+        }
+
+        function sendMessage(e) {
+            e.preventDefault();
+            const messageText = document.getElementById('messageInput').value;
+            const messageType = document.getElementById('messageType').value;
+            const recipient = document.getElementById('messageRecipient').value;
+
+            if (messageType === 'private' && !recipient) {
+                alert('Pilih penerima pesan!');
+                return;
+            }
+
+            messages.push({
+                id: Date.now(),
+                sender: currentUser.name,
+                text: messageText,
+                type: messageType,
+                recipient: recipient || 'Semua',
+                timestamp: new Date().toLocaleString('id-ID')
+            });
+
+            localStorage.setItem('tasksmate_messages', JSON.stringify(messages));
+            
+            logActivity(ACTIVITY_TYPES.CHAT_MESSAGE, 
+                `Mengirim pesan ${messageType}`, 
+                { messageType, recipient: recipient || 'all', messageLength: messageText.length }
+            );
+            
+            document.getElementById('messageInput').value = '';
+            loadMessages();
+            updateDashboard();
+        }
+
+        function loadMessages() {
+            const container = document.getElementById('chatContainer');
+            container.innerHTML = '';
+            
+            const relevantMessages = messages.filter(msg => 
+                msg.type === 'public' || 
+                msg.sender === currentUser.name || 
+                msg.recipient === currentUser.name
+            );
+            
+            if (relevantMessages.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-comments fa-3x mb-3"></i>
+                        <p>Belum ada pesan. Mulai percakapan!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            relevantMessages.forEach(msg => {
+                container.innerHTML += `
+                    <div class="message ${msg.type}">
+                        <div class="message-header">
+                            <i class="fas fa-user-circle me-2"></i>${msg.sender} 
+                            ${msg.type === 'private' ? `<i class="fas fa-arrow-right mx-2"></i> ${msg.recipient}` : ''}
+                            <span class="message-time float-end">${msg.timestamp}</span>
+                        </div>
+                        <div>${msg.text}</div>
+                    </div>
+                `;
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Activity History Functions
+        let displayedActivities = 20;
+        
+        function loadActivities() {
+            const container = document.getElementById('activitiesList');
+            const emptyState = document.getElementById('emptyActivities');
+            const loadMoreContainer = document.getElementById('loadMoreContainer');
+            
+            if (activities.length === 0) {
+                container.style.display = 'none';
+                emptyState.style.display = 'block';
+                loadMoreContainer.style.display = 'none';
+                return;
+            }
+            
+            container.style.display = 'block';
+            emptyState.style.display = 'none';
+            
+            const filteredActivities = filterActivityList();
+            const activitiesToShow = filteredActivities.slice(0, displayedActivities);
+            
+            if (filteredActivities.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-search fa-3x mb-3"></i>
+                        <h5>Tidak ada aktivitas yang sesuai filter</h5>
+                        <p>Coba ubah filter pencarian</p>
+                    </div>
+                `;
+                loadMoreContainer.style.display = 'none';
+                return;
+            }
+            
+            container.innerHTML = '';
+            activitiesToShow.forEach(activity => {
+                const activityDate = new Date(activity.timestamp);
+                const icon = ACTIVITY_ICONS[activity.type] || 'fas fa-info-circle';
+                const colorClass = ACTIVITY_COLORS[activity.type] || 'info';
+                
+                let details = '';
+                if (activity.data) {
+                    if (activity.type === ACTIVITY_TYPES.TASK_STATUS_CHANGED) {
+                        details = `Tugas: ${activity.data.taskName}<br>
+                                  Status: ${activity.data.oldStatus} → ${activity.data.newStatus}`;
+                    } else if (activity.data.taskName) {
+                        details = `Tugas: ${activity.data.taskName}`;
+                    } else if (activity.data.memberName) {
+                        details = `Anggota: ${activity.data.memberName}`;
+                    }
+                }
+                
+                container.innerHTML += `
+                    <div class="activity-item ${colorClass}">
+                        <div class="d-flex align-items-center">
+                            <div class="activity-icon">
+                                <i class="${icon}"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <span class="activity-user">${activity.user}</span>
+                                <span class="activity-time">
+                                    <i class="far fa-clock me-1"></i>
+                                    ${activityDate.toLocaleString('id-ID')}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="activity-content">
+                            ${activity.details}
+                        </div>
+                        ${details ? `<div class="activity-details">${details}</div>` : ''}
+                        <div class="activity-actions">
+                            <small class="text-muted">
+                                <i class="fas fa-laptop me-1"></i>${activity.browser}...
+                            </small>
+                            <small class="text-muted ms-auto">
+                                IP: ${activity.ipAddress}
+                            </small>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            if (filteredActivities.length > displayedActivities) {
+                loadMoreContainer.style.display = 'block';
+            } else {
+                loadMoreContainer.style.display = 'none';
+            }
+        }
+        
+        function filterActivityList() {
+            const typeFilter = document.getElementById('activityTypeFilter').value;
+            const userFilter = document.getElementById('activityUserFilter').value;
+            const timeFilter = document.getElementById('activityTimeFilter').value;
+            const searchTerm = document.getElementById('activitySearch').value.toLowerCase();
+            
+            let filtered = activities;
+            
+            // Filter by type
+            if (typeFilter !== 'all') {
+                filtered = filtered.filter(activity => {
+                    if (typeFilter === 'task') {
+                        return activity.type.includes('task');
+                    } else if (typeFilter === 'member') {
+                        return activity.type.includes('member');
+                    } else if (typeFilter === 'assignment') {
+                        return activity.type === ACTIVITY_TYPES.ASSIGNMENT_GENERATED;
+                    } else if (typeFilter === 'chat') {
+                        return activity.type === ACTIVITY_TYPES.CHAT_MESSAGE;
+                    } else if (typeFilter === 'system') {
+                        return activity.type === ACTIVITY_TYPES.SYSTEM;
+                    } else if (typeFilter === 'archive') {
+                        return activity.type === ACTIVITY_TYPES.TASK_ARCHIVED;
+                    }
+                    return activity.type === typeFilter;
+                });
+            }
+            
+            // Filter by user
+            if (userFilter === 'me' && currentUser) {
+                filtered = filtered.filter(activity => activity.userId === currentUser.id);
+            }
+            
+            // Filter by time
+            const now = new Date();
+            if (timeFilter === 'today') {
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                filtered = filtered.filter(activity => 
+                    new Date(activity.timestamp) >= today
+                );
+            } else if (timeFilter === 'week') {
+                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                filtered = filtered.filter(activity => 
+                    new Date(activity.timestamp) >= weekAgo
+                );
+            } else if (timeFilter === 'month') {
+                const monthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+                filtered = filtered.filter(activity => 
+                    new Date(activity.timestamp) >= monthAgo
+                );
+            }
+            
+            // Filter by search term
+            if (searchTerm) {
+                filtered = filtered.filter(activity => 
+                    activity.details.toLowerCase().includes(searchTerm) ||
+                    activity.user.toLowerCase().includes(searchTerm) ||
+                    (activity.data && JSON.stringify(activity.data).toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            return filtered;
+        }
+        
+        function filterActivities() {
+            displayedActivities = 20;
+            loadActivities();
+            updateActivityStats();
+        }
+        
+        function searchActivities() {
+            displayedActivities = 20;
+            loadActivities();
+        }
+        
+        function loadMoreActivities() {
+            displayedActivities += 20;
+            loadActivities();
+        }
+        
+        function updateActivityStats() {
+            const filteredActivities = filterActivityList();
+            const today = new Date().toDateString();
+            
+            // Today's activities
+            const todayActivities = activities.filter(act => 
+                new Date(act.timestamp).toDateString() === today
+            ).length;
+            document.getElementById('activityToday').textContent = todayActivities;
+            
+            // Task activities
+            const taskActivities = activities.filter(act => 
+                act.type.includes('task')
+            ).length;
+            document.getElementById('activityTasks').textContent = taskActivities;
+            
+            // Member activities
+            const memberActivities = activities.filter(act => 
+                act.type.includes('member')
+            ).length;
+            document.getElementById('activityMembers').textContent = memberActivities;
+            
+            // My activities
+            const myActivities = activities.filter(act => 
+                act.userId === currentUser.id
+            ).length;
+            document.getElementById('activityMy').textContent = myActivities;
+        }
+        
+        function exportActivities() {
+            const filteredActivities = filterActivityList();
+            
+            if (filteredActivities.length === 0) {
+                alert('Tidak ada data untuk diexport!');
+                return;
+            }
+            
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Timestamp,User,Activity Type,Details,Additional Data\n";
+            
+            filteredActivities.forEach(activity => {
+                const row = [
+                    new Date(activity.timestamp).toLocaleString('id-ID'),
+                    activity.user,
+                    activity.type,
+                    activity.details,
+                    activity.data ? JSON.stringify(activity.data) : ''
+                ].map(field => `"${field}"`).join(",");
+                
+                csvContent += row + "\n";
+            });
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `activity_log_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            logActivity(ACTIVITY_TYPES.SYSTEM, 
+                `Mengexport log aktivitas: ${filteredActivities.length} entri`, 
+                { entryCount: filteredActivities.length }
+            );
+            
+            alert(`Berhasil mengexport ${filteredActivities.length} aktivitas!`);
+        }
+        
+        function clearActivities() {
+            if (activities.length === 0) {
+                alert('Riwayat aktivitas sudah kosong!');
+                return;
+            }
+            
+            if (confirm('Yakin ingin menghapus semua riwayat aktivitas? Tindakan ini tidak dapat dibatalkan!')) {
+                logActivity(ACTIVITY_TYPES.SYSTEM, 
+                    'Menghapus semua riwayat aktivitas', 
+                    { clearedCount: activities.length }
+                );
+                
+                activities = [];
+                localStorage.setItem('tasksmate_activities', JSON.stringify(activities));
+                
+                loadActivities();
+                updateActivityStats();
+                alert('Riwayat aktivitas berhasil dihapus!');
+            }
+        }
+
+        // =============== ADMIN FUNCTIONS ===============
+        function showAdminPanel() {
+            // Check if user is admin
+            if (!currentUser.isAdmin && !adminEmails.includes(currentUser.email.toLowerCase())) {
+                alert('❌ Akses ditolak! Hanya admin yang bisa mengakses panel ini.');
+                return;
+            }
+            
+            loadAdminPanel();
+            const modal = new bootstrap.Modal(document.getElementById('adminModal'));
+            modal.show();
+        }
+
+        function loadAdminPanel() {
+            const tbody = document.getElementById('adminUsersTable');
+            const emptyState = document.getElementById('adminEmptyState');
+            
+            if (users.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                updateAdminStats();
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            let html = '';
+            users.forEach((user, index) => {
+                const joinDate = new Date(user.createdAt).toLocaleDateString('id-ID');
+                const lastLogin = user.lastLogin ? 
+                    new Date(user.lastLogin).toLocaleString('id-ID') : 'Belum pernah';
+                
+                const isCurrentUser = currentUser && user.id === currentUser.id;
+                const isAdminUser = user.isAdmin || adminEmails.includes(user.email.toLowerCase());
+                
+                html += `
+                    <tr ${isCurrentUser ? 'class="table-info"' : ''}>
+                        <td>${index + 1}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="user-status ${user.isActive ? 'online' : 'offline'}"></span>
+                                <span>${user.name}</span>
+                                ${isCurrentUser ? '<span class="badge bg-info ms-2">Anda</span>' : ''}
+                                ${isAdminUser ? '<span class="badge bg-danger ms-2">Admin</span>' : ''}
+                            </div>
+                        </td>
+                        <td>${user.email}</td>
+                        <td>
+                            ${isAdminUser ? 
+                                '<span class="badge bg-danger">Admin</span>' : 
+                                '<span class="badge bg-secondary">Member</span>'
+                            }
+                        </td>
+                        <td>
+                            ${user.isActive ? 
+                                '<span class="badge bg-success">Aktif</span>' : 
+                                '<span class="badge bg-secondary">Nonaktif</span>'
+                            }
+                            <br>
+                            <small class="last-activity">Login: ${user.loginCount || 0}x</small>
+                        </td>
+                        <td>${joinDate}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                ${!isAdminUser || isCurrentUser ? `
+                                    <button class="btn btn-outline-info" onclick="viewUserDetails(${user.id})" 
+                                            title="Detail" ${isCurrentUser ? 'disabled' : ''}>
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="editUserRole(${user.id})" 
+                                            title="Edit Role" ${isCurrentUser ? 'disabled' : ''}>
+                                        <i class="fas fa-user-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="confirmDeleteUser(${user.id})" 
+                                            title="Hapus" ${isCurrentUser ? 'disabled' : ''}>
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-outline-secondary" disabled title="Admin tidak bisa dihapus">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                `}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+            updateAdminStats();
+        }
+
+        function updateAdminStats() {
+            document.getElementById('adminTotalUsers').textContent = users.length;
+            
+            const adminUsers = users.filter(u => u.isAdmin || adminEmails.includes(u.email.toLowerCase())).length;
+            document.getElementById('adminTotalAdmins').textContent = adminUsers;
+            
+            const activeUsers = users.filter(u => u.isActive).length;
+            document.getElementById('adminActiveUsers').textContent = activeUsers;
+            
+            const inactiveUsers = users.length - activeUsers;
+            document.getElementById('adminInactiveUsers').textContent = inactiveUsers;
+        }
+
+        function filterAdminUsers() {
+            const searchTerm = document.getElementById('adminSearch').value.toLowerCase();
+            const roleFilter = document.getElementById('adminFilterRole').value;
+            const statusFilter = document.getElementById('adminFilterStatus').value;
+            
+            const tbody = document.getElementById('adminUsersTable');
+            const rows = tbody.getElementsByTagName('tr');
+            
+            for (let row of rows) {
+                const cells = row.getElementsByTagName('td');
+                if (cells.length < 6) continue;
+                
+                const name = cells[1].textContent.toLowerCase();
+                const email = cells[2].textContent.toLowerCase();
+                const role = cells[3].textContent.toLowerCase();
+                const status = cells[4].textContent.toLowerCase();
+                
+                let showRow = true;
+                
+                // Filter by search term
+                if (searchTerm && !name.includes(searchTerm) && !email.includes(searchTerm)) {
+                    showRow = false;
+                }
+                
+                // Filter by role
+                if (roleFilter !== 'all') {
+                    if (roleFilter === 'admin' && !role.includes('admin')) {
+                        showRow = false;
+                    } else if (roleFilter === 'member' && role.includes('admin')) {
+                        showRow = false;
+                    }
+                }
+                
+                // Filter by status
+                if (statusFilter !== 'all') {
+                    if (statusFilter === 'active' && !status.includes('aktif')) {
+                        showRow = false;
+                    } else if (statusFilter === 'inactive' && status.includes('aktif')) {
+                        showRow = false;
+                    }
+                }
+                
+                row.style.display = showRow ? '' : 'none';
+            }
+        }
+
+        // Variabel untuk menyimpan user yang akan dihapus
+        let userToDelete = null;
+
+        function confirmDeleteUser(userId) {
+            userToDelete = userId;
+            const user = users.find(u => u.id === userId);
+            
+            if (!user) return;
+            
+            document.getElementById('deleteMemberName').textContent = user.name;
+            document.getElementById('deleteMemberEmail').textContent = user.email;
+            
+            // Reset checkbox
+            document.getElementById('confirmDeleteCheck').checked = false;
+            document.getElementById('confirmDeleteMemberBtn').disabled = true;
+            
+            // Add event listener for checkbox
+            document.getElementById('confirmDeleteCheck').onchange = function() {
+                document.getElementById('confirmDeleteMemberBtn').disabled = !this.checked;
+            };
+            
+            const modal = new bootstrap.Modal(document.getElementById('deleteMemberModal'));
+            modal.show();
+            
+            // Set event listener untuk tombol konfirmasi
+            document.getElementById('confirmDeleteMemberBtn').onclick = deleteUserConfirmed;
+        }
+
+        function deleteUserConfirmed() {
+            if (!userToDelete) return;
+            
+            const user = users.find(u => u.id === userToDelete);
+            
+            // Cek apakah user adalah admin
+            if (user.isAdmin || adminEmails.includes(user.email.toLowerCase())) {
+                alert('❌ Tidak dapat menghapus akun admin!');
+                userToDelete = null;
+                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteMemberModal'));
+                modal.hide();
+                return;
+            }
+            
+            // Hapus user dari array users
+            const userIndex = users.findIndex(u => u.id === userToDelete);
+            if (userIndex === -1) {
+                alert('User tidak ditemukan!');
+                return;
+            }
+            
+            const deletedUser = users[userIndex];
+            users.splice(userIndex, 1);
+            localStorage.setItem('tasksmate_users', JSON.stringify(users));
+            
+            // Hapus dari members list jika ada
+            const memberIndex = members.findIndex(m => m.email === deletedUser.email);
+            if (memberIndex !== -1) {
+                members.splice(memberIndex, 1);
+                localStorage.setItem('tasksmate_members', JSON.stringify(members));
+            }
+            
+            // Hapus tugas yang dibuat oleh user
+            const userTasks = tasks.filter(t => t.createdBy === deletedUser.name);
+            userTasks.forEach(task => {
+                const taskIndex = tasks.findIndex(t => t.id === task.id);
+                if (taskIndex !== -1) {
+                    tasks.splice(taskIndex, 1);
+                }
+            });
+            localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+            
+            // Hapus pesan dari user
+            const userMessages = messages.filter(m => m.sender === deletedUser.name);
+            userMessages.forEach(msg => {
+                const msgIndex = messages.findIndex(m => m.id === msg.id);
+                if (msgIndex !== -1) {
+                    messages.splice(msgIndex, 1);
+                }
+            });
+            localStorage.setItem('tasksmate_messages', JSON.stringify(messages));
+            
+            // Update assignments
+            assignments = assignments.filter(a => a.memberName !== deletedUser.name);
+            localStorage.setItem('tasksmate_assignments', JSON.stringify(assignments));
+            
+            // Log activity
+            logActivity(ACTIVITY_TYPES.MEMBER_DELETED, 
+                `Menghapus user: "${deletedUser.name}" (${deletedUser.email})`, 
+                { 
+                    userId: deletedUser.id, 
+                    userName: deletedUser.name,
+                    tasksDeleted: userTasks.length,
+                    messagesDeleted: userMessages.length
+                }
+            );
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteMemberModal'));
+            modal.hide();
+            
+            // Reload admin panel
+            loadAdminPanel();
+            
+            // Update dashboard dan halaman lainnya
+            updateDashboard();
+            loadTasks();
+            loadMembers();
+            loadMessages();
+            
+            alert(`✅ User "${deletedUser.name}" berhasil dihapus!`);
+            
+            userToDelete = null;
+        }
+
+        function viewUserDetails(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+            
+            const joinDate = new Date(user.createdAt).toLocaleDateString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            const lastLogin = user.lastLogin ? 
+                new Date(user.lastLogin).toLocaleString('id-ID') : 'Belum pernah login';
+            
+            let details = `
+                <strong>Nama:</strong> ${user.name}<br>
+                <strong>Email:</strong> ${user.email}<br>
+                <strong>Role:</strong> ${user.isAdmin ? 'Admin' : 'Member'}<br>
+                <strong>Status:</strong> ${user.isActive ? 'Aktif' : 'Nonaktif'}<br>
+                <strong>Bergabung:</strong> ${joinDate}<br>
+                <strong>Login Terakhir:</strong> ${lastLogin}<br>
+                <strong>Total Login:</strong> ${user.loginCount || 0} kali<br>
+            `;
+            
+            if (user.permissions) {
+                details += `<strong>Permissions:</strong> ${user.permissions.join(', ')}<br>`;
+            }
+            
+            // Cek apakah user ada di members list
+            const member = members.find(m => m.email === user.email);
+            if (member) {
+                details += `<hr><strong>Data di Tim:</strong><br>`;
+                details += `<strong>Kelebihan:</strong> ${member.strength || '-'}<br>`;
+                details += `<strong>Kekurangan:</strong> ${member.weakness || '-'}<br>`;
+                if (member.softSkills && member.softSkills.length > 0) {
+                    details += `<strong>Soft Skills:</strong> ${member.softSkills.join(', ')}<br>`;
+                }
+                if (member.hardSkills && member.hardSkills.length > 0) {
+                    details += `<strong>Hard Skills:</strong> ${member.hardSkills.join(', ')}<br>`;
+                }
+            }
+            
+            alert(`👤 Detail User\n\n${details}`);
+        }
+
+        function editUserRole(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+            
+            // Admin tidak bisa diubah rolenya
+            if (user.isAdmin || adminEmails.includes(user.email)) {
+                alert('❌ Role admin tidak bisa diubah!');
+                return;
+            }
+            
+            const newRole = prompt(`Ubah role untuk ${user.name}\n\nPilih role:\n1. admin\n2. member\n\nMasukkan pilihan (1 atau 2):`);
+            
+            if (newRole === '1' || newRole === 'admin') {
+                user.isAdmin = true;
+                user.role = 'admin';
+                user.permissions = ['admin', 'delete', 'edit', 'view'];
+                alert(`✅ ${user.name} sekarang menjadi Admin!`);
+                
+                logActivity(ACTIVITY_TYPES.SYSTEM, 
+                    `Mengubah role user "${user.name}" menjadi Admin`, 
+                    { userId: user.id, userName: user.name, oldRole: 'member', newRole: 'admin' }
+                );
+            } else if (newRole === '2' || newRole === 'member') {
+                user.isAdmin = false;
+                user.role = 'member';
+                user.permissions = ['view'];
+                alert(`✅ ${user.name} sekarang menjadi Member!`);
+                
+                logActivity(ACTIVITY_TYPES.SYSTEM, 
+                    `Mengubah role user "${user.name}" menjadi Member`, 
+                    { userId: user.id, userName: user.name, oldRole: 'admin', newRole: 'member' }
+                );
+            } else if (newRole) {
+                alert('Pilihan tidak valid!');
+                return;
+            } else {
+                return; // User cancelled
+            }
+            
+            localStorage.setItem('tasksmate_users', JSON.stringify(users));
+            loadAdminPanel();
+        }
+
+        function exportAdminData() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "No,Nama,Email,Role,Status,Bergabung,Login Terakhir,Total Login\n";
+            
+            users.forEach((user, index) => {
+                const row = [
+                    index + 1,
+                    user.name,
+                    user.email,
+                    user.isAdmin ? 'Admin' : 'Member',
+                    user.isActive ? 'Aktif' : 'Nonaktif',
+                    new Date(user.createdAt).toLocaleDateString('id-ID'),
+                    user.lastLogin ? new Date(user.lastLogin).toLocaleDateString('id-ID') : '-',
+                    user.loginCount || 0
+                ].map(field => `"${field}"`).join(",");
+                
+                csvContent += row + "\n";
+            });
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `users_data_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            logActivity(ACTIVITY_TYPES.SYSTEM, 
+                `Mengexport data users: ${users.length} user`, 
+                { exportCount: users.length }
+            );
+            
+            alert(`✅ Berhasil mengexport ${users.length} data user!`);
+        }
+
+        function clearAllMembers() {
+            if (users.length === 0) {
+                alert('Tidak ada data user untuk direset!');
+                return;
+            }
+            
+            if (!confirm('⚠️ PERINGATAN! ⚠️\n\nAnda akan menghapus SEMUA data user kecuali:\n1. Akun Anda sendiri\n2. Akun admin lainnya\n\nYakin ingin melanjutkan?')) {
+                return;
+            }
+            
+            const confirmation = prompt('Ketik "RESET" untuk mengonfirmasi:');
+            if (confirmation !== 'RESET') {
+                alert('Konfirmasi gagal!');
+                return;
+            }
+            
+            // Keep current user and admin users
+            const usersToKeep = users.filter(user => 
+                user.id === currentUser.id || 
+                adminEmails.includes(user.email.toLowerCase())
+            );
+            
+            const deletedCount = users.length - usersToKeep.length;
+            
+            if (deletedCount === 0) {
+                alert('Tidak ada user yang akan dihapus!');
+                return;
+            }
+            
+            // Update users list
+            users = usersToKeep;
+            localStorage.setItem('tasksmate_users', JSON.stringify(users));
+            
+            // Clear members list (except admins)
+            const adminNames = usersToKeep.map(u => u.name);
+            members = members.filter(member => adminNames.includes(member.name));
+            localStorage.setItem('tasksmate_members', JSON.stringify(members));
+            
+            // Clear tasks (keep those created by admins)
+            tasks = tasks.filter(task => adminNames.includes(task.createdBy));
+            localStorage.setItem('tasksmate_tasks', JSON.stringify(tasks));
+            
+            // Clear messages (keep those from admins)
+            messages = messages.filter(msg => adminNames.includes(msg.sender));
+            localStorage.setItem('tasksmate_messages', JSON.stringify(messages));
+            
+            // Clear assignments (keep those for admins)
+            assignments = assignments.filter(assign => adminNames.includes(assign.memberName));
+            localStorage.setItem('tasksmate_assignments', JSON.stringify(assignments));
+            
+            // Clear archived tasks (keep those from admins)
+            archivedTasks = archivedTasks.filter(task => adminNames.includes(task.createdBy));
+            localStorage.setItem('tasksmate_archived_tasks', JSON.stringify(archivedTasks));
+            
+            logActivity(ACTIVITY_TYPES.SYSTEM, 
+                `Reset semua data user: ${deletedCount} user dihapus`, 
+                { deletedUserCount: deletedCount }
+            );
+            
+            loadAdminPanel();
+            updateDashboard();
+            loadTasks();
+            loadMembers();
+            loadMessages();
+            
+            alert(`✅ Reset berhasil! ${deletedCount} user telah dihapus.`);
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Initialize system activity
+        setTimeout(() => {
+            if (currentUser) {
+                logActivity(ACTIVITY_TYPES.SYSTEM, 'Aplikasi dimuat dengan sukses');
+            }
+        }, 1000);
+
+        // Check overdue tasks periodically
+        setInterval(checkOverdueTasks, 300000);
+    </script>
+</body>
+</html>
