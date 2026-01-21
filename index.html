@@ -841,7 +841,7 @@
             margin-top: 2px;
         }
 
-        /* Tabel Members */
+        /* Tabel Members - MODIFIKASI untuk kekurangan */
         #membersTable td {
             vertical-align: middle;
         }
@@ -852,6 +852,18 @@
             margin: 2px;
             background: #e8f5e9;
             color: #2e7d32;
+            border-radius: 10px;
+            font-size: 0.75em;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        #membersTable .weakness-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            margin: 2px;
+            background: #f8d7da;
+            color: #721c24;
             border-radius: 10px;
             font-size: 0.75em;
             white-space: normal;
@@ -881,7 +893,7 @@
                 padding: 3px 6px;
             }
             
-            .skill-badge {
+            .skill-badge, .weakness-badge {
                 font-size: 0.7em;
                 padding: 2px 6px;
                 margin: 1px;
@@ -1277,15 +1289,15 @@
                 </div>
             </div>
 
-            <!-- Members Page (TABLE VERSION) -->
+            <!-- Members Page (TABLE VERSION) dengan MODIFIKASI: Tambah kolom kekurangan, hapus kolom role -->
             <div id="membersPage" class="page" style="display: none;">
                 <div class="content-card">
                     <div class="page-header">
                         <h3><i class="fas fa-users me-2"></i>Anggota Tim</h3>
-                        <p class="text-muted mb-0">Kelola anggota tim dan keterampilan mereka</p>
+                        <p class="text-muted mb-0">Kelola anggota tim, kelebihan, kekurangan, dan keterampilan mereka</p>
                     </div>
                     
-                    <!-- Form Tambah Anggota -->
+                    <!-- Form Tambah Anggota dengan MODIFIKASI: Tambah input kekurangan -->
                     <form onsubmit="addMember(event)" class="mb-4">
                         <div class="row">
                             <div class="col-md-4 mb-2">
@@ -1305,10 +1317,18 @@
                                 <input type="text" class="form-control" id="memberStrength" placeholder="Kelebihan Utama">
                             </div>
                             <div class="col-md-4 mb-2">
-                                <input type="text" class="form-control" id="memberSoftSkills" placeholder="Soft Skills (pisahkan koma)">
+                                <input type="text" class="form-control" id="memberWeakness" placeholder="Kekurangan (pisahkan koma)">
                             </div>
                             <div class="col-md-4 mb-2">
+                                <input type="text" class="form-control" id="memberSoftSkills" placeholder="Soft Skills (pisahkan koma)">
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-4 mb-2">
                                 <input type="text" class="form-control" id="memberHardSkills" placeholder="Hard Skills (pisahkan koma)">
+                            </div>
+                            <div class="col-md-8 mb-2">
+                                <textarea class="form-control" id="memberNotes" placeholder="Catatan tambahan..." rows="2"></textarea>
                             </div>
                         </div>
                     </form>
@@ -1337,9 +1357,9 @@
                         </div>
                         <div class="col-md-3">
                             <div class="stat-card-small">
-                                <i class="fas fa-crown text-warning"></i>
-                                <h4 id="adminMembersCount">0</h4>
-                                <p>Admin</p>
+                                <i class="fas fa-star text-warning"></i>
+                                <h4 id="strengthCount">0</h4>
+                                <p>Memiliki Kelebihan</p>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -1351,14 +1371,14 @@
                         </div>
                         <div class="col-md-3">
                             <div class="stat-card-small">
-                                <i class="fas fa-star text-info"></i>
+                                <i class="fas fa-chart-pie text-info"></i>
                                 <h4 id="avgSkillsCount">0</h4>
                                 <p>Rata-rata Skills</p>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Tabel Anggota -->
+                    <!-- Tabel Anggota dengan MODIFIKASI: Tambah kolom kekurangan, hapus kolom role -->
                     <div class="table-responsive">
                         <table class="table table-hover" id="membersTable">
                             <thead>
@@ -1366,9 +1386,10 @@
                                     <th>#</th>
                                     <th>Nama Lengkap</th>
                                     <th>Email</th>
+                                    <th>Kelebihan</th>
+                                    <th>Kekurangan</th>
                                     <th>Skills</th>
                                     <th>Tugas Aktif</th>
-                                    <th>Role</th>
                                     <th>Ditambahkan</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -2102,9 +2123,10 @@
                     email: email,
                     position: '',
                     strength: '',
-                    weakness: '',
+                    weakness: [],
                     softSkills: [],
                     hardSkills: [],
+                    notes: '',
                     addedBy: 'System',
                     createdAt: now
                 };
@@ -3129,13 +3151,16 @@
             }
         }
 
+        // MODIFIED: Fungsi addMember dengan tambahan kolom kekurangan
         function addMember(e) {
             e.preventDefault();
             const name = document.getElementById('memberName').value;
             const email = document.getElementById('memberEmail').value;
             const strength = document.getElementById('memberStrength').value;
+            const weakness = document.getElementById('memberWeakness').value.split(',').map(s => s.trim()).filter(s => s);
             const softSkills = document.getElementById('memberSoftSkills').value.split(',').map(s => s.trim()).filter(s => s);
             const hardSkills = document.getElementById('memberHardSkills').value.split(',').map(s => s.trim()).filter(s => s);
+            const notes = document.getElementById('memberNotes').value;
 
             const newMember = {
                 id: Date.now(),
@@ -3143,9 +3168,10 @@
                 email: email,
                 position: '',
                 strength: strength,
-                weakness: '',
+                weakness: weakness,
                 softSkills: softSkills,
                 hardSkills: hardSkills,
+                notes: notes,
                 addedBy: currentUser.name,
                 createdAt: new Date().toISOString()
             };
@@ -3162,8 +3188,10 @@
             document.getElementById('memberName').value = '';
             document.getElementById('memberEmail').value = '';
             document.getElementById('memberStrength').value = '';
+            document.getElementById('memberWeakness').value = '';
             document.getElementById('memberSoftSkills').value = '';
             document.getElementById('memberHardSkills').value = '';
+            document.getElementById('memberNotes').value = '';
             
             loadMembersTable();
             loadAssignMembersSelect();
@@ -3172,6 +3200,7 @@
             alert('Anggota berhasil ditambahkan!');
         }
 
+        // MODIFIED: Fungsi loadMembersTable dengan tambahan kolom kekurangan dan hapus kolom role
         function loadMembersTable() {
             const tbody = document.getElementById('membersTableBody');
             const emptyState = document.getElementById('membersEmptyState');
@@ -3188,12 +3217,21 @@
             let html = '';
             members.forEach((member, index) => {
                 const user = users.find(u => u.name === member.name || u.email === member.email);
-                const isAdmin = user ? (user.isAdmin || adminEmails.includes(user.email?.toLowerCase())) : false;
                 
                 // Hitung tugas aktif
                 const activeTasks = assignments.filter(a => a.memberId === member.id && 
                     tasks.find(t => t.id === a.taskId && !t.isArchived));
                 const taskCount = activeTasks.length;
+                
+                // Format kelebihan
+                const strengthHTML = member.strength ? 
+                    `<span class="badge bg-success">${member.strength}</span>` : 
+                    '<small class="text-muted">Belum ada</small>';
+                
+                // Format kekurangan
+                const weaknessHTML = member.weakness && member.weakness.length > 0 ? 
+                    member.weakness.map(w => `<span class="weakness-badge">${w}</span>`).join('') : 
+                    '<small class="text-muted">Belum ada</small>';
                 
                 // Format skills
                 const softSkills = member.softSkills && member.softSkills.length > 0 ? 
@@ -3215,9 +3253,10 @@
                         <td>
                             <strong>${member.name}</strong>
                             <div><small class="text-muted">ID: ${member.id}</small></div>
-                            ${member.strength ? `<br><small class="text-success"><i class="fas fa-star me-1"></i>${member.strength}</small>` : ''}
                         </td>
                         <td>${email}</td>
+                        <td>${strengthHTML}</td>
+                        <td>${weaknessHTML}</td>
                         <td>
                             <div class="mb-1">
                                 <small class="text-muted d-block">Soft Skills:</small>
@@ -3241,15 +3280,8 @@
                             ` : ''}
                         </td>
                         <td>
-                            ${isAdmin ? 
-                                '<span class="badge bg-danger">Admin</span>' : 
-                                '<span class="badge bg-secondary">Member</span>'
-                            }
-                            <br>
-                            <small class="text-muted">Oleh: ${member.addedBy || 'System'}</small>
-                        </td>
-                        <td>
                             <small>${member.createdAt ? new Date(member.createdAt).toLocaleDateString('id-ID') : '-'}</small>
+                            <br><small class="text-muted">Oleh: ${member.addedBy || 'System'}</small>
                         </td>
                         <td>
                             <div class="btn-group">
@@ -3275,14 +3307,12 @@
             filterMembersTable();
         }
 
+        // MODIFIED: Fungsi updateMembersStats dengan statistik kelebihan
         function updateMembersStats() {
             document.getElementById('totalMembersCount').textContent = members.length;
             
-            const adminCount = members.filter(member => {
-                const user = users.find(u => u.name === member.name);
-                return user ? (user.isAdmin || adminEmails.includes(user.email?.toLowerCase())) : false;
-            }).length;
-            document.getElementById('adminMembersCount').textContent = adminCount;
+            const strengthCount = members.filter(member => member.strength && member.strength.trim() !== '').length;
+            document.getElementById('strengthCount').textContent = strengthCount;
             
             const totalActiveTasks = members.reduce((total, member) => {
                 const memberTasks = assignments.filter(a => a.memberId === member.id && 
@@ -3306,15 +3336,18 @@
             
             for (let row of rows) {
                 const cells = row.getElementsByTagName('td');
-                if (cells.length < 8) continue;
+                if (cells.length < 9) continue;
                 
                 const name = cells[1].textContent.toLowerCase();
                 const email = cells[2].textContent.toLowerCase();
+                const strength = cells[3].textContent.toLowerCase();
+                const weakness = cells[4].textContent.toLowerCase();
                 
                 let showRow = true;
                 
-                // Search filter hanya berdasarkan nama
-                if (searchTerm && !name.includes(searchTerm) && !email.includes(searchTerm)) {
+                // Search filter berdasarkan nama, email, kelebihan, dan kekurangan
+                if (searchTerm && !name.includes(searchTerm) && !email.includes(searchTerm) && 
+                    !strength.includes(searchTerm) && !weakness.includes(searchTerm)) {
                     showRow = false;
                 }
                 
@@ -3322,6 +3355,7 @@
             }
         }
 
+        // MODIFIED: Fungsi viewMemberDetails dengan informasi kekurangan
         function viewMemberDetails(memberId) {
             const member = members.find(m => m.id === memberId);
             if (!member) return;
@@ -3349,7 +3383,10 @@
                         <p><strong>Tanggal ditambahkan:</strong> ${member.createdAt ? new Date(member.createdAt).toLocaleDateString('id-ID') : '-'}</p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Soft Skills:</strong></p>
+                        <p><strong>Kekurangan:</strong></p>
+                        ${member.weakness && member.weakness.length > 0 ? 
+                            member.weakness.map(w => `<span class="badge bg-warning me-1 mb-1">${w}</span>`).join('') : '-'}
+                        <p class="mt-2"><strong>Soft Skills:</strong></p>
                         ${member.softSkills && member.softSkills.length > 0 ? 
                             member.softSkills.map(s => `<span class="badge bg-info me-1 mb-1">${s}</span>`).join('') : '-'}
                         <p class="mt-2"><strong>Hard Skills:</strong></p>
@@ -3357,6 +3394,11 @@
                             member.hardSkills.map(s => `<span class="badge bg-success me-1 mb-1">${s}</span>`).join('') : '-'}
                     </div>
                 </div>
+                ${member.notes ? `
+                    <hr>
+                    <p><strong>Catatan:</strong></p>
+                    <p>${member.notes}</p>
+                ` : ''}
                 <hr>
                 <p><strong>Tugas yang ditugaskan:</strong> ${assignedTasks.length}</p>
                 ${assignedTasks.length > 0 ? 
@@ -3431,6 +3473,7 @@
             });
         }
 
+        // MODIFIED: Fungsi editMember dengan tambahan input kekurangan
         function editMember(memberId) {
             const member = members.find(m => m.id === memberId);
             if (!member) return;
@@ -3450,6 +3493,12 @@
                 member.strength = newStrength.trim();
             }
             
+            const currentWeakness = member.weakness ? member.weakness.join(', ') : '';
+            const newWeakness = prompt('Edit kekurangan (pisahkan dengan koma):', currentWeakness);
+            if (newWeakness !== null) {
+                member.weakness = newWeakness.split(',').map(s => s.trim()).filter(s => s);
+            }
+            
             const currentSoftSkills = member.softSkills ? member.softSkills.join(', ') : '';
             const newSoftSkills = prompt('Edit soft skills (pisahkan dengan koma):', currentSoftSkills);
             if (newSoftSkills !== null) {
@@ -3460,6 +3509,11 @@
             const newHardSkills = prompt('Edit hard skills (pisahkan dengan koma):', currentHardSkills);
             if (newHardSkills !== null) {
                 member.hardSkills = newHardSkills.split(',').map(s => s.trim()).filter(s => s);
+            }
+            
+            let newNotes = prompt('Edit catatan tambahan:', member.notes || '');
+            if (newNotes !== null) {
+                member.notes = newNotes.trim();
             }
             
             member.updatedAt = new Date().toISOString();
@@ -3479,6 +3533,7 @@
             alert('Data anggota berhasil diperbarui!');
         }
 
+        // MODIFIED: Fungsi exportMembersData dengan tambahan kolom kekurangan
         function exportMembersData() {
             if (members.length === 0) {
                 alert('Tidak ada data anggota untuk diexport!');
@@ -3486,11 +3541,10 @@
             }
             
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "No,Nama,Email,Kelebihan,Soft Skills,Hard Skills,Tugas Aktif,Role,Ditambahkan Oleh,Tanggal Dibuat\n";
+            csvContent += "No,Nama,Email,Kelebihan,Kekurangan,Soft Skills,Hard Skills,Tugas Aktif,Ditambahkan Oleh,Tanggal Dibuat,Catatan\n";
             
             members.forEach((member, index) => {
                 const user = users.find(u => u.name === member.name);
-                const isAdmin = user ? (user.isAdmin || adminEmails.includes(user.email?.toLowerCase())) : false;
                 
                 const activeTasks = assignments.filter(a => a.memberId === member.id && 
                     tasks.find(t => t.id === a.taskId && !t.isArchived)).length;
@@ -3500,12 +3554,13 @@
                     member.name,
                     member.email || '',
                     member.strength || '',
+                    member.weakness ? member.weakness.join('; ') : '',
                     member.softSkills ? member.softSkills.join('; ') : '',
                     member.hardSkills ? member.hardSkills.join('; ') : '',
                     activeTasks,
-                    isAdmin ? 'Admin' : 'Member',
                     member.addedBy || 'System',
-                    member.createdAt ? new Date(member.createdAt).toLocaleDateString('id-ID') : ''
+                    member.createdAt ? new Date(member.createdAt).toLocaleDateString('id-ID') : '',
+                    member.notes || ''
                 ].map(field => `"${field}"`).join(",");
                 
                 csvContent += row + "\n";
@@ -4390,8 +4445,10 @@
             if (member) {
                 details += `<hr><strong>Data di Tim:</strong><br>`;
                 details += `<strong>Kelebihan:</strong> ${member.strength || '-'}<br>`;
+                details += `<strong>Kekurangan:</strong> ${member.weakness ? member.weakness.join(', ') : '-'}<br>`;
                 details += `<strong>Soft Skills:</strong> ${member.softSkills ? member.softSkills.join(', ') : '-'}<br>`;
                 details += `<strong>Hard Skills:</strong> ${member.hardSkills ? member.hardSkills.join(', ') : '-'}<br>`;
+                details += `<strong>Catatan:</strong> ${member.notes || '-'}<br>`;
             }
             
             alert(`👤 Detail User\n\n${details}`);
