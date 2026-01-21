@@ -1304,25 +1304,17 @@
                             </div>
                         </div>
                         <div class="row mt-2">
-                            <div class="col-md-4 mb-2">
-                                <input type="text" class="form-control" id="memberKelebihan1" placeholder="Kelebihan 1">
+                            <div class="col-md-3 mb-2">
+                                <input type="text" class="form-control" id="memberStrength" placeholder="Kelebihan Utama">
                             </div>
-                            <div class="col-md-4 mb-2">
-                                <input type="text" class="form-control" id="memberKelebihan2" placeholder="Kelebihan 2">
+                            <div class="col-md-3 mb-2">
+                                <input type="text" class="form-control" id="memberWeakness" placeholder="Area Pengembangan">
                             </div>
-                            <div class="col-md-4 mb-2">
-                                <input type="text" class="form-control" id="memberKelebihan3" placeholder="Kelebihan 3">
+                            <div class="col-md-3 mb-2">
+                                <input type="text" class="form-control" id="memberSoftSkills" placeholder="Soft Skills (pisahkan koma)">
                             </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-md-4 mb-2">
-                                <input type="text" class="form-control" id="memberKekurangan1" placeholder="Kekurangan 1">
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <input type="text" class="form-control" id="memberKekurangan2" placeholder="Kekurangan 2">
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <input type="text" class="form-control" id="memberKekurangan3" placeholder="Kekurangan 3">
+                            <div class="col-md-3 mb-2">
+                                <input type="text" class="form-control" id="memberHardSkills" placeholder="Hard Skills (pisahkan koma)">
                             </div>
                         </div>
                     </form>
@@ -1398,8 +1390,8 @@
                                     <th>Nama Lengkap</th>
                                     <th>Email</th>
                                     <th>Posisi</th>
-                                    <th>Kelebihan</th>
-                                    <th>Kekurangan</th>
+                                    <th>Skills</th>
+                                    <th>Kelebihan/Kekurangan</th>
                                     <th>Tugas Aktif</th>
                                     <th>Role</th>
                                     <th>Ditambahkan</th>
@@ -2134,8 +2126,10 @@
                     name: name,
                     email: email,
                     position: '',
-                    kelebihan: [],
-                    kekurangan: [],
+                    strength: '',
+                    weakness: '',
+                    softSkills: [],
+                    hardSkills: [],
                     addedBy: 'System',
                     createdAt: now
                 };
@@ -3165,36 +3159,20 @@
             const name = document.getElementById('memberName').value;
             const email = document.getElementById('memberEmail').value;
             const position = document.getElementById('memberPosition').value;
-            
-            // Ambil kelebihan dari 3 input
-            const kelebihan1 = document.getElementById('memberKelebihan1').value.trim();
-            const kelebihan2 = document.getElementById('memberKelebihan2').value.trim();
-            const kelebihan3 = document.getElementById('memberKelebihan3').value.trim();
-            
-            // Ambil kekurangan dari 3 input
-            const kekurangan1 = document.getElementById('memberKekurangan1').value.trim();
-            const kekurangan2 = document.getElementById('memberKekurangan2').value.trim();
-            const kekurangan3 = document.getElementById('memberKekurangan3').value.trim();
-            
-            // Gabungkan kelebihan menjadi array
-            const kelebihan = [];
-            if (kelebihan1) kelebihan.push(kelebihan1);
-            if (kelebihan2) kelebihan.push(kelebihan2);
-            if (kelebihan3) kelebihan.push(kelebihan3);
-            
-            // Gabungkan kekurangan menjadi array
-            const kekurangan = [];
-            if (kekurangan1) kekurangan.push(kekurangan1);
-            if (kekurangan2) kekurangan.push(kekurangan2);
-            if (kekurangan3) kekurangan.push(kekurangan3);
+            const strength = document.getElementById('memberStrength').value;
+            const weakness = document.getElementById('memberWeakness').value;
+            const softSkills = document.getElementById('memberSoftSkills').value.split(',').map(s => s.trim()).filter(s => s);
+            const hardSkills = document.getElementById('memberHardSkills').value.split(',').map(s => s.trim()).filter(s => s);
 
             const newMember = {
                 id: Date.now(),
                 name: name,
                 email: email,
                 position: position,
-                kelebihan: kelebihan,
-                kekurangan: kekurangan,
+                strength: strength,
+                weakness: weakness,
+                softSkills: softSkills,
+                hardSkills: hardSkills,
                 addedBy: currentUser.name,
                 createdAt: new Date().toISOString()
             };
@@ -3211,12 +3189,10 @@
             document.getElementById('memberName').value = '';
             document.getElementById('memberEmail').value = '';
             document.getElementById('memberPosition').value = '';
-            document.getElementById('memberKelebihan1').value = '';
-            document.getElementById('memberKelebihan2').value = '';
-            document.getElementById('memberKelebihan3').value = '';
-            document.getElementById('memberKekurangan1').value = '';
-            document.getElementById('memberKekurangan2').value = '';
-            document.getElementById('memberKekurangan3').value = '';
+            document.getElementById('memberStrength').value = '';
+            document.getElementById('memberWeakness').value = '';
+            document.getElementById('memberSoftSkills').value = '';
+            document.getElementById('memberHardSkills').value = '';
             
             loadMembersTable();
             loadAssignMembersSelect();
@@ -3248,17 +3224,25 @@
                     tasks.find(t => t.id === a.taskId && !t.isArchived));
                 const taskCount = activeTasks.length;
                 
-                // Format kelebihan
-                const kelebihanHTML = member.kelebihan && member.kelebihan.length > 0 ? 
-                    member.kelebihan.map(s => `<span class="skill-badge">${s}</span>`).join('') : 
+                // Format skills
+                const softSkills = member.softSkills && member.softSkills.length > 0 ? 
+                    member.softSkills.map(s => `<span class="skill-badge">${s}</span>`).join('') : 
                     '<small class="text-muted">Belum ada</small>';
                 
-                // Format kekurangan
-                const kekuranganHTML = member.kekurangan && member.kekurangan.length > 0 ? 
-                    member.kekurangan.map(s => `<span class="skill-badge">${s}</span>`).join('') : 
+                const hardSkills = member.hardSkills && member.hardSkills.length > 0 ? 
+                    member.hardSkills.map(s => `<span class="skill-badge">${s}</span>`).join('') : 
                     '<small class="text-muted">Belum ada</small>';
                 
-                const totalSkills = (member.kelebihan?.length || 0) + (member.kekurangan?.length || 0);
+                const totalSkills = (member.softSkills?.length || 0) + (member.hardSkills?.length || 0);
+                
+                // Kelebihan dan kekurangan
+                const strengths = member.strength ? 
+                    `<span class="badge bg-success me-1">${member.strength}</span>` : 
+                    '<small class="text-muted">-</small>';
+                
+                const weaknesses = member.weakness ? 
+                    `<span class="badge bg-warning me-1">${member.weakness}</span>` : 
+                    '<small class="text-muted">-</small>';
                 
                 // Format email
                 const email = member.email || '-';
@@ -3274,16 +3258,24 @@
                         <td>${member.position || '-'}</td>
                         <td>
                             <div class="mb-1">
-                                <small class="text-muted d-block">Kelebihan:</small>
-                                <div>${kelebihanHTML}</div>
+                                <small class="text-muted d-block">Soft Skills:</small>
+                                <div>${softSkills}</div>
                             </div>
+                            <div>
+                                <small class="text-muted d-block">Hard Skills:</small>
+                                <div>${hardSkills}</div>
+                            </div>
+                            <small class="text-muted">Total: ${totalSkills} skills</small>
                         </td>
                         <td>
                             <div class="mb-1">
-                                <small class="text-muted d-block">Kekurangan:</small>
-                                <div>${kekuranganHTML}</div>
+                                <small class="text-muted d-block">Kelebihan:</small>
+                                ${strengths}
                             </div>
-                            <small class="text-muted">Total: ${totalSkills} items</small>
+                            <div>
+                                <small class="text-muted d-block">Kekurangan:</small>
+                                ${weaknesses}
+                            </div>
                         </td>
                         <td>
                             <span class="badge ${taskCount > 0 ? 'bg-info' : 'bg-secondary'}">
@@ -3349,7 +3341,7 @@
             
             const avgSkills = members.length > 0 ? 
                 Math.round(members.reduce((total, member) => {
-                    return total + (member.kelebihan?.length || 0) + (member.kekurangan?.length || 0);
+                    return total + (member.softSkills?.length || 0) + (member.hardSkills?.length || 0);
                 }, 0) / members.length) : 0;
             document.getElementById('avgSkillsCount').textContent = avgSkills;
         }
@@ -3368,7 +3360,7 @@
                 
                 const name = cells[1].textContent.toLowerCase();
                 const email = cells[2].textContent.toLowerCase();
-                const skills = cells[4].textContent.toLowerCase() + ' ' + cells[5].textContent.toLowerCase();
+                const skills = cells[4].textContent.toLowerCase();
                 const role = cells[7].textContent.toLowerCase();
                 
                 let showRow = true;
@@ -3410,20 +3402,6 @@
                 })
                 .filter(name => name);
             
-            let kelebihanHTML = '';
-            if (member.kelebihan && member.kelebihan.length > 0) {
-                kelebihanHTML = member.kelebihan.map(k => `<li>${k}</li>`).join('');
-            } else {
-                kelebihanHTML = '<li class="text-muted">Tidak ada</li>';
-            }
-            
-            let kekuranganHTML = '';
-            if (member.kekurangan && member.kekurangan.length > 0) {
-                kekuranganHTML = member.kekurangan.map(k => `<li>${k}</li>`).join('');
-            } else {
-                kekuranganHTML = '<li class="text-muted">Tidak ada</li>';
-            }
-            
             const details = `
                 <strong>Detail Anggota Tim</strong>
                 <hr>
@@ -3437,10 +3415,14 @@
                         <p><strong>Tanggal ditambahkan:</strong> ${member.createdAt ? new Date(member.createdAt).toLocaleDateString('id-ID') : '-'}</p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Kelebihan:</strong></p>
-                        <ul>${kelebihanHTML}</ul>
-                        <p><strong>Kekurangan:</strong></p>
-                        <ul>${kekuranganHTML}</ul>
+                        <p><strong>Kelebihan:</strong> ${member.strength || '-'}</p>
+                        <p><strong>Kekurangan:</strong> ${member.weakness || '-'}</p>
+                        <p><strong>Soft Skills:</strong></p>
+                        ${member.softSkills && member.softSkills.length > 0 ? 
+                            member.softSkills.map(s => `<span class="badge bg-info me-1 mb-1">${s}</span>`).join('') : '-'}
+                        <p class="mt-2"><strong>Hard Skills:</strong></p>
+                        ${member.hardSkills && member.hardSkills.length > 0 ? 
+                            member.hardSkills.map(s => `<span class="badge bg-success me-1 mb-1">${s}</span>`).join('') : '-'}
                     </div>
                 </div>
                 <hr>
@@ -3536,18 +3518,26 @@
                 member.position = newPosition.trim();
             }
             
-            // Edit kelebihan
-            const currentKelebihan = member.kelebihan ? member.kelebihan.join(', ') : '';
-            const newKelebihan = prompt('Edit kelebihan (pisahkan dengan koma):', currentKelebihan);
-            if (newKelebihan !== null) {
-                member.kelebihan = newKelebihan.split(',').map(s => s.trim()).filter(s => s);
+            let newStrength = prompt('Edit kelebihan:', member.strength || '');
+            if (newStrength !== null) {
+                member.strength = newStrength.trim();
             }
             
-            // Edit kekurangan
-            const currentKekurangan = member.kekurangan ? member.kekurangan.join(', ') : '';
-            const newKekurangan = prompt('Edit kekurangan (pisahkan dengan koma):', currentKekurangan);
-            if (newKekurangan !== null) {
-                member.kekurangan = newKekurangan.split(',').map(s => s.trim()).filter(s => s);
+            let newWeakness = prompt('Edit kekurangan:', member.weakness || '');
+            if (newWeakness !== null) {
+                member.weakness = newWeakness.trim();
+            }
+            
+            const currentSoftSkills = member.softSkills ? member.softSkills.join(', ') : '';
+            const newSoftSkills = prompt('Edit soft skills (pisahkan dengan koma):', currentSoftSkills);
+            if (newSoftSkills !== null) {
+                member.softSkills = newSoftSkills.split(',').map(s => s.trim()).filter(s => s);
+            }
+            
+            const currentHardSkills = member.hardSkills ? member.hardSkills.join(', ') : '';
+            const newHardSkills = prompt('Edit hard skills (pisahkan dengan koma):', currentHardSkills);
+            if (newHardSkills !== null) {
+                member.hardSkills = newHardSkills.split(',').map(s => s.trim()).filter(s => s);
             }
             
             member.updatedAt = new Date().toISOString();
@@ -3574,7 +3564,7 @@
             }
             
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "No,Nama,Email,Posisi,Kelebihan,Kekurangan,Tugas Aktif,Role,Ditambahkan Oleh,Tanggal Dibuat\n";
+            csvContent += "No,Nama,Email,Posisi,Kelebihan,Kekurangan,Soft Skills,Hard Skills,Tugas Aktif,Role,Ditambahkan Oleh,Tanggal Dibuat\n";
             
             members.forEach((member, index) => {
                 const user = users.find(u => u.name === member.name);
@@ -3583,16 +3573,15 @@
                 const activeTasks = assignments.filter(a => a.memberId === member.id && 
                     tasks.find(t => t.id === a.taskId && !t.isArchived)).length;
                 
-                const kelebihanStr = member.kelebihan ? member.kelebihan.join('; ') : '';
-                const kekuranganStr = member.kekurangan ? member.kekurangan.join('; ') : '';
-                
                 const row = [
                     index + 1,
                     member.name,
                     member.email || '',
                     member.position || '',
-                    kelebihanStr,
-                    kekuranganStr,
+                    member.strength || '',
+                    member.weakness || '',
+                    member.softSkills ? member.softSkills.join('; ') : '',
+                    member.hardSkills ? member.hardSkills.join('; ') : '',
                     activeTasks,
                     isAdmin ? 'Admin' : 'Member',
                     member.addedBy || 'System',
@@ -3705,45 +3694,62 @@
                         let shouldAssign = false;
                         let reason = '';
                         
-                        // Cek berdasarkan kelebihan
-                        if (member.kelebihan && member.kelebihan.length > 0) {
-                            member.kelebihan.forEach(kelebihan => {
-                                const lowerKelebihan = kelebihan.toLowerCase();
-                                const lowerTaskName = task.name.toLowerCase();
-                                const lowerCategory = task.category ? task.category.toLowerCase() : '';
-                                
-                                if (lowerKelebihan.includes('design') && 
-                                    (lowerTaskName.includes('design') || lowerCategory.includes('design'))) {
-                                    shouldAssign = true;
-                                    reason = `Memiliki kelebihan desain: ${kelebihan}`;
-                                } else if (lowerKelebihan.includes('programming') || lowerKelebihan.includes('coding') || 
-                                          lowerKelebihan.includes('develop') && 
-                                          (lowerTaskName.includes('programming') || lowerTaskName.includes('coding') || 
-                                           lowerTaskName.includes('develop') || lowerCategory.includes('development'))) {
-                                    shouldAssign = true;
-                                    reason = `Memiliki kelebihan pengembangan: ${kelebihan}`;
-                                } else if (lowerKelebihan.includes('marketing') || lowerKelebihan.includes('sales') && 
-                                          (lowerTaskName.includes('marketing') || lowerTaskName.includes('sales') || 
-                                           lowerCategory.includes('marketing'))) {
-                                    shouldAssign = true;
-                                    reason = `Memiliki kelebihan pemasaran: ${kelebihan}`;
-                                } else if (lowerKelebihan.includes('research') || lowerKelebihan.includes('analytical') && 
-                                          (lowerTaskName.includes('research') || lowerTaskName.includes('analytical') || 
-                                           lowerCategory.includes('research'))) {
-                                    shouldAssign = true;
-                                    reason = `Memiliki kelebihan riset: ${kelebihan}`;
-                                }
-                            });
+                        if (task.category === 'design' && member.hardSkills) {
+                            const designSkills = member.hardSkills.filter(s => 
+                                s.toLowerCase().includes('design') || 
+                                s.toLowerCase().includes('ui') || 
+                                s.toLowerCase().includes('ux') ||
+                                s.toLowerCase().includes('photoshop') ||
+                                s.toLowerCase().includes('figma')
+                            );
+                            if (designSkills.length > 0) {
+                                shouldAssign = true;
+                                reason = `Memiliki skills desain: ${designSkills.join(', ')}`;
+                            }
+                        } else if (task.category === 'development' && member.hardSkills) {
+                            const devSkills = member.hardSkills.filter(s => 
+                                s.toLowerCase().includes('programming') || 
+                                s.toLowerCase().includes('coding') || 
+                                s.toLowerCase().includes('javascript') ||
+                                s.toLowerCase().includes('python') ||
+                                s.toLowerCase().includes('java') ||
+                                s.toLowerCase().includes('web')
+                            );
+                            if (devSkills.length > 0) {
+                                shouldAssign = true;
+                                reason = `Memiliki skills pengembangan: ${devSkills.join(', ')}`;
+                            }
+                        } else if (task.category === 'marketing' && member.hardSkills) {
+                            const marketingSkills = member.hardSkills.filter(s => 
+                                s.toLowerCase().includes('marketing') || 
+                                s.toLowerCase().includes('social media') || 
+                                s.toLowerCase().includes('seo') ||
+                                s.toLowerCase().includes('content')
+                            );
+                            if (marketingSkills.length > 0) {
+                                shouldAssign = true;
+                                reason = `Memiliki skills pemasaran: ${marketingSkills.join(', ')}`;
+                            }
+                        } else if (task.category === 'research' && member.softSkills) {
+                            const researchSkills = member.softSkills.filter(s => 
+                                s.toLowerCase().includes('analytical') || 
+                                s.toLowerCase().includes('research') || 
+                                s.toLowerCase().includes('problem solving')
+                            );
+                            if (researchSkills.length > 0) {
+                                shouldAssign = true;
+                                reason = `Memiliki skills riset: ${researchSkills.join(', ')}`;
+                            }
                         }
                         
-                        if (!shouldAssign && member.kelebihan && member.kelebihan.length > 0) {
-                            const firstKelebihan = member.kelebihan[0].toLowerCase();
+                        if (!shouldAssign && member.strength) {
+                            const strength = member.strength.toLowerCase();
                             const taskName = task.name.toLowerCase();
                             
-                            if (firstKelebihan.includes(taskName.split(' ')[0]) || 
-                                taskName.includes(firstKelebihan.split(' ')[0])) {
+                            if (strength.includes(taskName.split(' ')[0]) || 
+                                taskName.includes(strength.split(' ')[0])) {
                                 shouldAssign = true;
-                                reason = `Memiliki kelebihan terkait: ${member.kelebihan[0]}`;
+                                reason = `Memiliki kelebihan: ${member.strength}`;
                             }
                         }
                         
@@ -3769,7 +3775,7 @@
                     task.assignedTo = matchedMembers;
                 });
                 
-                alert(`✅ Tugas telah dibagi berdasarkan kelebihan anggota!`);
+                alert(`✅ Tugas telah dibagi berdasarkan skills anggota!`);
                 
             } else if (assignType === 'random') {
                 activeTasks.forEach(task => {
@@ -4463,11 +4469,13 @@
             const member = members.find(m => m.email === user.email || m.name === user.name);
             if (member) {
                 details += `<hr><strong>Data di Tim:</strong><br>`;
-                if (member.kelebihan && member.kelebihan.length > 0) {
-                    details += `<strong>Kelebihan:</strong> ${member.kelebihan.join(', ')}<br>`;
+                details += `<strong>Kelebihan:</strong> ${member.strength || '-'}<br>`;
+                details += `<strong>Kekurangan:</strong> ${member.weakness || '-'}<br>`;
+                if (member.softSkills && member.softSkills.length > 0) {
+                    details += `<strong>Soft Skills:</strong> ${member.softSkills.join(', ')}<br>`;
                 }
-                if (member.kekurangan && member.kekurangan.length > 0) {
-                    details += `<strong>Kekurangan:</strong> ${member.kekurangan.join(', ')}<br>`;
+                if (member.hardSkills && member.hardSkills.length > 0) {
+                    details += `<strong>Hard Skills:</strong> ${member.hardSkills.join(', ')}<br>`;
                 }
             }
             
