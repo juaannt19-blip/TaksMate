@@ -119,6 +119,8 @@
             padding: 20px 0;
             z-index: 1000;
             transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
         }
 
         .sidebar-header {
@@ -130,6 +132,8 @@
         .sidebar-menu {
             list-style: none;
             padding: 0;
+            flex: 1;
+            overflow-y: auto;
         }
 
         .sidebar-menu li {
@@ -294,6 +298,10 @@
                 border: none;
                 padding: 10px 15px;
                 border-radius: 5px;
+            }
+            
+            .sidebar-logout {
+                display: none;
             }
         }
 
@@ -879,6 +887,82 @@
                 margin: 1px;
             }
         }
+        
+        /* =============== SIDEBAR LOGOUT STYLES =============== */
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 2px solid #e8f5e9;
+            margin-top: auto;
+            background: white;
+        }
+        
+        .sidebar-logout {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 12px 20px;
+            background: #f8f9fa;
+            border: none;
+            color: #dc3545;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-align: left;
+        }
+        
+        .sidebar-logout:hover {
+            background: #dc3545;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        }
+        
+        .sidebar-logout i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+        
+        .user-info-sidebar {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin: 20px;
+            border-left: 4px solid #2e7d32;
+        }
+        
+        .user-info-sidebar h6 {
+            color: #2e7d32;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .user-info-sidebar p {
+            font-size: 0.9em;
+            color: #666;
+            margin: 0;
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-menu-btn {
+                display: none;
+            }
+            
+            .sidebar-logout {
+                display: flex;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar-footer {
+                display: none;
+            }
+            
+            .user-info-sidebar {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -995,6 +1079,14 @@
                 <h4 class="app-name mb-1">TaksMate</h4>
                 <small class="text-muted" id="userWelcome">Selamat datang!</small>
             </div>
+            
+            <!-- User Info Section -->
+            <div class="user-info-sidebar" id="userInfoSidebar">
+                <h6 id="sidebarUserName">Nama Pengguna</h6>
+                <p id="sidebarUserEmail">email@contoh.com</p>
+                <p id="sidebarUserRole"><small>Role: Member</small></p>
+            </div>
+            
             <ul class="sidebar-menu">
                 <li><a href="#" class="active" onclick="showPage('dashboard')"><i class="fas fa-home"></i> Dashboard</a></li>
                 <li><a href="#" onclick="showPage('tasks')"><i class="fas fa-tasks"></i> Daftar Tugas</a></li>
@@ -1008,8 +1100,16 @@
                 <li><a href="#" onclick="showAdminPanel()" id="adminMenuButton" style="display: none;">
                     <i class="fas fa-user-shield"></i> Admin Panel
                 </a></li>
-                <li><a href="#" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Keluar</a></li>
+                <!-- Logout item untuk mobile -->
+                <li class="mobile-logout-item"><a href="#" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Keluar</a></li>
             </ul>
+            
+            <!-- Footer dengan Logout Button untuk Desktop -->
+            <div class="sidebar-footer">
+                <button class="sidebar-logout" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Keluar dari Akun
+                </button>
+            </div>
         </div>
 
         <!-- Main Content -->
@@ -1947,6 +2047,11 @@
             document.getElementById('appContainer').style.display = 'block';
             document.getElementById('userWelcome').textContent = `Halo, ${currentUser.name}!`;
             
+            // Update sidebar user info
+            document.getElementById('sidebarUserName').textContent = currentUser.name;
+            document.getElementById('sidebarUserEmail').textContent = currentUser.email;
+            document.getElementById('sidebarUserRole').innerHTML = `<small>Role: ${currentUser.isAdmin ? 'Admin' : 'Member'}</small>`;
+            
             const adminMenu = document.getElementById('adminMenuButton');
             if (currentUser.isAdmin || adminEmails.includes(currentUser.email.toLowerCase())) {
                 adminMenu.style.display = 'block';
@@ -2089,7 +2194,7 @@
         }
 
         function handleLogout() {
-            if (confirm('Yakin ingin keluar?')) {
+            if (confirm('Yakin ingin keluar dari akun Anda?')) {
                 if (currentUser) {
                     const userIndex = users.findIndex(u => u.id === currentUser.id);
                     if (userIndex !== -1) {
@@ -2128,9 +2233,13 @@
                 localStorage.setItem('tasksmate_users', JSON.stringify(users));
                 localStorage.setItem('tasksmate_session', JSON.stringify(currentUser));
                 
+                // Update sidebar info
+                document.getElementById('sidebarUserName').textContent = currentUser.name;
+                document.getElementById('sidebarUserEmail').textContent = currentUser.email;
+                document.getElementById('userWelcome').textContent = `Halo, ${currentUser.name}!`;
+                
                 logActivity(ACTIVITY_TYPES.PROFILE_UPDATED, 'Updated profile information');
                 
-                document.getElementById('userWelcome').textContent = `Halo, ${currentUser.name}!`;
                 alert('Profil berhasil diperbarui!');
             }
         }
