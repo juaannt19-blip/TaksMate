@@ -1288,32 +1288,26 @@
                     <!-- Form Tambah Anggota -->
                     <form onsubmit="addMember(event)" class="mb-4">
                         <div class="row">
-                            <div class="col-md-3 mb-2">
+                            <div class="col-md-4 mb-2">
                                 <input type="text" class="form-control" id="memberName" placeholder="Nama Lengkap" required>
                             </div>
-                            <div class="col-md-3 mb-2">
+                            <div class="col-md-4 mb-2">
                                 <input type="email" class="form-control" id="memberEmail" placeholder="Email">
                             </div>
-                            <div class="col-md-3 mb-2">
-                                <input type="text" class="form-control" id="memberPosition" placeholder="Posisi/Jabatan">
-                            </div>
-                            <div class="col-md-3 mb-2">
+                            <div class="col-md-4 mb-2">
                                 <button type="submit" class="btn btn-success w-100">
                                     <i class="fas fa-user-plus me-2"></i>Tambah Anggota
                                 </button>
                             </div>
                         </div>
                         <div class="row mt-2">
-                            <div class="col-md-3 mb-2">
+                            <div class="col-md-4 mb-2">
                                 <input type="text" class="form-control" id="memberStrength" placeholder="Kelebihan Utama">
                             </div>
-                            <div class="col-md-3 mb-2">
-                                <input type="text" class="form-control" id="memberWeakness" placeholder="Area Pengembangan">
-                            </div>
-                            <div class="col-md-3 mb-2">
+                            <div class="col-md-4 mb-2">
                                 <input type="text" class="form-control" id="memberSoftSkills" placeholder="Soft Skills (pisahkan koma)">
                             </div>
-                            <div class="col-md-3 mb-2">
+                            <div class="col-md-4 mb-2">
                                 <input type="text" class="form-control" id="memberHardSkills" placeholder="Hard Skills (pisahkan koma)">
                             </div>
                         </div>
@@ -1321,28 +1315,11 @@
                     
                     <!-- Filter dan Search -->
                     <div class="row mb-3">
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <input type="text" class="form-control" id="memberSearch" 
-                                   placeholder="Cari nama atau skills..." onkeyup="filterMembersTable()">
+                                   placeholder="Cari nama..." onkeyup="filterMembersTable()">
                         </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="memberSkillFilter" onchange="filterMembersTable()">
-                                <option value="all">Semua Skills</option>
-                                <option value="design">Design</option>
-                                <option value="development">Development</option>
-                                <option value="marketing">Marketing</option>
-                                <option value="research">Research</option>
-                                <option value="leadership">Leadership</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="memberRoleFilter" onchange="filterMembersTable()">
-                                <option value="all">Semua Role</option>
-                                <option value="admin">Admin</option>
-                                <option value="member">Member</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <button class="btn btn-outline-success w-100" onclick="exportMembersData()">
                                 <i class="fas fa-download me-2"></i>Export Data
                             </button>
@@ -1389,9 +1366,7 @@
                                     <th>#</th>
                                     <th>Nama Lengkap</th>
                                     <th>Email</th>
-                                    <th>Posisi</th>
                                     <th>Skills</th>
-                                    <th>Kelebihan/Kekurangan</th>
                                     <th>Tugas Aktif</th>
                                     <th>Role</th>
                                     <th>Ditambahkan</th>
@@ -3158,9 +3133,7 @@
             e.preventDefault();
             const name = document.getElementById('memberName').value;
             const email = document.getElementById('memberEmail').value;
-            const position = document.getElementById('memberPosition').value;
             const strength = document.getElementById('memberStrength').value;
-            const weakness = document.getElementById('memberWeakness').value;
             const softSkills = document.getElementById('memberSoftSkills').value.split(',').map(s => s.trim()).filter(s => s);
             const hardSkills = document.getElementById('memberHardSkills').value.split(',').map(s => s.trim()).filter(s => s);
 
@@ -3168,9 +3141,9 @@
                 id: Date.now(),
                 name: name,
                 email: email,
-                position: position,
+                position: '',
                 strength: strength,
-                weakness: weakness,
+                weakness: '',
                 softSkills: softSkills,
                 hardSkills: hardSkills,
                 addedBy: currentUser.name,
@@ -3181,16 +3154,14 @@
             localStorage.setItem('tasksmate_members', JSON.stringify(members));
             
             logActivity(ACTIVITY_TYPES.MEMBER_ADDED, 
-                `Menambahkan anggota tim baru: "${name}" (${position})`, 
-                { memberId: newMember.id, memberName: name, position: position }
+                `Menambahkan anggota tim baru: "${name}"`, 
+                { memberId: newMember.id, memberName: name }
             );
             
             // Reset form
             document.getElementById('memberName').value = '';
             document.getElementById('memberEmail').value = '';
-            document.getElementById('memberPosition').value = '';
             document.getElementById('memberStrength').value = '';
-            document.getElementById('memberWeakness').value = '';
             document.getElementById('memberSoftSkills').value = '';
             document.getElementById('memberHardSkills').value = '';
             
@@ -3235,15 +3206,6 @@
                 
                 const totalSkills = (member.softSkills?.length || 0) + (member.hardSkills?.length || 0);
                 
-                // Kelebihan dan kekurangan
-                const strengths = member.strength ? 
-                    `<span class="badge bg-success me-1">${member.strength}</span>` : 
-                    '<small class="text-muted">-</small>';
-                
-                const weaknesses = member.weakness ? 
-                    `<span class="badge bg-warning me-1">${member.weakness}</span>` : 
-                    '<small class="text-muted">-</small>';
-                
                 // Format email
                 const email = member.email || '-';
                 
@@ -3253,9 +3215,9 @@
                         <td>
                             <strong>${member.name}</strong>
                             <div><small class="text-muted">ID: ${member.id}</small></div>
+                            ${member.strength ? `<br><small class="text-success"><i class="fas fa-star me-1"></i>${member.strength}</small>` : ''}
                         </td>
                         <td>${email}</td>
-                        <td>${member.position || '-'}</td>
                         <td>
                             <div class="mb-1">
                                 <small class="text-muted d-block">Soft Skills:</small>
@@ -3266,16 +3228,6 @@
                                 <div>${hardSkills}</div>
                             </div>
                             <small class="text-muted">Total: ${totalSkills} skills</small>
-                        </td>
-                        <td>
-                            <div class="mb-1">
-                                <small class="text-muted d-block">Kelebihan:</small>
-                                ${strengths}
-                            </div>
-                            <div>
-                                <small class="text-muted d-block">Kekurangan:</small>
-                                ${weaknesses}
-                            </div>
                         </td>
                         <td>
                             <span class="badge ${taskCount > 0 ? 'bg-info' : 'bg-secondary'}">
@@ -3320,7 +3272,7 @@
             
             tbody.innerHTML = html;
             updateMembersStats();
-            filterMembersTable(); // Terapkan filter jika ada
+            filterMembersTable();
         }
 
         function updateMembersStats() {
@@ -3348,40 +3300,22 @@
 
         function filterMembersTable() {
             const searchTerm = document.getElementById('memberSearch').value.toLowerCase();
-            const skillFilter = document.getElementById('memberSkillFilter').value;
-            const roleFilter = document.getElementById('memberRoleFilter').value;
             
             const tbody = document.getElementById('membersTableBody');
             const rows = tbody.getElementsByTagName('tr');
             
             for (let row of rows) {
                 const cells = row.getElementsByTagName('td');
-                if (cells.length < 10) continue;
+                if (cells.length < 8) continue;
                 
                 const name = cells[1].textContent.toLowerCase();
                 const email = cells[2].textContent.toLowerCase();
-                const skills = cells[4].textContent.toLowerCase();
-                const role = cells[7].textContent.toLowerCase();
                 
                 let showRow = true;
                 
-                // Search filter
-                if (searchTerm && !name.includes(searchTerm) && !email.includes(searchTerm) && !skills.includes(searchTerm)) {
+                // Search filter hanya berdasarkan nama
+                if (searchTerm && !name.includes(searchTerm) && !email.includes(searchTerm)) {
                     showRow = false;
-                }
-                
-                // Skill filter
-                if (skillFilter !== 'all' && !skills.includes(skillFilter)) {
-                    showRow = false;
-                }
-                
-                // Role filter
-                if (roleFilter !== 'all') {
-                    if (roleFilter === 'admin' && !role.includes('admin')) {
-                        showRow = false;
-                    } else if (roleFilter === 'member' && role.includes('admin')) {
-                        showRow = false;
-                    }
                 }
                 
                 row.style.display = showRow ? '' : 'none';
@@ -3409,14 +3343,12 @@
                     <div class="col-md-6">
                         <p><strong>Nama:</strong> ${member.name}</p>
                         <p><strong>Email:</strong> ${member.email || '-'}</p>
-                        <p><strong>Posisi:</strong> ${member.position || '-'}</p>
                         <p><strong>Role:</strong> ${isAdmin ? 'Admin' : 'Member'}</p>
+                        <p><strong>Kelebihan:</strong> ${member.strength || '-'}</p>
                         <p><strong>Ditambahkan oleh:</strong> ${member.addedBy || 'System'}</p>
                         <p><strong>Tanggal ditambahkan:</strong> ${member.createdAt ? new Date(member.createdAt).toLocaleDateString('id-ID') : '-'}</p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Kelebihan:</strong> ${member.strength || '-'}</p>
-                        <p><strong>Kekurangan:</strong> ${member.weakness || '-'}</p>
                         <p><strong>Soft Skills:</strong></p>
                         ${member.softSkills && member.softSkills.length > 0 ? 
                             member.softSkills.map(s => `<span class="badge bg-info me-1 mb-1">${s}</span>`).join('') : '-'}
@@ -3513,19 +3445,9 @@
                 member.email = newEmail.trim();
             }
             
-            let newPosition = prompt('Edit posisi:', member.position || '');
-            if (newPosition !== null) {
-                member.position = newPosition.trim();
-            }
-            
             let newStrength = prompt('Edit kelebihan:', member.strength || '');
             if (newStrength !== null) {
                 member.strength = newStrength.trim();
-            }
-            
-            let newWeakness = prompt('Edit kekurangan:', member.weakness || '');
-            if (newWeakness !== null) {
-                member.weakness = newWeakness.trim();
             }
             
             const currentSoftSkills = member.softSkills ? member.softSkills.join(', ') : '';
@@ -3564,7 +3486,7 @@
             }
             
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "No,Nama,Email,Posisi,Kelebihan,Kekurangan,Soft Skills,Hard Skills,Tugas Aktif,Role,Ditambahkan Oleh,Tanggal Dibuat\n";
+            csvContent += "No,Nama,Email,Kelebihan,Soft Skills,Hard Skills,Tugas Aktif,Role,Ditambahkan Oleh,Tanggal Dibuat\n";
             
             members.forEach((member, index) => {
                 const user = users.find(u => u.name === member.name);
@@ -3577,9 +3499,7 @@
                     index + 1,
                     member.name,
                     member.email || '',
-                    member.position || '',
                     member.strength || '',
-                    member.weakness || '',
                     member.softSkills ? member.softSkills.join('; ') : '',
                     member.hardSkills ? member.hardSkills.join('; ') : '',
                     activeTasks,
@@ -4470,13 +4390,8 @@
             if (member) {
                 details += `<hr><strong>Data di Tim:</strong><br>`;
                 details += `<strong>Kelebihan:</strong> ${member.strength || '-'}<br>`;
-                details += `<strong>Kekurangan:</strong> ${member.weakness || '-'}<br>`;
-                if (member.softSkills && member.softSkills.length > 0) {
-                    details += `<strong>Soft Skills:</strong> ${member.softSkills.join(', ')}<br>`;
-                }
-                if (member.hardSkills && member.hardSkills.length > 0) {
-                    details += `<strong>Hard Skills:</strong> ${member.hardSkills.join(', ')}<br>`;
-                }
+                details += `<strong>Soft Skills:</strong> ${member.softSkills ? member.softSkills.join(', ') : '-'}<br>`;
+                details += `<strong>Hard Skills:</strong> ${member.hardSkills ? member.hardSkills.join(', ') : '-'}<br>`;
             }
             
             alert(`👤 Detail User\n\n${details}`);
