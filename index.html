@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaksMate - Pembagian Tugas Tim</title>
+    <title>TaksMate - Manajemen Tugas Tim yang Efisien</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* =============== LANDING PAGE STYLES =============== */
         * {
             margin: 0;
             padding: 0;
@@ -14,18 +15,469 @@
         }
 
         body {
-            font-family: 'Times New Roman', serif;
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             min-height: 100vh;
+            color: #333;
         }
 
+        /* Header & Navigation */
+        .landing-navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .landing-navbar.scrolled {
+            padding: 0.5rem 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .landing-navbar .navbar-brand {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            color: #2e7d32;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .landing-navbar .navbar-brand i {
+            margin-right: 10px;
+            color: #2e7d32;
+        }
+
+        .landing-navbar .nav-link {
+            color: #333 !important;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        .landing-navbar .nav-link:hover {
+            color: #2e7d32 !important;
+        }
+
+        .landing-navbar .nav-link.active {
+            color: #2e7d32 !important;
+            font-weight: 600;
+        }
+
+        .btn-landing {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-landing:hover {
+            background: #1b5e20;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 180px 0 100px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="white" opacity="0.1"/></svg>');
+            background-size: cover;
+        }
+
+        .hero h1 {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            color: #2e7d32;
+            margin-bottom: 20px;
+            font-size: 3.5rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+
+        .hero-image {
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-family: 'Cinzel', serif;
+            color: #2e7d32;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            height: 100%;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: #2e7d32;
+            box-shadow: 0 10px 30px rgba(46, 125, 50, 0.1);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: #e8f5e9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            color: #2e7d32;
+        }
+
+        .feature-card h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        /* Screenshots Section */
+        .screenshots {
+            padding: 100px 0;
+            background: #f8f9fa;
+        }
+
+        .screenshot-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .screenshot-card:hover {
+            transform: scale(1.05);
+        }
+
+        .screenshot-img {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(45deg, #e8f5e9, #c8e6c9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #2e7d32;
+        }
+
+        .screenshot-info {
+            padding: 20px;
+        }
+
+        .screenshot-info h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card.featured {
+            border-color: #2e7d32;
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(46, 125, 50, 0.15);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: #2e7d32;
+            color: white;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .pricing-card h3 {
+            color: #2e7d32;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .price {
+            font-size: 3rem;
+            color: #2e7d32;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .price span {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 8px 0;
+            color: #666;
+        }
+
+        .pricing-features li i {
+            color: #2e7d32;
+            margin-right: 10px;
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-family: 'Cinzel', serif;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        .cta p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.9;
+        }
+
+        .btn-cta {
+            background: white;
+            color: #2e7d32;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-cta:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Footer */
+        .footer {
+            background: #212529;
+            color: white;
+            padding: 60px 0 30px;
+        }
+
+        .footer h5 {
+            color: #2e7d32;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #2e7d32;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: #2e7d32;
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #adb5bd;
+            font-size: 0.9rem;
+        }
+
+        /* Landing Page Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .pricing-card.featured {
+                transform: none;
+                margin: 20px 0;
+            }
+            
+            .landing-navbar .navbar-collapse {
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                margin-top: 10px;
+            }
+        }
+
+        /* Landing Page Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Scroll to Top Button */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: #2e7d32;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            background: #1b5e20;
+            transform: translateY(-3px);
+        }
+
+        /* =============== MAIN APP STYLES (dari kode asli) =============== */
         .app-name {
             font-family: 'Cinzel', serif;
             font-weight: 700;
             color: #2e7d32;
         }
-
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
 
         .loading-overlay {
             position: fixed;
@@ -166,6 +618,7 @@
             margin-left: 260px;
             padding: 30px;
             min-height: 100vh;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
         }
 
         .content-card {
@@ -976,6 +1429,7 @@
             }
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Loading Overlay -->
@@ -983,701 +1437,1036 @@
         <div class="spinner"></div>
     </div>
 
-    <!-- Mobile Menu Button -->
-    <button class="mobile-menu-btn" onclick="toggleSidebar()">
-        <i class="fas fa-bars"></i>
-    </button>
-
-    <!-- Auth Container (Login/Register) -->
-    <div id="authContainer" style="display: none;">
-        <!-- Login Form -->
-        <div id="loginForm" class="auth-container">
-            <div class="auth-card">
-                <div class="text-center mb-4">
-                    <img src="logo.png" alt="" style="width: 200px; height: 100px;">
-                </div>
-                <form onsubmit="handleLogin(event)">
-                    <div class="mb-3">
-                        <label class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
-                        <input type="email" class="form-control" id="loginEmail" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label"><i class="fas fa-lock me-2"></i>Password</label>
-                        <input type="password" class="form-control" id="loginPassword" required>
-                    </div>
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="rememberMe">
-                        <label class="form-check-label" for="rememberMe">
-                            Ingat Saya
-                        </label>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100 mb-3">
-                        <i class="fas fa-sign-in-alt me-2"></i>Masuk
-                    </button>
-                    <div class="text-center">
-                        <a href="#" onclick="showForgotPassword()" class="text-decoration-none">Lupa Password?</a>
-                        <div class="mt-3">
-                            Belum punya akun? <a href="#" onclick="showRegister()" class="text-decoration-none fw-bold">Daftar</a>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Register Form -->
-        <div id="registerForm" class="auth-container" style="display: none;">
-            <div class="auth-card">
-                <div class="text-center mb-4">
-                    <i class="fas fa-user-plus fa-3x text-success mb-3"></i>
-                    <h2 class="app-name">Daftar Akun</h2>
-                </div>
-                <form onsubmit="handleRegister(event)">
-                    <div class="mb-3">
-                        <label class="form-label"><i class="fas fa-user me-2"></i>Nama Lengkap</label>
-                        <input type="text" class="form-control" id="regName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
-                        <input type="email" class="form-control" id="regEmail" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label"><i class="fas fa-lock me-2"></i>Password</label>
-                        <input type="password" class="form-control" id="regPassword" minlength="6" required>
-                        <small class="text-muted">Minimal 6 karakter</small>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label"><i class="fas fa-lock me-2"></i>Konfirmasi Password</label>
-                        <input type="password" class="form-control" id="regConfirmPassword" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100 mb-3">
-                        <i class="fas fa-user-plus me-2"></i>Daftar
-                    </button>
-                    <div class="text-center">
-                        Sudah punya akun? <a href="#" onclick="showLogin()" class="text-decoration-none fw-bold">Masuk</a>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Forgot Password Form -->
-        <div id="forgotPasswordForm" class="auth-container" style="display: none;">
-            <div class="auth-card">
-                <div class="text-center mb-4">
-                    <i class="fas fa-key fa-3x text-success mb-3"></i>
-                    <h2 class="app-name">Lupa Password</h2>
-                    <p class="text-muted">Masukkan email untuk reset password</p>
-                </div>
-                <form onsubmit="handleForgotPassword(event)">
-                    <div class="mb-3">
-                        <label class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
-                        <input type="email" class="form-control" id="forgotEmail" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100 mb-3">
-                        <i class="fas fa-paper-plane me-2"></i>Kirim Link Reset
-                    </button>
-                    <div class="text-center">
-                        <a href="#" onclick="showLogin()" class="text-decoration-none">Kembali ke Login</a>
-                    </div>
-                </form>
-            </div>
-        </div>
+    <!-- Scroll to Top Button -->
+    <div class="scroll-top" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
     </div>
 
-    <!-- Main App Container -->
-    <div id="appContainer" style="display: none;">
-        <!-- Sidebar -->
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <h4 class="app-name mb-1">TaksMate</h4>
-                <small class="text-muted" id="userWelcome">Selamat datang!</small>
-            </div>
-            
-            <!-- User Info Section -->
-            <div class="user-info-sidebar" id="userInfoSidebar">
-                <h6 id="sidebarUserName">Nama Pengguna</h6>
-                <p id="sidebarUserEmail">email@contoh.com</p>
-                <p id="sidebarUserRole"><small>Role: Member</small></p>
-            </div>
-            
-            <ul class="sidebar-menu">
-                <li><a href="#" class="active" onclick="showPage('dashboard')"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li><a href="#" onclick="showPage('tasks')"><i class="fas fa-tasks"></i> Daftar Tugas</a></li>
-                <li><a href="#" onclick="showPage('members')"><i class="fas fa-users"></i> Anggota Tim</a></li>
-                <li><a href="#" onclick="showPage('assignments')"><i class="fas fa-clipboard-check"></i> Pembagian Tugas</a></li>
-                <li><a href="#" onclick="showPage('archive')"><i class="fas fa-archive"></i> Arsip Tugas</a></li>
-                <li><a href="#" onclick="showPage('chat')"><i class="fas fa-comments"></i> Chat Tim</a></li>
-                <li><a href="#" onclick="showPage('activity')"><i class="fas fa-history"></i> Riwayat Aktivitas</a></li>
-                <li><a href="#" onclick="showPage('profile')"><i class="fas fa-user"></i> Profil Saya</a></li>
-                <!-- Admin Menu (Hanya tampil untuk admin) -->
-                <li><a href="#" onclick="showAdminPanel()" id="adminMenuButton" style="display: none;">
-                    <i class="fas fa-user-shield"></i> Admin Panel
-                </a></li>
-                <!-- Logout item untuk mobile -->
-                <li class="mobile-logout-item"><a href="#" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Keluar</a></li>
-            </ul>
-            
-            <!-- Footer dengan Logout Button untuk Desktop -->
-            <div class="sidebar-footer">
-                <button class="sidebar-logout" onclick="handleLogout()">
-                    <i class="fas fa-sign-out-alt"></i> Keluar dari Akun
+    <!-- ==================== LANDING PAGE ==================== -->
+    <div id="landingPage">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg landing-navbar" id="landingNavbar">
+            <div class="container">
+                <a class="navbar-brand" href="#home">
+                    <i class="fas fa-tasks"></i> TaksMate
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
                 </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#home">Beranda</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#features">Fitur</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#screenshots">Demo</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#pricing">Harga</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#contact">Kontak</a>
+                        </li>
+                        <li class="nav-item ms-2">
+                            <a href="#" class="btn btn-landing" onclick="showLoginFromLanding()">
+                                <i class="fas fa-sign-in-alt me-2"></i>Masuk
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <h1 class="fade-in">Kelola Tugas Tim Anda Dengan Mudah</h1>
+                        <p class="fade-in">TaksMate membantu Anda membagi tugas, mengelola anggota tim, dan melacak progres dengan efisien. Semua dalam satu platform yang intuitif.</p>
+                        <div class="fade-in">
+                            <a href="#" class="btn btn-landing me-3" onclick="showLoginFromLanding()">
+                                <i class="fas fa-play-circle me-2"></i>Coba Sekarang
+                            </a>
+                            <a href="#features" class="btn btn-outline-success">
+                                <i class="fas fa-info-circle me-2"></i>Pelajari Lebih Lanjut
+                            </a>
+                        </div>
+                        <div class="mt-4 fade-in">
+                            <small class="text-muted">
+                                <i class="fas fa-check-circle text-success me-1"></i> Gratis untuk tim hingga 5 anggota
+                                <i class="fas fa-check-circle text-success ms-3 me-1"></i> Tanpa kartu kredit
+                            </small>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="hero-image text-center fade-in">
+                            <div class="position-relative">
+                                <div class="screenshot-card" style="max-width: 500px; margin: 0 auto;">
+                                    <div class="screenshot-img">
+                                        <i class="fas fa-tasks"></i>
+                                    </div>
+                                    <div class="screenshot-info">
+                                        <h4>Dashboard TaksMate</h4>
+                                        <p class="text-muted">Lihat semua tugas dalam satu tampilan</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features">
+            <div class="container">
+                <div class="section-title fade-in">
+                    <h2>Fitur Unggulan</h2>
+                    <p>Dibangun dengan teknologi terbaik untuk membantu produktivitas tim Anda</p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="feature-card fade-in">
+                            <div class="feature-icon">
+                                <i class="fas fa-users-cog"></i>
+                            </div>
+                            <h3>Manajemen Anggota</h3>
+                            <p>Kelola kelebihan, kekurangan, dan skills setiap anggota untuk pembagian tugas yang optimal.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card fade-in">
+                            <div class="feature-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <h3>Pembagian Tugas Cerdas</h3>
+                            <p>Otomatis bagi tugas berdasarkan skills dan keahlian anggota tim Anda.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card fade-in">
+                            <div class="feature-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <h3>Kolaborasi Real-time</h3>
+                            <p>Fitur chat tim untuk komunikasi yang lancar dan efisien.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card fade-in">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h3>Analitik & Pelaporan</h3>
+                            <p>Pantau progres tim dengan dashboard analitik yang komprehensif.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card fade-in">
+                            <div class="feature-icon">
+                                <i class="fas fa-archive"></i>
+                            </div>
+                            <h3>Arsip Otomatis</h3>
+                            <p>Tugas yang selesai atau terlewat otomatis terarsip untuk menjaga kerapian.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card fade-in">
+                            <div class="feature-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <h3>Riwayat Aktivitas</h3>
+                            <p>Lacak semua perubahan dan aktivitas dalam tim untuk transparansi.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screenshots Section -->
+        <section id="screenshots" class="screenshots">
+            <div class="container">
+                <div class="section-title fade-in">
+                    <h2>Tampilan Aplikasi</h2>
+                    <p>Lihat bagaimana TaksMate membantu mengelola tim Anda</p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="screenshot-card fade-in">
+                            <div class="screenshot-img" style="background: linear-gradient(45deg, #e3f2fd, #bbdefb);">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <div class="screenshot-info">
+                                <h4>Dashboard Utama</h4>
+                                <p class="text-muted">Overview semua tugas dan statistik tim</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="screenshot-card fade-in">
+                            <div class="screenshot-img" style="background: linear-gradient(45deg, #f3e5f5, #e1bee7);">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="screenshot-info">
+                                <h4>Manajemen Anggota</h4>
+                                <p class="text-muted">Kelola data dan kemampuan anggota tim</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="screenshot-card fade-in">
+                            <div class="screenshot-img" style="background: linear-gradient(45deg, #e8f5e9, #c8e6c9);">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                            <div class="screenshot-info">
+                                <h4>Pembagian Tugas</h4>
+                                <p class="text-muted">Distribusi tugas yang adil dan efisien</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="pricing">
+            <div class="container">
+                <div class="section-title fade-in">
+                    <h2>Pilihan Paket</h2>
+                    <p>Pilih paket yang sesuai dengan kebutuhan tim Anda</p>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-4">
+                        <div class="pricing-card fade-in">
+                            <h3>Gratis</h3>
+                            <div class="price">Rp 0<span>/bulan</span></div>
+                            <ul class="pricing-features">
+                                <li><i class="fas fa-check"></i> Hingga 5 anggota tim</li>
+                                <li><i class="fas fa-check"></i> 50 tugas aktif</li>
+                                <li><i class="fas fa-check"></i> Basic task management</li>
+                                <li><i class="fas fa-check"></i> Chat tim dasar</li>
+                                <li><i class="fas fa-times text-muted"></i> Pembagian tugas cerdas</li>
+                                <li><i class="fas fa-times text-muted"></i> Export data</li>
+                            </ul>
+                            <a href="#" class="btn btn-outline-success w-100" onclick="showLoginFromLanding()">Mulai Gratis</a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="pricing-card featured fade-in">
+                            <div class="pricing-badge">POPULER</div>
+                            <h3>Pro Team</h3>
+                            <div class="price">Rp 99.000<span>/bulan</span></div>
+                            <ul class="pricing-features">
+                                <li><i class="fas fa-check"></i> Hingga 20 anggota tim</li>
+                                <li><i class="fas fa-check"></i> Tugas tak terbatas</li>
+                                <li><i class="fas fa-check"></i> Semua fitur dasar</li>
+                                <li><i class="fas fa-check"></i> Pembagian tugas cerdas</li>
+                                <li><i class="fas fa-check"></i> Export data lengkap</li>
+                                <li><i class="fas fa-check"></i> Prioritas support</li>
+                            </ul>
+                            <a href="#" class="btn btn-landing w-100" onclick="showLoginFromLanding()">Upgrade ke Pro</a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="pricing-card fade-in">
+                            <h3>Enterprise</h3>
+                            <div class="price">Custom</div>
+                            <ul class="pricing-features">
+                                <li><i class="fas fa-check"></i> Anggota tim tak terbatas</li>
+                                <li><i class="fas fa-check"></i> Semua fitur Pro</li>
+                                <li><i class="fas fa-check"></i> Custom integration</li>
+                                <li><i class="fas fa-check"></i> Dedicated support</li>
+                                <li><i class="fas fa-check"></i> On-premise deployment</li>
+                                <li><i class="fas fa-check"></i> API access</li>
+                            </ul>
+                            <a href="#contact" class="btn btn-outline-success w-100">Hubungi Kami</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta">
+            <div class="container">
+                <h2 class="fade-in">Siap Tingkatkan Produktivitas Tim Anda?</h2>
+                <p class="fade-in">Bergabung dengan ratusan tim yang sudah menggunakan TaksMate untuk mengelola tugas mereka secara efisien.</p>
+                <a href="#" class="btn btn-cta fade-in" onclick="showLoginFromLanding()">
+                    <i class="fas fa-rocket me-2"></i>Coba TaksMate Sekarang
+                </a>
+                <div class="mt-4 fade-in">
+                    <small>Gratis selamanya untuk tim kecil • Tanpa kontrak • Upgrade kapan saja</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer id="contact" class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 mb-4">
+                        <h5><i class="fas fa-tasks me-2"></i>TaksMate</h5>
+                        <p class="text-muted">Platform manajemen tugas tim yang membantu Anda bekerja lebih efisien dan terorganisir.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6 mb-4">
+                        <h5>Produk</h5>
+                        <ul class="footer-links">
+                            <li><a href="#features">Fitur</a></li>
+                            <li><a href="#pricing">Harga</a></li>
+                            <li><a href="#screenshots">Demo</a></li>
+                            <li><a href="#" onclick="showLoginFromLanding()">Coba Gratis</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-2 col-md-6 mb-4">
+                        <h5>Perusahaan</h5>
+                        <ul class="footer-links">
+                            <li><a href="#">Tentang Kami</a></li>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Karir</a></li>
+                            <li><a href="#">Kontak</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 mb-4">
+                        <h5>Kontak</h5>
+                        <ul class="footer-links">
+                            <li><i class="fas fa-envelope me-2"></i> support@tasksmate.com</li>
+                            <li><i class="fas fa-phone me-2"></i> (021) 1234-5678</li>
+                            <li><i class="fas fa-map-marker-alt me-2"></i> Jakarta, Indonesia</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="copyright">
+                    <p>&copy; <span id="currentYear"></span> TaksMate. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ==================== AUTH & APP CONTAINER ==================== -->
+    <div id="authAppContainer" style="display: none;">
+        <!-- Auth Container (Login/Register) -->
+        <div id="authContainer" style="display: none;">
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-container">
+                <div class="auth-card">
+                    <div class="text-center mb-4">
+                        <h2 class="app-name mb-3"><i class="fas fa-tasks me-2"></i>TaksMate</h2>
+                        <p class="text-muted">Masuk ke akun Anda</p>
+                    </div>
+                    <form onsubmit="handleLogin(event)">
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
+                            <input type="email" class="form-control" id="loginEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-lock me-2"></i>Password</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">
+                                Ingat Saya
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mb-3">
+                            <i class="fas fa-sign-in-alt me-2"></i>Masuk
+                        </button>
+                        <div class="text-center">
+                            <a href="#" onclick="showForgotPassword()" class="text-decoration-none">Lupa Password?</a>
+                            <div class="mt-3">
+                                Belum punya akun? <a href="#" onclick="showRegister()" class="text-decoration-none fw-bold">Daftar</a>
+                            </div>
+                            <hr>
+                            <button type="button" class="btn btn-outline-secondary mt-2" onclick="showLandingPage()">
+                                <i class="fas fa-arrow-left me-2"></i>Kembali ke Beranda
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="auth-container" style="display: none;">
+                <div class="auth-card">
+                    <div class="text-center mb-4">
+                        <h2 class="app-name mb-3"><i class="fas fa-tasks me-2"></i>TaksMate</h2>
+                        <p class="text-muted">Buat akun baru</p>
+                    </div>
+                    <form onsubmit="handleRegister(event)">
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-user me-2"></i>Nama Lengkap</label>
+                            <input type="text" class="form-control" id="regName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
+                            <input type="email" class="form-control" id="regEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-lock me-2"></i>Password</label>
+                            <input type="password" class="form-control" id="regPassword" minlength="6" required>
+                            <small class="text-muted">Minimal 6 karakter</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-lock me-2"></i>Konfirmasi Password</label>
+                            <input type="password" class="form-control" id="regConfirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mb-3">
+                            <i class="fas fa-user-plus me-2"></i>Daftar
+                        </button>
+                        <div class="text-center">
+                            Sudah punya akun? <a href="#" onclick="showLogin()" class="text-decoration-none fw-bold">Masuk</a>
+                            <hr>
+                            <button type="button" class="btn btn-outline-secondary mt-2" onclick="showLandingPage()">
+                                <i class="fas fa-arrow-left me-2"></i>Kembali ke Beranda
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Forgot Password Form -->
+            <div id="forgotPasswordForm" class="auth-container" style="display: none;">
+                <div class="auth-card">
+                    <div class="text-center mb-4">
+                        <h2 class="app-name mb-3"><i class="fas fa-tasks me-2"></i>TaksMate</h2>
+                        <p class="text-muted">Reset password Anda</p>
+                    </div>
+                    <form onsubmit="handleForgotPassword(event)">
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
+                            <input type="email" class="form-control" id="forgotEmail" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mb-3">
+                            <i class="fas fa-paper-plane me-2"></i>Kirim Link Reset
+                        </button>
+                        <div class="text-center">
+                            <a href="#" onclick="showLogin()" class="text-decoration-none">Kembali ke Login</a>
+                            <hr>
+                            <button type="button" class="btn btn-outline-secondary mt-2" onclick="showLandingPage()">
+                                <i class="fas fa-arrow-left me-2"></i>Kembali ke Beranda
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Dashboard -->
-            <div id="dashboardPage" class="page">
-                <div class="content-card">
-                    <div class="page-header">
-                        <h3><i class="fas fa-home me-2"></i>Dashboard</h3>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center border-0 shadow-sm">
-                                <div class="card-body">
-                                    <i class="fas fa-tasks fa-3x text-success mb-3"></i>
-                                    <h4 id="totalTasks">0</h4>
-                                    <p class="text-muted">Tugas Aktif</p>
+        <!-- Main App Container -->
+        <div id="appContainer" style="display: none;">
+            <!-- Mobile Menu Button -->
+            <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Sidebar -->
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <h4 class="app-name mb-1">TaksMate</h4>
+                    <small class="text-muted" id="userWelcome">Selamat datang!</small>
+                </div>
+                
+                <!-- User Info Section -->
+                <div class="user-info-sidebar" id="userInfoSidebar">
+                    <h6 id="sidebarUserName">Nama Pengguna</h6>
+                    <p id="sidebarUserEmail">email@contoh.com</p>
+                    <p id="sidebarUserRole"><small>Role: Member</small></p>
+                </div>
+                
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="active" onclick="showPage('dashboard')"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="#" onclick="showPage('tasks')"><i class="fas fa-tasks"></i> Daftar Tugas</a></li>
+                    <li><a href="#" onclick="showPage('members')"><i class="fas fa-users"></i> Anggota Tim</a></li>
+                    <li><a href="#" onclick="showPage('assignments')"><i class="fas fa-clipboard-check"></i> Pembagian Tugas</a></li>
+                    <li><a href="#" onclick="showPage('archive')"><i class="fas fa-archive"></i> Arsip Tugas</a></li>
+                    <li><a href="#" onclick="showPage('chat')"><i class="fas fa-comments"></i> Chat Tim</a></li>
+                    <li><a href="#" onclick="showPage('activity')"><i class="fas fa-history"></i> Riwayat Aktivitas</a></li>
+                    <li><a href="#" onclick="showPage('profile')"><i class="fas fa-user"></i> Profil Saya</a></li>
+                    <!-- Admin Menu (Hanya tampil untuk admin) -->
+                    <li><a href="#" onclick="showAdminPanel()" id="adminMenuButton" style="display: none;">
+                        <i class="fas fa-user-shield"></i> Admin Panel
+                    </a></li>
+                    <!-- Back to Landing Page -->
+                    <li><a href="#" onclick="showLandingPage()"><i class="fas fa-globe"></i> Beranda</a></li>
+                    <!-- Logout item untuk mobile -->
+                    <li class="mobile-logout-item"><a href="#" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Keluar</a></li>
+                </ul>
+                
+                <!-- Footer dengan Logout Button untuk Desktop -->
+                <div class="sidebar-footer">
+                    <button class="sidebar-logout" onclick="handleLogout()">
+                        <i class="fas fa-sign-out-alt"></i> Keluar dari Akun
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Dashboard -->
+                <div id="dashboardPage" class="page">
+                    <div class="content-card">
+                        <div class="page-header">
+                            <h3><i class="fas fa-home me-2"></i>Dashboard</h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <div class="card text-center border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <i class="fas fa-tasks fa-3x text-success mb-3"></i>
+                                        <h4 id="totalTasks">0</h4>
+                                        <p class="text-muted">Tugas Aktif</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="card text-center border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                                        <h4 id="overdueTasks">0</h4>
+                                        <p class="text-muted">Tugas Terlewat</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="card text-center border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <i class="fas fa-archive fa-3x text-info mb-3"></i>
+                                        <h4 id="archivedCount">0</h4>
+                                        <p class="text-muted">Di Arsip</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="card text-center border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <i class="fas fa-users fa-3x text-success mb-3"></i>
+                                        <h4 id="totalMembers">0</h4>
+                                        <p class="text-muted">Anggota Tim</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center border-0 shadow-sm">
-                                <div class="card-body">
-                                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-                                    <h4 id="overdueTasks">0</h4>
-                                    <p class="text-muted">Tugas Terlewat</p>
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <div class="card text-center border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <i class="fas fa-comments fa-3x text-success mb-3"></i>
+                                        <h4 id="totalMessages">0</h4>
+                                        <p class="text-muted">Pesan</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center border-0 shadow-sm">
-                                <div class="card-body">
-                                    <i class="fas fa-archive fa-3x text-info mb-3"></i>
-                                    <h4 id="archivedCount">0</h4>
-                                    <p class="text-muted">Di Arsip</p>
+                            <div class="col-md-3 mb-3">
+                                <div class="card text-center border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <i class="fas fa-clipboard-check fa-3x text-success mb-3"></i>
+                                        <h4 id="totalAssignments">0</h4>
+                                        <p class="text-muted">Penugasan</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center border-0 shadow-sm">
-                                <div class="card-body">
-                                    <i class="fas fa-users fa-3x text-success mb-3"></i>
-                                    <h4 id="totalMembers">0</h4>
-                                    <p class="text-muted">Anggota Tim</p>
+                            <div class="col-md-3 mb-3">
+                                <div class="card text-center border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                                        <h4 id="completedTasks">0</h4>
+                                        <p class="text-muted">Tugas Selesai</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center border-0 shadow-sm">
-                                <div class="card-body">
-                                    <i class="fas fa-comments fa-3x text-success mb-3"></i>
-                                    <h4 id="totalMessages">0</h4>
-                                    <p class="text-muted">Pesan</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center border-0 shadow-sm">
-                                <div class="card-body">
-                                    <i class="fas fa-clipboard-check fa-3x text-success mb-3"></i>
-                                    <h4 id="totalAssignments">0</h4>
-                                    <p class="text-muted">Penugasan</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center border-0 shadow-sm">
-                                <div class="card-body">
-                                    <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
-                                    <h4 id="completedTasks">0</h4>
-                                    <p class="text-muted">Tugas Selesai</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center border-0 shadow-sm">
-                                <div class="card-body">
-                                    <i class="fas fa-history fa-3x text-info mb-3"></i>
-                                    <h4 id="todayActivities">0</h4>
-                                    <p class="text-muted">Aktivitas Hari Ini</p>
+                            <div class="col-md-3 mb-3">
+                                <div class="card text-center border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <i class="fas fa-history fa-3x text-info mb-3"></i>
+                                        <h4 id="todayActivities">0</h4>
+                                        <p class="text-muted">Aktivitas Hari Ini</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Tasks Page -->
-            <div id="tasksPage" class="page" style="display: none;">
-                <div class="content-card">
-                    <div class="page-header">
-                        <h3><i class="fas fa-tasks me-2"></i>Daftar Tugas</h3>
+                <!-- Tasks Page -->
+                <div id="tasksPage" class="page" style="display: none;">
+                    <div class="content-card">
+                        <div class="page-header">
+                            <h3><i class="fas fa-tasks me-2"></i>Daftar Tugas</h3>
+                        </div>
+                        <form onsubmit="addTask(event)" class="mb-4">
+                            <div class="row mb-3">
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" id="taskInput" placeholder="Nama tugas..." required>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="date" class="form-control" id="taskDeadline" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-select" id="taskPriority">
+                                        <option value="low">Prioritas Rendah</option>
+                                        <option value="medium" selected>Prioritas Sedang</option>
+                                        <option value="high">Prioritas Tinggi</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success w-100">
+                                        <i class="fas fa-plus me-2"></i>Tambah
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <select class="form-select" id="taskCategory">
+                                        <option value="">Pilih Kategori</option>
+                                        <option value="design">Desain</option>
+                                        <option value="development">Pengembangan</option>
+                                        <option value="marketing">Pemasaran</option>
+                                        <option value="research">Riset</option>
+                                        <option value="meeting">Rapat</option>
+                                        <option value="documentation">Dokumentasi</option>
+                                        <option value="testing">Testing</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-select" id="taskAssignedTo" multiple>
+                                        <option value="" disabled>Pilih Anggota (Bisa lebih dari satu)</option>
+                                    </select>
+                                    <small class="text-muted">Tekan Ctrl/Cmd untuk memilih beberapa anggota</small>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label class="form-label"><i class="fas fa-list-check me-2"></i>Sub-tugas / Daftar Pekerjaan</label>
+                                    <textarea class="form-control" id="taskSubtasks" 
+                                              placeholder="Masukkan daftar pekerjaan yang perlu diselesaikan (pisahkan dengan baris baru)" 
+                                              rows="3"></textarea>
+                                    <small class="text-muted">Tekan Enter untuk membuat baris baru</small>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Tugas</th>
+                                        <th>Detail Tugas</th>
+                                        <th>Prioritas</th>
+                                        <th>Deadline</th>
+                                        <th>Ditugaskan Kepada</th>
+                                        <th>Status</th>
+                                        <th>Dibuat Oleh</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tasksList"></tbody>
+                            </table>
+                        </div>
                     </div>
-                    <form onsubmit="addTask(event)" class="mb-4">
+                </div>
+
+                <!-- Members Page (TABLE VERSION) dengan MODIFIKASI: Tambah kolom kekurangan, hapus kolom role -->
+                <div id="membersPage" class="page" style="display: none;">
+                    <div class="content-card">
+                        <div class="page-header">
+                            <h3><i class="fas fa-users me-2"></i>Anggota Tim</h3>
+                            <p class="text-muted mb-0">Kelola anggota tim, kelebihan, kekurangan, dan keterampilan mereka</p>
+                        </div>
+                        
+                        <!-- Form Tambah Anggota dengan MODIFIKASI: Tambah input kekurangan -->
+                        <form onsubmit="addMember(event)" class="mb-4">
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <input type="text" class="form-control" id="memberName" placeholder="Nama Lengkap" required>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <input type="email" class="form-control" id="memberEmail" placeholder="Email">
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <button type="submit" class="btn btn-success w-100">
+                                        <i class="fas fa-user-plus me-2"></i>Tambah Anggota
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-4 mb-2">
+                                    <input type="text" class="form-control" id="memberStrength" placeholder="Kelebihan Utama">
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <input type="text" class="form-control" id="memberWeakness" placeholder="Kekurangan (pisahkan koma)">
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <input type="text" class="form-control" id="memberSoftSkills" placeholder="Soft Skills (pisahkan koma)">
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-4 mb-2">
+                                    <input type="text" class="form-control" id="memberHardSkills" placeholder="Hard Skills (pisahkan koma)">
+                                </div>
+                                <div class="col-md-8 mb-2">
+                                    <textarea class="form-control" id="memberNotes" placeholder="Catatan tambahan..." rows="2"></textarea>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <!-- Filter dan Search -->
                         <div class="row mb-3">
-                            <div class="col-md-5">
-                                <input type="text" class="form-control" id="taskInput" placeholder="Nama tugas..." required>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="memberSearch" 
+                                       placeholder="Cari nama..." onkeyup="filterMembersTable()">
                             </div>
-                            <div class="col-md-3">
-                                <input type="date" class="form-control" id="taskDeadline" required>
-                            </div>
-                            <div class="col-md-2">
-                                <select class="form-select" id="taskPriority">
-                                    <option value="low">Prioritas Rendah</option>
-                                    <option value="medium" selected>Prioritas Sedang</option>
-                                    <option value="high">Prioritas Tinggi</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-success w-100">
-                                    <i class="fas fa-plus me-2"></i>Tambah
+                            <div class="col-md-6">
+                                <button class="btn btn-outline-success w-100" onclick="exportMembersData()">
+                                    <i class="fas fa-download me-2"></i>Export Data
                                 </button>
                             </div>
+                        </div>
+                        
+                        <!-- Stats Cards -->
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="stat-card-small">
+                                    <i class="fas fa-users text-primary"></i>
+                                    <h4 id="totalMembersCount">0</h4>
+                                    <p>Total Anggota</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card-small">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <h4 id="strengthCount">0</h4>
+                                    <p>Memiliki Kelebihan</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card-small">
+                                    <i class="fas fa-tasks text-success"></i>
+                                    <h4 id="activeTasksCount">0</h4>
+                                    <p>Tugas Aktif</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card-small">
+                                    <i class="fas fa-chart-pie text-info"></i>
+                                    <h4 id="avgSkillsCount">0</h4>
+                                    <p>Rata-rata Skills</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tabel Anggota dengan MODIFIKASI: Tambah kolom kekurangan, hapus kolom role -->
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="membersTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nama Lengkap</th>
+                                        <th>Email</th>
+                                        <th>Kelebihan</th>
+                                        <th>Kekurangan</th>
+                                        <th>Skills</th>
+                                        <th>Tugas Aktif</th>
+                                        <th>Ditambahkan</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="membersTableBody">
+                                    <!-- Data akan dimuat di sini -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Empty State -->
+                        <div id="membersEmptyState" class="text-center py-5" style="display: none;">
+                            <i class="fas fa-users-slash fa-3x mb-3 text-muted"></i>
+                            <h5>Belum ada anggota tim</h5>
+                            <p class="text-muted">Tambahkan anggota tim terlebih dahulu</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assignments Page -->
+                <div id="assignmentsPage" class="page" style="display: none;">
+                    <div class="content-card">
+                        <div class="page-header">
+                            <h3><i class="fas fa-clipboard-check me-2"></i>Pembagian Tugas</h3>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <select class="form-select" id="taskCategory">
-                                    <option value="">Pilih Kategori</option>
-                                    <option value="design">Desain</option>
-                                    <option value="development">Pengembangan</option>
-                                    <option value="marketing">Pemasaran</option>
-                                    <option value="research">Riset</option>
-                                    <option value="meeting">Rapat</option>
-                                    <option value="documentation">Dokumentasi</option>
-                                    <option value="testing">Testing</option>
+                                <select class="form-select" id="autoAssignType">
+                                    <option value="manual">Pilih metode pembagian...</option>
+                                    <option value="equal">Bagi ke Semua Anggota</option>
+                                    <option value="skills">Berdasarkan Skills</option>
+                                    <option value="random">Random Assignment</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <select class="form-select" id="taskAssignedTo" multiple>
-                                    <option value="" disabled>Pilih Anggota (Bisa lebih dari satu)</option>
-                                </select>
-                                <small class="text-muted">Tekan Ctrl/Cmd untuk memilih beberapa anggota</small>
+                                <button class="btn btn-success w-100" onclick="generateAssignments()">
+                                    <i class="fas fa-magic me-2"></i>Generate Pembagian Tugas
+                                </button>
                             </div>
+                        </div>
+                        <div id="assignmentsList"></div>
+                    </div>
+                </div>
+
+                <!-- Archive Page -->
+                <div id="archivePage" class="page" style="display: none;">
+                    <div class="content-card">
+                        <div class="page-header">
+                            <h3><i class="fas fa-archive me-2"></i>Arsip Tugas</h3>
+                            <p class="text-muted mb-0">Tugas yang sudah terlewat atau selesai</p>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <select class="form-select" id="archiveFilter" onchange="filterArchivedTasks()">
+                                    <option value="all">Semua Tugas</option>
+                                    <option value="overdue">Terlewat</option>
+                                    <option value="completed">Selesai</option>
+                                    <option value="manual">Diarsip Manual</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="archiveSearch" placeholder="Cari tugas..." onkeyup="searchArchivedTasks()">
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-danger w-100" onclick="clearArchive()">
+                                    <i class="fas fa-trash me-2"></i>Kosongkan Arsip
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Arsip berisi <span id="archiveCount">0</span> tugas. Tugas diarsip otomatis ketika terlewat atau bisa diarsip manual.
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Tugas</th>
+                                        <th>Kategori</th>
+                                        <th>Status</th>
+                                        <th>Deadline</th>
+                                        <th>Alasan Arsip</th>
+                                        <th>Tanggal Arsip</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="archivedTasksList"></tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h5><i class="fas fa-chart-bar me-2"></i>Statistik Arsip</h5>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h3 id="overdueCount">0</h3>
+                                            <p class="text-muted">Terlewat</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h3 id="completedCount">0</h3>
+                                            <p class="text-muted">Selesai</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h3 id="thisMonthCount">0</h3>
+                                            <p class="text-muted">Arsip Bulan Ini</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h3 id="oldestArchive">-</h3>
+                                            <p class="text-muted">Arsip Tertua</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Page -->
+                <div id="chatPage" class="page" style="display: none;">
+                    <div class="content-card">
+                        <div class="page-header">
+                            <h3><i class="fas fa-comments me-2"></i>Chat Tim</h3>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-md-12">
-                                <label class="form-label"><i class="fas fa-list-check me-2"></i>Sub-tugas / Daftar Pekerjaan</label>
-                                <textarea class="form-control" id="taskSubtasks" 
-                                          placeholder="Masukkan daftar pekerjaan yang perlu diselesaikan (pisahkan dengan baris baru)" 
-                                          rows="3"></textarea>
-                                <small class="text-muted">Tekan Enter untuk membuat baris baru</small>
-                            </div>
-                        </div>
-                    </form>
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Nama Tugas</th>
-                                    <th>Detail Tugas</th>
-                                    <th>Prioritas</th>
-                                    <th>Deadline</th>
-                                    <th>Ditugaskan Kepada</th>
-                                    <th>Status</th>
-                                    <th>Dibuat Oleh</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tasksList"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Members Page (TABLE VERSION) dengan MODIFIKASI: Tambah kolom kekurangan, hapus kolom role -->
-            <div id="membersPage" class="page" style="display: none;">
-                <div class="content-card">
-                    <div class="page-header">
-                        <h3><i class="fas fa-users me-2"></i>Anggota Tim</h3>
-                        <p class="text-muted mb-0">Kelola anggota tim, kelebihan, kekurangan, dan keterampilan mereka</p>
-                    </div>
-                    
-                    <!-- Form Tambah Anggota dengan MODIFIKASI: Tambah input kekurangan -->
-                    <form onsubmit="addMember(event)" class="mb-4">
-                        <div class="row">
-                            <div class="col-md-4 mb-2">
-                                <input type="text" class="form-control" id="memberName" placeholder="Nama Lengkap" required>
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <input type="email" class="form-control" id="memberEmail" placeholder="Email">
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <button type="submit" class="btn btn-success w-100">
-                                    <i class="fas fa-user-plus me-2"></i>Tambah Anggota
-                                </button>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-md-4 mb-2">
-                                <input type="text" class="form-control" id="memberStrength" placeholder="Kelebihan Utama">
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <input type="text" class="form-control" id="memberWeakness" placeholder="Kekurangan (pisahkan koma)">
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <input type="text" class="form-control" id="memberSoftSkills" placeholder="Soft Skills (pisahkan koma)">
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-md-4 mb-2">
-                                <input type="text" class="form-control" id="memberHardSkills" placeholder="Hard Skills (pisahkan koma)">
-                            </div>
-                            <div class="col-md-8 mb-2">
-                                <textarea class="form-control" id="memberNotes" placeholder="Catatan tambahan..." rows="2"></textarea>
-                            </div>
-                        </div>
-                    </form>
-                    
-                    <!-- Filter dan Search -->
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" id="memberSearch" 
-                                   placeholder="Cari nama..." onkeyup="filterMembersTable()">
-                        </div>
-                        <div class="col-md-6">
-                            <button class="btn btn-outline-success w-100" onclick="exportMembersData()">
-                                <i class="fas fa-download me-2"></i>Export Data
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Stats Cards -->
-                    <div class="row mb-4">
-                        <div class="col-md-3">
-                            <div class="stat-card-small">
-                                <i class="fas fa-users text-primary"></i>
-                                <h4 id="totalMembersCount">0</h4>
-                                <p>Total Anggota</p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="stat-card-small">
-                                <i class="fas fa-star text-warning"></i>
-                                <h4 id="strengthCount">0</h4>
-                                <p>Memiliki Kelebihan</p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="stat-card-small">
-                                <i class="fas fa-tasks text-success"></i>
-                                <h4 id="activeTasksCount">0</h4>
-                                <p>Tugas Aktif</p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="stat-card-small">
-                                <i class="fas fa-chart-pie text-info"></i>
-                                <h4 id="avgSkillsCount">0</h4>
-                                <p>Rata-rata Skills</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Tabel Anggota dengan MODIFIKASI: Tambah kolom kekurangan, hapus kolom role -->
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="membersTable">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Nama Lengkap</th>
-                                    <th>Email</th>
-                                    <th>Kelebihan</th>
-                                    <th>Kekurangan</th>
-                                    <th>Skills</th>
-                                    <th>Tugas Aktif</th>
-                                    <th>Ditambahkan</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="membersTableBody">
-                                <!-- Data akan dimuat di sini -->
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <!-- Empty State -->
-                    <div id="membersEmptyState" class="text-center py-5" style="display: none;">
-                        <i class="fas fa-users-slash fa-3x mb-3 text-muted"></i>
-                        <h5>Belum ada anggota tim</h5>
-                        <p class="text-muted">Tambahkan anggota tim terlebih dahulu</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Assignments Page -->
-            <div id="assignmentsPage" class="page" style="display: none;">
-                <div class="content-card">
-                    <div class="page-header">
-                        <h3><i class="fas fa-clipboard-check me-2"></i>Pembagian Tugas</h3>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <select class="form-select" id="autoAssignType">
-                                <option value="manual">Pilih metode pembagian...</option>
-                                <option value="equal">Bagi ke Semua Anggota</option>
-                                <option value="skills">Berdasarkan Skills</option>
-                                <option value="random">Random Assignment</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <button class="btn btn-success w-100" onclick="generateAssignments()">
-                                <i class="fas fa-magic me-2"></i>Generate Pembagian Tugas
-                            </button>
-                        </div>
-                    </div>
-                    <div id="assignmentsList"></div>
-                </div>
-            </div>
-
-            <!-- Archive Page -->
-            <div id="archivePage" class="page" style="display: none;">
-                <div class="content-card">
-                    <div class="page-header">
-                        <h3><i class="fas fa-archive me-2"></i>Arsip Tugas</h3>
-                        <p class="text-muted mb-0">Tugas yang sudah terlewat atau selesai</p>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <select class="form-select" id="archiveFilter" onchange="filterArchivedTasks()">
-                                <option value="all">Semua Tugas</option>
-                                <option value="overdue">Terlewat</option>
-                                <option value="completed">Selesai</option>
-                                <option value="manual">Diarsip Manual</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" id="archiveSearch" placeholder="Cari tugas..." onkeyup="searchArchivedTasks()">
-                        </div>
-                        <div class="col-md-4">
-                            <button class="btn btn-danger w-100" onclick="clearArchive()">
-                                <i class="fas fa-trash me-2"></i>Kosongkan Arsip
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        Arsip berisi <span id="archiveCount">0</span> tugas. Tugas diarsip otomatis ketika terlewat atau bisa diarsip manual.
-                    </div>
-                    
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Nama Tugas</th>
-                                    <th>Kategori</th>
-                                    <th>Status</th>
-                                    <th>Deadline</th>
-                                    <th>Alasan Arsip</th>
-                                    <th>Tanggal Arsip</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="archivedTasksList"></tbody>
-                        </table>
-                    </div>
-                    
-                    <div class="mt-4">
-                        <h5><i class="fas fa-chart-bar me-2"></i>Statistik Arsip</h5>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="card">
-                                    <div class="card-body text-center">
-                                        <h3 id="overdueCount">0</h3>
-                                        <p class="text-muted">Terlewat</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card">
-                                    <div class="card-body text-center">
-                                        <h3 id="completedCount">0</h3>
-                                        <p class="text-muted">Selesai</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card">
-                                    <div class="card-body text-center">
-                                        <h3 id="thisMonthCount">0</h3>
-                                        <p class="text-muted">Arsip Bulan Ini</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card">
-                                    <div class="card-body text-center">
-                                        <h3 id="oldestArchive">-</h3>
-                                        <p class="text-muted">Arsip Tertua</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Chat Page -->
-            <div id="chatPage" class="page" style="display: none;">
-                <div class="content-card">
-                    <div class="page-header">
-                        <h3><i class="fas fa-comments me-2"></i>Chat Tim</h3>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <select class="form-select" id="messageType" onchange="updateRecipientSelect()">
-                                <option value="public">Pesan Umum</option>
-                                <option value="private">Pesan Pribadi</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <select class="form-select" id="messageRecipient" style="display: none;">
-                                <option value="">Pilih Penerima</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="chat-container mb-3" id="chatContainer"></div>
-                    <form onsubmit="sendMessage(event)">
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="messageInput" placeholder="Ketik pesan..." required>
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-paper-plane"></i> Kirim
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Activity History Page -->
-            <div id="activityPage" class="page" style="display: none;">
-                <div class="content-card">
-                    <div class="page-header">
-                        <h3><i class="fas fa-history me-2"></i>Riwayat Aktivitas</h3>
-                        <p class="text-muted mb-0">Log semua aktivitas dalam tim</p>
-                    </div>
-                    
-                    <!-- Stats Cards -->
-                    <div class="activity-stats">
-                        <div class="stat-card">
-                            <i class="fas fa-clock text-info"></i>
-                            <h4 id="activityToday">0</h4>
-                            <p>Hari Ini</p>
-                        </div>
-                        <div class="stat-card">
-                            <i class="fas fa-tasks text-success"></i>
-                            <h4 id="activityTasks">0</h4>
-                            <p>Aktivitas Tugas</p>
-                        </div>
-                        <div class="stat-card">
-                            <i class="fas fa-users text-warning"></i>
-                            <h4 id="activityMembers">0</h4>
-                            <p>Aktivitas Anggota</p>
-                        </div>
-                        <div class="stat-card">
-                            <i class="fas fa-user text-primary"></i>
-                            <h4 id="activityMy">0</h4>
-                            <p>Aktivitas Saya</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Filter Section -->
-                    <div class="activity-filter">
-                        <div class="row">
-                            <div class="col-md-3 mb-2">
-                                <select class="form-select" id="activityTypeFilter" onchange="filterActivities()">
-                                    <option value="all">Semua Jenis</option>
-                                    <option value="task">Tugas</option>
-                                    <option value="member">Anggota</option>
-                                    <option value="assignment">Penugasan</option>
-                                    <option value="chat">Chat</option>
-                                    <option value="system">System</option>
-                                    <option value="archive">Arsip</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 mb-2">
-                                <select class="form-select" id="activityUserFilter" onchange="filterActivities()">
-                                    <option value="all">Semua User</option>
-                                    <option value="me">Hanya Saya</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 mb-2">
-                                <select class="form-select" id="activityTimeFilter" onchange="filterActivities()">
-                                    <option value="all">Semua Waktu</option>
-                                    <option value="today">Hari Ini</option>
-                                    <option value="week">Minggu Ini</option>
-                                    <option value="month">Bulan Ini</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 mb-2">
-                                <button class="btn btn-success w-100" onclick="exportActivities()">
-                                    <i class="fas fa-download me-2"></i>Export
-                                </button>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
                             <div class="col-md-6">
-                                <input type="text" class="form-control" id="activitySearch" 
-                                       placeholder="Cari aktivitas..." onkeyup="searchActivities()">
+                                <select class="form-select" id="messageType" onchange="updateRecipientSelect()">
+                                    <option value="public">Pesan Umum</option>
+                                    <option value="private">Pesan Pribadi</option>
+                                </select>
                             </div>
-                            <div class="col-md-6 text-end">
-                                <button class="btn btn-danger" onclick="clearActivities()">
-                                    <i class="fas fa-trash me-2"></i>Hapus Riwayat
-                                </button>
+                            <div class="col-md-6">
+                                <select class="form-select" id="messageRecipient" style="display: none;">
+                                    <option value="">Pilih Penerima</option>
+                                </select>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Activity Timeline -->
-                    <div id="activitiesList" class="activity-timeline"></div>
-                    
-                    <!-- Empty State -->
-                    <div id="emptyActivities" class="text-center py-5" style="display: none;">
-                        <i class="fas fa-history fa-3x mb-3 text-muted"></i>
-                        <h5>Belum ada aktivitas</h5>
-                        <p class="text-muted">Aktivitas akan tercatat di sini</p>
-                    </div>
-                    
-                    <!-- Load More Button -->
-                    <div class="text-center mt-4" id="loadMoreContainer" style="display: none;">
-                        <button class="btn btn-outline-success" onclick="loadMoreActivities()">
-                            <i class="fas fa-arrow-down me-2"></i>Muat Lebih Banyak
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Profile Page -->
-            <div id="profilePage" class="page" style="display: none;">
-                <div class="content-card">
-                    <div class="page-header">
-                        <h3><i class="fas fa-user me-2"></i>Profil Saya</h3>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <form onsubmit="updateProfile(event)">
-                                <div class="mb-3">
-                                    <label class="form-label">Nama Lengkap</label>
-                                    <input type="text" class="form-control" id="profileName" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="profileEmail" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Password Baru (Kosongkan jika tidak ingin mengubah)</label>
-                                    <input type="password" class="form-control" id="profilePassword" minlength="6">
-                                </div>
+                        <div class="chat-container mb-3" id="chatContainer"></div>
+                        <form onsubmit="sendMessage(event)">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="messageInput" placeholder="Ketik pesan..." required>
                                 <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-save me-2"></i>Simpan Perubahan
+                                    <i class="fas fa-paper-plane"></i> Kirim
                                 </button>
-                            </form>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Activity History Page -->
+                <div id="activityPage" class="page" style="display: none;">
+                    <div class="content-card">
+                        <div class="page-header">
+                            <h3><i class="fas fa-history me-2"></i>Riwayat Aktivitas</h3>
+                            <p class="text-muted mb-0">Log semua aktivitas dalam tim</p>
+                        </div>
+                        
+                        <!-- Stats Cards -->
+                        <div class="activity-stats">
+                            <div class="stat-card">
+                                <i class="fas fa-clock text-info"></i>
+                                <h4 id="activityToday">0</h4>
+                                <p>Hari Ini</p>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fas fa-tasks text-success"></i>
+                                <h4 id="activityTasks">0</h4>
+                                <p>Aktivitas Tugas</p>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fas fa-users text-warning"></i>
+                                <h4 id="activityMembers">0</h4>
+                                <p>Aktivitas Anggota</p>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fas fa-user text-primary"></i>
+                                <h4 id="activityMy">0</h4>
+                                <p>Aktivitas Saya</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Filter Section -->
+                        <div class="activity-filter">
+                            <div class="row">
+                                <div class="col-md-3 mb-2">
+                                    <select class="form-select" id="activityTypeFilter" onchange="filterActivities()">
+                                        <option value="all">Semua Jenis</option>
+                                        <option value="task">Tugas</option>
+                                        <option value="member">Anggota</option>
+                                        <option value="assignment">Penugasan</option>
+                                        <option value="chat">Chat</option>
+                                        <option value="system">System</option>
+                                        <option value="archive">Arsip</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <select class="form-select" id="activityUserFilter" onchange="filterActivities()">
+                                        <option value="all">Semua User</option>
+                                        <option value="me">Hanya Saya</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <select class="form-select" id="activityTimeFilter" onchange="filterActivities()">
+                                        <option value="all">Semua Waktu</option>
+                                        <option value="today">Hari Ini</option>
+                                        <option value="week">Minggu Ini</option>
+                                        <option value="month">Bulan Ini</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <button class="btn btn-success w-100" onclick="exportActivities()">
+                                        <i class="fas fa-download me-2"></i>Export
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" id="activitySearch" 
+                                           placeholder="Cari aktivitas..." onkeyup="searchActivities()">
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <button class="btn btn-danger" onclick="clearActivities()">
+                                        <i class="fas fa-trash me-2"></i>Hapus Riwayat
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Activity Timeline -->
+                        <div id="activitiesList" class="activity-timeline"></div>
+                        
+                        <!-- Empty State -->
+                        <div id="emptyActivities" class="text-center py-5" style="display: none;">
+                            <i class="fas fa-history fa-3x mb-3 text-muted"></i>
+                            <h5>Belum ada aktivitas</h5>
+                            <p class="text-muted">Aktivitas akan tercatat di sini</p>
+                        </div>
+                        
+                        <!-- Load More Button -->
+                        <div class="text-center mt-4" id="loadMoreContainer" style="display: none;">
+                            <button class="btn btn-outline-success" onclick="loadMoreActivities()">
+                                <i class="fas fa-arrow-down me-2"></i>Muat Lebih Banyak
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Page -->
+                <div id="profilePage" class="page" style="display: none;">
+                    <div class="content-card">
+                        <div class="page-header">
+                            <h3><i class="fas fa-user me-2"></i>Profil Saya</h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <form onsubmit="updateProfile(event)">
+                                    <div class="mb-3">
+                                        <label class="form-label">Nama Lengkap</label>
+                                        <input type="text" class="form-control" id="profileName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="profileEmail" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Password Baru (Kosongkan jika tidak ingin mengubah)</label>
+                                        <input type="password" class="form-control" id="profilePassword" minlength="6">
+                                    </div>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-save me-2"></i>Simpan Perubahan
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary ms-2" onclick="showLandingPage()">
+                                        <i class="fas fa-arrow-left me-2"></i>Kembali ke Beranda
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1904,6 +2693,121 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // ==================== LANDING PAGE FUNCTIONS ====================
+        
+        // Scroll animations
+        function initScrollAnimations() {
+            const elements = document.querySelectorAll('.fade-in');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            elements.forEach(element => {
+                observer.observe(element);
+            });
+        }
+
+        // Scroll to top functionality
+        function initScrollTop() {
+            const scrollTopBtn = document.querySelector('.scroll-top');
+            
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    scrollTopBtn.classList.add('visible');
+                } else {
+                    scrollTopBtn.classList.remove('visible');
+                }
+                
+                // Navbar background on scroll
+                const navbar = document.getElementById('landingNavbar');
+                if (window.pageYOffset > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Smooth scroll for navigation links
+        function initSmoothScroll() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    
+                    if (href === '#' || href === '#home') {
+                        e.preventDefault();
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                        return;
+                    }
+                    
+                    if (href.startsWith('#') && href !== '#') {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                            
+                            // Update active nav link
+                            document.querySelectorAll('.landing-navbar .nav-link').forEach(link => {
+                                link.classList.remove('active');
+                            });
+                            this.classList.add('active');
+                        }
+                    }
+                });
+            });
+        }
+
+        // Show landing page
+        function showLandingPage() {
+            document.getElementById('landingPage').style.display = 'block';
+            document.getElementById('authAppContainer').style.display = 'none';
+            
+            // Reset scroll
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Update nav links
+            document.querySelectorAll('.landing-navbar .nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector('.landing-navbar .nav-link[href="#home"]').classList.add('active');
+            
+            // Initialize animations
+            setTimeout(initScrollAnimations, 100);
+        }
+
+        // Show login from landing page
+        function showLoginFromLanding() {
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('authAppContainer').style.display = 'block';
+            document.getElementById('authContainer').style.display = 'block';
+            document.getElementById('appContainer').style.display = 'none';
+            
+            showLogin();
+            
+            // Add demo credentials
+            document.getElementById('loginEmail').value = 'demo@tasksmate.com';
+            document.getElementById('loginPassword').value = 'demo123';
+        }
+
+        // ==================== MAIN APP FUNCTIONS ====================
+        
         // Initialize
         let currentUser = null;
         let users = JSON.parse(localStorage.getItem('tasksmate_users')) || [];
@@ -1915,7 +2819,7 @@
         let activities = JSON.parse(localStorage.getItem('tasksmate_activities')) || [];
         
         // Admin emails
-        let adminEmails = ['admin@tasksmate.com', 'rizqimaulana0406@gmail.com'];
+        let adminEmails = ['admin@tasksmate.com', 'rizqimaulana0406@gmail.com', 'demo@tasksmate.com'];
         
         // Activity types
         const ACTIVITY_TYPES = {
@@ -2016,7 +2920,20 @@
         window.onload = function() {
             setTimeout(() => {
                 document.getElementById('loadingOverlay').classList.add('hidden');
+                
+                // Initialize landing page
+                initScrollAnimations();
+                initScrollTop();
+                initSmoothScroll();
+                
+                // Set current year in copyright
+                document.getElementById('currentYear').textContent = new Date().getFullYear();
+                
+                // Check if user is logged in
                 checkSession();
+                
+                // Initialize demo data if needed
+                initializeDemoData();
             }, 1000);
         }
 
@@ -2028,17 +2945,21 @@
                 logActivity(ACTIVITY_TYPES.LOGIN, 'User logged in to the system');
                 checkOverdueTasks();
             } else {
-                showAuth();
+                showLandingPage();
             }
         }
 
         function showAuth() {
+            document.getElementById('authAppContainer').style.display = 'block';
+            document.getElementById('landingPage').style.display = 'none';
             document.getElementById('authContainer').style.display = 'block';
             document.getElementById('appContainer').style.display = 'none';
             showLogin();
         }
 
         function showApp() {
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('authAppContainer').style.display = 'block';
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('appContainer').style.display = 'block';
             document.getElementById('userWelcome').textContent = `Halo, ${currentUser.name}!`;
@@ -2204,7 +3125,7 @@
                 localStorage.removeItem('tasksmate_session');
                 sessionStorage.removeItem('tasksmate_session');
                 currentUser = null;
-                showAuth();
+                showLandingPage();
             }
         }
 
@@ -4596,12 +5517,68 @@
             document.getElementById('sidebar').classList.toggle('active');
         }
 
-        setTimeout(() => {
-            if (currentUser) {
-                logActivity(ACTIVITY_TYPES.SYSTEM, 'Aplikasi dimuat dengan sukses');
+        // Initialize demo data
+        function initializeDemoData() {
+            // Check if demo user exists
+            let users = JSON.parse(localStorage.getItem('tasksmate_users')) || [];
+            const demoEmail = 'demo@tasksmate.com';
+            
+            if (!users.find(u => u.email === demoEmail)) {
+                const demoUser = {
+                    id: Date.now(),
+                    name: "Demo User",
+                    email: demoEmail,
+                    password: hashPassword("demo123"),
+                    isAdmin: true,
+                    isActive: true,
+                    lastLogin: new Date().toISOString(),
+                    createdAt: new Date().toISOString(),
+                    role: 'admin',
+                    permissions: ['admin', 'delete', 'edit', 'view'],
+                    loginCount: 0
+                };
+                
+                users.push(demoUser);
+                localStorage.setItem('tasksmate_users', JSON.stringify(users));
             }
-        }, 1000);
+            
+            // Initialize demo members if empty
+            let members = JSON.parse(localStorage.getItem('tasksmate_members')) || [];
+            if (members.length === 0) {
+                const demoMembers = [
+                    {
+                        id: Date.now(),
+                        name: "Budi Santoso",
+                        email: "budi@example.com",
+                        position: "Frontend Developer",
+                        strength: "Detail-oriented",
+                        weakness: ["Terlalu perfeksionis", "Kurang komunikatif"],
+                        softSkills: ["Problem Solving", "Teamwork", "Time Management"],
+                        hardSkills: ["JavaScript", "React", "HTML/CSS"],
+                        notes: "Sangat baik dalam UI/UX implementation",
+                        addedBy: "Demo User",
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: Date.now() + 1,
+                        name: "Siti Aminah",
+                        email: "siti@example.com",
+                        position: "Backend Developer",
+                        strength: "Analytical thinking",
+                        weakness: ["Kurang desain visual"],
+                        softSkills: ["Analytical", "Logical Thinking", "Documentation"],
+                        hardSkills: ["Node.js", "Python", "Database Design"],
+                        notes: "Expert in system architecture",
+                        addedBy: "Demo User",
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                
+                localStorage.setItem('tasksmate_members', JSON.stringify(demoMembers));
+            }
+        }
 
+        // Auto-check overdue tasks periodically
         setInterval(checkOverdueTasks, 300000);
     </script>
 </body>
